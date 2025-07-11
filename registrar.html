@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <a href="index.html" class="home-link">← Inicio</a>
+    
+    <div class="register-page">
+        <div class="register-container">
+            <div class="register-header">
+                <h1>🏛️ Crear Cuenta SLEP</h1>
+                <p>Registro exclusivo para personal de SLEP Iquique</p>
+            </div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="newUsername">Usuario:</label>
+                    <input type="text" id="newUsername" name="newUsername" required placeholder="Elige un nombre de usuario">
+                </div>
+                
+                <div class="form-group">
+                    <label for="newEmail">
+                        Email Institucional:
+                        <span class="help-icon" onclick="toggleDomainInfo()" title="Ver dominios permitidos">?</span>
+                    </label>
+                    <input type="email" id="newEmail" name="newEmail" required placeholder="tu correo institucional">
+                    <small style="color: #666; font-size: 0.8rem; margin-top: 0.5rem; display: block; text-align: center;">
+                        Solo se permiten emails institucionales
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">Contraseña:</label>
+                    <input type="password" id="newPassword" name="newPassword" required placeholder="Crea una contraseña segura">
+                </div>
+                
+                <div class="password-requirements">
+                    <strong>Requisitos de contraseña:</strong>
+                    <div class="requirement" id="length">• Al menos 6 caracteres</div>
+                    <div class="requirement" id="letter">• Al menos una letra</div>
+                    <div class="requirement" id="number">• Al menos un número</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar Contraseña:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Repite tu contraseña">
+                </div>
+                
+                <button type="submit" class="auth-btn" id="registerBtn">✨ Crear Cuenta</button>
+            </form>
+                      
+            <!-- Modal de información de dominios -->
+            <div id="domainModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>📧 Dominios Institucionales Permitidos</h3>
+                        <span class="modal-close" onclick="closeDomainInfo()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Solo se permiten emails con estos dominios:</strong></p>
+                        <ul class="domain-list">
+                            <li><strong>@slepiquique.cl</strong> - Personal SLEP Iquique</li>
+                            <li><strong>@slepiqq.cl</strong> - Personal SLEP Iquique (abreviado)</li>
+                        </ul>
+                        <div class="domain-examples">
+                            <h4>Ejemplos válidos:</h4>
+                            <div class="example-item">✅ nombre.apellido@slepiquique.cl</div>
+                            <div class="example-item">✅ nombre.apellido@slepiqq.cl</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="login-link">
+                ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/login.js"></script>
+    <script src="js/resigtrar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si ya está logueado
+            if (window.authSystem && window.authSystem.isUserLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Inicializar usuarios si no existen
+            if (!localStorage.getItem('appUsers')) {
+                const defaultUsers = [
+                    { username: 'admin', email: 'admin@slepiquique.cl', password: 'admin123' },
+                    { username: 'director', email: 'director@slepiquique.cl', password: 'director123' },
+                    { username: 'asesor1', email: 'asesor1@slepiqq.cl', password: 'asesor123' },
+                    { username: 'coordinador', email: 'coordinador@slepiquique.cl', password: 'coord123' }
+                ];
+                localStorage.setItem('appUsers', JSON.stringify(defaultUsers));
+            }
+            
+            // Validación en tiempo real de contraseña
+            const passwordInput = document.getElementById('newPassword');
+            const confirmInput = document.getElementById('confirmPassword');
+            const registerBtn = document.getElementById('registerBtn');
+            
+            passwordInput.addEventListener('input', validatePassword);
+            confirmInput.addEventListener('input', validatePasswordMatch);
+            
+            function validatePassword() {
+                const password = passwordInput.value;
+                const lengthReq = document.getElementById('length');
+                const letterReq = document.getElementById('letter');
+                const numberReq = document.getElementById('number');
+                
+                // Validar longitud
+                if (password.length >= 6) {
+                    lengthReq.classList.add('valid');
+                    lengthReq.classList.remove('invalid');
+                } else {
+                    lengthReq.classList.add('invalid');
+                    lengthReq.classList.remove('valid');
+                }
+                
+                // Validar letra
+                if (/[A-Za-z]/.test(password)) {
+                    letterReq.classList.add('valid');
+                    letterReq.classList.remove('invalid');
+                } else {
+                    letterReq.classList.add('invalid');
+                    letterReq.classList.remove('valid');
+                }
+                
+                // Validar número
+                if (/\d/.test(password)) {
+                    numberReq.classList.add('valid');
+                    numberReq.classList.remove('invalid');
+                } else {
+                    numberReq.classList.add('invalid');
+                    numberReq.classList.remove('valid');
+                }
+                
+                validatePasswordMatch();
+            }
+            
+            function validatePasswordMatch() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmInput.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    confirmInput.style.borderColor = '#e53e3e';
+                } else if (confirmPassword) {
+                    confirmInput.style.borderColor = '#38a169';
+                } else {
+                    confirmInput.style.borderColor = '#e2e8f0';
+                }
+            }
+            
+            // Manejar el formulario de registro
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Mostrar indicador de carga
+                const registerBtn = document.getElementById('registerBtn');
+                const originalText = registerBtn.textContent;
+                registerBtn.textContent = '⏳ Creando cuenta...';
+                registerBtn.disabled = true;
+                
+                // Simular un pequeño delay para mejor UX
+                setTimeout(() => {
+                    const username = document.getElementById('newUsername').value;
+                    const email = document.getElementById('newEmail').value;
+                    const password = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    
+                    // Función para restaurar el botón
+                    function restoreButton() {
+                        registerBtn.textContent = originalText;
+                        registerBtn.disabled = false;
+                    }
+                    
+                    // Validaciones
+                    if (!username || !email || !password || !confirmPassword) {
+                        showAlert('⚠️ Error: Campos incompletos\n\nPor favor completa todos los campos requeridos', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (!isValidInstitutionalEmail(email)) {
+                        showAlert('❌ Email no válido. Solo se permiten emails institucionales:\n• @slepiquique.cl\n• @slepiqq.cl', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        showAlert('❌ Error: Las contraseñas no coinciden\n\nVerifica que ambas contraseñas sean idénticas', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (password.length < 6) {
+                        showAlert('❌ Error: Contraseña muy corta\n\nLa contraseña debe tener al menos 6 caracteres', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Verificar si el usuario ya existe
+                    const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                    
+                    if (users.find(u => u.username === username)) {
+                        showAlert('❌ Error: El nombre de usuario ya existe\n\nPor favor elige otro nombre de usuario', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (users.find(u => u.email === email)) {
+                        showAlert('❌ Error: El email ya está registrado\n\nEste email institucional ya tiene una cuenta asociada', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Registrar nuevo usuario
+                    const newUser = { 
+                        username, 
+                        email, 
+                        password,
+                        registeredAt: new Date().toISOString()
+                    };
+                    users.push(newUser);
+                    localStorage.setItem('appUsers', JSON.stringify(users));
+                    
+                    showAlert('✅ ¡Cuenta creada exitosamente!\n\nSerás redirigido al login en unos segundos...', 'success');
+                    
+                    // Limpiar formulario
+                    document.getElementById('registerForm').reset();
+                    
+                    // Redirigir a login después de 3 segundos
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 3000);
+                    
+                }, 500); // Delay de 500ms para mostrar el indicador de carga
+            });
+        });
+        
+        // Función para validar emails institucionales
+        function isValidInstitutionalEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            // Primero verificar que sea un email válido
+            if (!emailRegex.test(email)) {
+                return false;
+            }
+            
+            // Verificar que termine con uno de los dominios permitidos
+            const allowedDomains = ['@slepiquique.cl', '@slepiqq.cl'];
+            
+            return allowedDomains.some(domain => email.toLowerCase().endsWith(domain.toLowerCase()));
+        }
+        
+        // Validación en tiempo real del email
+        document.getElementById('newEmail').addEventListener('input', function() {
+            const email = this.value;
+            const emailInput = this;
+            
+            // Remover mensaje de validación anterior si existe
+            const existingValidation = emailInput.parentNode.querySelector('.email-validation');
+            if (existingValidation) {
+                existingValidation.remove();
+            }
+            
+            if (email.length > 0) {
+                const validationDiv = document.createElement('div');
+                validationDiv.className = 'email-validation';
+                
+                if (isValidInstitutionalEmail(email)) {
+                    emailInput.style.borderColor = '#38a169';
+                    emailInput.style.background = '#f0fff4';
+                    validationDiv.textContent = '✅ Email institucional válido';
+                    validationDiv.classList.remove('invalid');
+                } else {
+                    emailInput.style.borderColor = '#e53e3e';
+                    emailInput.style.background = '#fef2f2';
+                    validationDiv.textContent = '❌ Debe usar @slepiquique.cl o @slepiqq.cl';
+                    validationDiv.classList.add('invalid');
+                }
+                
+                emailInput.parentNode.appendChild(validationDiv);
+            } else {
+                emailInput.style.borderColor = '#e2e8f0';
+                emailInput.style.background = '';
+            }
+        });
+        
+        function showAlert(message, type = 'success') {
+            // Remover alertas existentes
+            const existingOverlays = document.querySelectorAll('.alert-overlay');
+            existingOverlays.forEach(overlay => overlay.remove());
+            
+            const registerContainer = document.querySelector('.register-container');
+            
+            // Crear overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'alert-overlay';
+            
+            // Crear alerta
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            
+            // Convertir saltos de línea en <br> para HTML
+            const formattedMessage = message.replace(/\n/g, '<br>');
+            alertDiv.innerHTML = formattedMessage;
+            
+            // Agregar botón de cerrar
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                opacity: 0.8;
+                transition: opacity 0.3s ease;
+            `;
+            closeBtn.onmouseover = () => closeBtn.style.opacity = '1';
+            closeBtn.onmouseout = () => closeBtn.style.opacity = '0.8';
+            
+            alertDiv.appendChild(closeBtn);
+            overlay.appendChild(alertDiv);
+            document.body.appendChild(overlay);
+            
+            // Función para cerrar alerta
+            function closeAlert() {
+                alertDiv.style.animation = 'alertPopOut 0.3s ease';
+                overlay.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    if (overlay.parentNode) {
+                        overlay.remove();
+                        registerContainer.classList.remove('blurred');
+                    }
+                }, 300);
+            }
+            
+            // Eventos para cerrar
+            closeBtn.onclick = closeAlert;
+            overlay.onclick = (e) => {
+                if (e.target === overlay) closeAlert();
+            };
+            
+            // Agregar desenfoque al fondo
+            registerContainer.classList.add('blurred');
+            
+            // Auto-cerrar después de 6 segundos (excepto para success)
+            if (type !== 'success') {
+                setTimeout(closeAlert, 6000);
+            }
+            
+            // Agregar animación de fadeOut si no existe
+            if (!document.getElementById('fadeOutStyle')) {
+                const style = document.createElement('style');
+                style.id = 'fadeOutStyle';
+                style.textContent = `
+                    @keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // Funciones para el modal de dominios
+        function toggleDomainInfo() {
+            const modal = document.getElementById('domainModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeDomainInfo() {
+            const modal = document.getElementById('domainModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Cerrar modal al hacer clic fuera de él
+        document.getElementById('domainModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDomainInfo();
+            }
+        });
+    </script>
+</body>
+</html>

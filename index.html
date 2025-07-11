@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Sistema</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="login.html" class="nav-link" id="loginBtn">Iniciar Sesión</a>
+                <a href="#" class="nav-link" id="userInfo" style="display: none;"></a>
+                <a href="#" class="nav-link" id="logoutBtn" style="display: none;">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <header class="header">
+            <h1>Bienvenido al Sistema</h1>
+            <p>Selecciona una opción del menú principal</p>
+        </header>
+
+        <!-- Menú principal con 4 botones -->
+        <div class="menu-grid">
+            <div class="menu-card">
+                <div class="card-icon">📊</div>
+                <h3>Dashboard</h3>
+                <p>Ver estadísticas y reportes</p>
+                <button class="btn-menu" onclick="goToDashboard()">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">🏫</div>
+                <h3>Establecimientos</h3>
+                <p>Gestionar establecimientos del sistema</p>
+                <button class="btn-menu" onclick="showUsers()">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">📁</div>
+                <h3>Documentos</h3>
+                <p>Gestionar documentos de equipos</p>
+                <button class="btn-menu" onclick="checkLoginAndRedirect()">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">⚙️</div>
+                <h3>Configuración</h3>
+                <p>Ajustes del sistema</p>
+                <button class="btn-menu" onclick="showSettings()">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">📈</div>
+                <h3>Reportes</h3>
+                <p>Generar y ver reportes</p>
+                <button class="btn-menu" onclick="showReports()">Acceder</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Event listener para el botón de documentos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar estado de login y actualizar interfaz
+            updateUserInterface();
+            
+            const documentsBtn = document.getElementById('documentsBtn');
+            if (documentsBtn) {
+                documentsBtn.addEventListener('click', function() {
+                    // Verificar si el usuario está logueado
+                    const currentUser = localStorage.getItem('currentUser');
+                    
+                    if (currentUser) {
+                        // Usuario logueado, redirigir a documentos
+                        window.location.href = './documentos/documentos.html';
+                    } else {
+                        // Usuario no logueado, redirigir a login
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+
+            // Event listener para botón de logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+
+        // Función para actualizar la interfaz según el estado de login
+        function updateUserInterface() {
+            const currentUser = localStorage.getItem('currentUser');
+            const loginBtn = document.getElementById('loginBtn');
+            const userInfo = document.getElementById('userInfo');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (currentUser) {
+                // Usuario logueado
+                const user = JSON.parse(currentUser);
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (userInfo) {
+                    userInfo.style.display = 'block';
+                    userInfo.textContent = `Hola, ${user.username}`;
+                }
+                if (logoutBtn) logoutBtn.style.display = 'block';
+            } else {
+                // Usuario no logueado
+                if (loginBtn) loginBtn.style.display = 'block';
+                if (userInfo) userInfo.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
+        }
+
+        // Función para verificar login y redirigir
+        function checkLoginAndRedirect() {
+            const currentUser = localStorage.getItem('currentUser');
+            
+            if (currentUser) {
+                window.location.href = 'documentos/documentos.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Funciones para los botones del menú
+        function goToDashboard() {
+            if (isUserLoggedIn()) {
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Debes iniciar sesión para acceder al dashboard');
+                showLoginModal();
+            }
+        }
+
+        function showUsers() {
+            if (isUserLoggedIn()) {
+                window.location.href = 'establecimiento.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function goToDocuments() {
+            // Verificar si el usuario está logueado
+            const currentUser = localStorage.getItem('currentUser');
+
+            if (currentUser) {
+                // Usuario logueado, redirigir a documentos
+                window.location.href = './documentos/documentos_new.html';
+            } else {
+                // Usuario no logueado, redirigir a login
+                window.location.href = 'login.html';
+            }
+        }
+
+        function showSettings() {
+            if (isUserLoggedIn()) {
+                alert('Función de Configuración - En desarrollo');
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function showReports() {
+            if (isUserLoggedIn()) {
+                alert('Función de Reportes - En desarrollo');
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Funciones básicas de autenticación
+        function isUserLoggedIn() {
+            return localStorage.getItem('currentUser') !== null;
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            updateUserInterface();
+        }
+    </script>
+</body>
+</html>

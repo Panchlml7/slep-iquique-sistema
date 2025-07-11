@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Documentos - SLEP IQUIQUE</title>
+    <link rel="stylesheet" href="../css/estilo.css">
+    <link rel="stylesheet" href="../css/documentos.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Documentos</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link" id="userInfo"></a>
+                <a href="#" class="nav-link" id="logoutBtn">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container documents-container">
+        <a href="../index.html" class="back-btn">← Volver al Menú Principal</a>
+        
+        <header class="header">
+            <h1>📋 Gestión de Documentos de Acompañamiento</h1>
+            <p id="welcomeMessage">Sistema de gestión de documentos pedagógicos</p>
+        </header>
+
+        <!-- Estadísticas -->
+        <div class="stats-section">
+            <div class="stat-box">
+                <div class="stat-number" id="totalDocs">0</div>
+                <div class="stat-label">Total Documentos</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="totalEstablecimientos">0</div>
+                <div class="stat-label">Establecimientos</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="recentUploads">0</div>
+                <div class="stat-label">Este Mes</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="totalAsesores">0</div>
+                <div class="stat-label">Asesores Activos</div>
+            </div>
+        </div>
+
+        <!-- Navegación principal por pestañas -->
+        <div class="main-tabs-navigation">
+            <button class="main-tab-btn active" data-maintab="nuevo-documento">
+                📝 Nuevo Documento
+            </button>
+            <button class="main-tab-btn" data-maintab="documentos-guardados">
+                📁 Documentos Guardados
+            </button>
+        </div>
+
+        <!-- Pestaña Principal: Nuevo Documento -->
+        <div class="main-tab-content active" data-maintab="nuevo-documento">
+            <div class="upload-section">
+                <h3>📋 Registrar Nuevo Documento de Acompañamiento</h3>
+                
+                <!-- Sub-pestañas para el formulario -->
+                <div class="form-tabs-navigation">
+                    <button type="button" class="form-tab-btn active" data-formtab="datos-basicos">
+                        📋 Datos Básicos
+                    </button>
+                    <button type="button" class="form-tab-btn" data-formtab="desarrollo-visita">
+                        📝 Desarrollo de la Visita
+                    </button>
+                </div>
+                
+                <form id="uploadForm">
+                    <!-- Sub-pestaña 1: Datos Básicos -->
+                    <div class="form-tab-content active" data-formtab="datos-basicos">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="acta" class="required">N° ACTA</label>
+                                <input type="text" id="acta" name="acta" required placeholder="Ej: ACTA-001-2025">
+                            </div>
+                            <div class="form-group">
+                                <label for="objetivo" class="required">Objetivo Estratégico</label>
+                                <select id="objetivo" name="objetivo" required>
+                                    <option value="">Seleccionar objetivo...</option>
+                                    <option value="OE1">OE1: Fortalecer capacidades pedagógicas</option>
+                                    <option value="OE2">OE2: Mejorar gestión directiva</option>
+                                    <option value="OE3">OE3: Promover convivencia escolar</option>
+                                    <option value="OE4">OE4: Desarrollar liderazgo educativo</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="asesor1" class="required">Asesor Principal</label>
+                                <input type="text" id="asesor1" name="asesor1" required placeholder="Nombre completo del asesor principal">
+                            </div>
+                            <div class="form-group">
+                                <label for="asesor2">Asesor Secundario</label>
+                                <input type="text" id="asesor2" name="asesor2" placeholder="Nombre del asesor secundario (opcional)">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="establecimiento" class="required">Establecimiento</label>
+                                <select id="establecimiento" name="establecimiento" required>
+                                    <option value="">Seleccionar establecimiento...</option>
+                                    <option value="Escuela Básica República de Francia">Escuela Básica República de Francia</option>
+                                    <option value="Liceo Técnico Profesional Diego Portales">Liceo Técnico Profesional Diego Portales</option>
+                                    <option value="Colegio San Luis Gonzaga">Colegio San Luis Gonzaga</option>
+                                    <option value="Escuela Básica Arturo Prat Chacón">Escuela Básica Arturo Prat Chacón</option>
+                                    <option value="Liceo de Aplicación de Iquique">Liceo de Aplicación de Iquique</option>
+                                    <option value="Colegio Nuestra Señora del Carmen">Colegio Nuestra Señora del Carmen</option>
+                                    <option value="Escuela Básica Pedro Prado">Escuela Básica Pedro Prado</option>
+                                    <option value="Liceo Comercial Marítimo Pacífico Sur">Liceo Comercial Marítimo Pacífico Sur</option>
+                                    <option value="Colegio Santo Tomás">Colegio Santo Tomás</option>
+                                    <option value="Escuela Básica Centenario">Escuela Básica Centenario</option>
+                                    <option value="Liceo Politécnico Iquique">Liceo Politécnico Iquique</option>
+                                    <option value="Colegio Inglés de Iquique">Colegio Inglés de Iquique</option>
+                                    <option value="Escuela Básica República de Croacia">Escuela Básica República de Croacia</option>
+                                    <option value="Colegio Metodista Robert Johnson">Colegio Metodista Robert Johnson</option>
+                                    <option value="Escuela Básica Técnica Industrial">Escuela Básica Técnica Industrial</option>
+                                    <option value="Liceo Técnico Femenino de Iquique">Liceo Técnico Femenino de Iquique</option>
+                                    <option value="Colegio Simón Bolívar">Colegio Simón Bolívar</option>
+                                    <option value="Escuela Básica Héroes de la Concepción">Escuela Básica Héroes de la Concepción</option>
+                                    <option value="Colegio Sagrados Corazones">Colegio Sagrados Corazones</option>
+                                    <option value="Escuela Básica Estados Unidos">Escuela Básica Estados Unidos</option>
+                                    <option value="Instituto Superior de Comercio Francisco Araya Bennett">Instituto Superior de Comercio Francisco Araya Bennett</option>
+                                    <option value="Colegio Particular Santa María de Iquique">Colegio Particular Santa María de Iquique</option>
+                                    <option value="Escuela Básica República del Perú">Escuela Básica República del Perú</option>
+                                    <option value="Liceo Domingo Santa María">Liceo Domingo Santa María</option>
+                                    <option value="Otro establecimiento">🏫 Otro establecimiento (especificar en observaciones)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="rbd" class="required">RBD</label>
+                                <input type="text" id="rbd" name="rbd" required placeholder="Ej: 12345-6">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fecha" class="required">Fecha de Visita</label>
+                                <input type="date" id="fecha" name="fecha" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hora" class="required">Hora de Inicio</label>
+                                <input type="time" id="hora" name="hora" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="horaTermino" class="required">Hora de Término</label>
+                                <input type="time" id="horaTermino" name="horaTermino" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="modalidad" class="required">Modalidad</label>
+                                <select id="modalidad" name="modalidad" required>
+                                    <option value="">Seleccionar modalidad...</option>
+                                    <option value="presencial">Presencial</option>
+                                    <option value="virtual">Virtual</option>
+                                    <option value="mixta">Mixta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cicloApoyo" class="required">Ciclo de Apoyo Técnico Pedagógico</label>
+                                <select id="cicloApoyo" name="cicloApoyo" required>
+                                    <option value="">Seleccionar ciclo...</option>
+                                    <option value="inicial">Inicial</option>
+                                    <option value="desarrollo">Desarrollo</option>
+                                    <option value="consolidacion">Consolidación</option>
+                                    <option value="autonomia">Autonomía</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="capacidadBasal" class="required">Capacidad Basal Focalizada</label>
+                                <input type="text" id="capacidadBasal" name="capacidadBasal" required placeholder="Describe la capacidad basal focalizada">
+                            </div>
+                            <div class="form-group">
+                                <label for="nivelImplementacion" class="required">Nivel Implementación Capacidad Basal</label>
+                                <select id="nivelImplementacion" name="nivelImplementacion" required>
+                                    <option value="">Seleccionar nivel...</option>
+                                    <option value="no-implementado">No Implementado</option>
+                                    <option value="en-desarrollo">En Desarrollo</option>
+                                    <option value="implementado">Implementado</option>
+                                    <option value="consolidado">Consolidado</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="rolProfesional" class="required">Rol Profesional Acompañamiento</label>
+                            <textarea id="rolProfesional" name="rolProfesional" rows="3" required placeholder="Describe el rol del profesional en el acompañamiento técnico pedagógico"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Sub-pestaña 2: Desarrollo de la Visita -->
+                    <div class="form-tab-content" data-formtab="desarrollo-visita">
+                        <div class="form-group full-width">
+                            <label for="objetivoVisita" class="required">Objetivo de la Visita</label>
+                            <textarea id="objetivoVisita" name="objetivoVisita" rows="3" required placeholder="Describe el objetivo principal de esta visita de acompañamiento..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="antecedentes">Antecedentes</label>
+                            <textarea id="antecedentes" name="antecedentes" rows="3" placeholder="Describe los antecedentes relevantes para esta visita..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="instrumentos">Instrumentos/Insumos Utilizados</label>
+                            <textarea id="instrumentos" name="instrumentos" rows="3" placeholder="Lista los instrumentos, materiales o insumos utilizados durante la visita..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="practica">Práctica Problemática Observada</label>
+                            <textarea id="practica" name="practica" rows="4" placeholder="Describe las prácticas problemáticas identificadas durante la observación..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="actividades" class="required">Actividades Realizadas</label>
+                            <textarea id="actividades" name="actividades" rows="4" required placeholder="Detalla las actividades desarrolladas durante el acompañamiento..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="acuerdos" class="required">Acuerdos/Fecha de Implementación/Responsables</label>
+                            <textarea id="acuerdos" name="acuerdos" rows="4" required placeholder="Lista los acuerdos establecidos, fechas de implementación y responsables asignados..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="aspectosPositivos" class="required">Aspectos Positivos Observados</label>
+                            <textarea id="aspectosPositivos" name="aspectosPositivos" rows="3" required placeholder="Destaca los aspectos positivos identificados durante la visita..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="areasMejora" class="required">Áreas de Mejora Identificadas</label>
+                            <textarea id="areasMejora" name="areasMejora" rows="3" required placeholder="Identifica las principales áreas que requieren mejora..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Navegación entre sub-pestañas -->
+                    <div class="form-navigation">
+                        <button type="button" id="prevTab" class="nav-btn" style="display: none;">
+                            ← Anterior
+                        </button>
+                        <div style="flex: 1;"></div>
+                        <button type="button" id="nextTab" class="nav-btn">
+                            Siguiente →
+                        </button>
+                        <button type="submit" id="submitBtn" style="display: none;">
+                            💾 Guardar Documento
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Pestaña Principal: Documentos Guardados -->
+        <div class="main-tab-content" data-maintab="documentos-guardados">
+            <div class="documents-section">
+                <h3>📁 Documentos de Acompañamiento Guardados</h3>
+                
+                <!-- Buscador por ACTA -->
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="max-width: 400px; position: relative;">
+                        <input type="text" id="searchActa" placeholder="🔍 Buscar por N° ACTA o Folio..." style="
+                            width: 100%;
+                            padding: 1rem 1rem 1rem 3rem;
+                            border: 2px solid #667eea;
+                            border-radius: 25px;
+                            font-size: 1rem;
+                            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+                            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+                        ">
+                        <div style="
+                            position: absolute;
+                            left: 1rem;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            color: #667eea;
+                            font-size: 1.2rem;
+                        ">🔍</div>
+                    </div>
+                    <small style="color: #666; margin-top: 0.5rem; display: block;">
+                        Ejemplo: ACTA-001-2025 o simplemente 001
+                    </small>
+                </div>
+                
+                <div class="documents-grid" id="documentsGrid">
+                    <!-- Los documentos se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/login.js"></script>
+    <script src="../js/documentos-html.js"></script>
+    <script>
+        // JavaScript adicional para pestañas
+        document.addEventListener('DOMContentLoaded', function() {
+            // Esperar a que documentManagerHTML esté listo
+            setTimeout(() => {
+                let currentFormTab = 0;
+                const formTabs = ['datos-basicos', 'desarrollo-visita'];
+                
+                // Manejar pestañas principales
+                document.querySelectorAll('[data-maintab]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const targetTab = this.dataset.maintab;
+                        
+                        // Remover active de todos los botones y contenidos principales
+                        document.querySelectorAll('[data-maintab]').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('[data-maintab][class*="content"]').forEach(c => c.classList.remove('active'));
+                        
+                        // Activar el botón y contenido seleccionado
+                        this.classList.add('active');
+                        document.querySelector(`[data-maintab="${targetTab}"][class*="content"]`).classList.add('active');
+                    });
+                });
+                
+                // Manejar pestañas del formulario
+                document.querySelectorAll('[data-formtab]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const targetTab = this.dataset.formtab;
+                        currentFormTab = formTabs.indexOf(targetTab);
+                        showFormTab(currentFormTab);
+                    });
+                });
+                
+                // Botones de navegación del formulario
+                const prevBtn = document.getElementById('prevTab');
+                const nextBtn = document.getElementById('nextTab');
+                const submitBtn = document.getElementById('submitBtn');
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        if (currentFormTab > 0) {
+                            currentFormTab--;
+                            showFormTab(currentFormTab);
+                        }
+                    });
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        if (currentFormTab < formTabs.length - 1) {
+                            currentFormTab++;
+                            showFormTab(currentFormTab);
+                        }
+                    });
+                }
+                
+                function showFormTab(index) {
+                    // Ocultar todas las pestañas del formulario
+                    document.querySelectorAll('[data-formtab][class*="content"]').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Remover active de todos los botones del formulario
+                    document.querySelectorAll('[data-formtab]:not([class*="content"])').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Mostrar la pestaña actual
+                    const currentTabName = formTabs[index];
+                    document.querySelector(`[data-formtab="${currentTabName}"][class*="content"]`).classList.add('active');
+                    document.querySelector(`[data-formtab="${currentTabName}"]:not([class*="content"])`).classList.add('active');
+                    
+                    // Manejar visibilidad de botones de navegación
+                    if (prevBtn) {
+                        prevBtn.style.display = index === 0 ? 'none' : 'flex';
+                    }
+                    
+                    if (nextBtn && submitBtn) {
+                        if (index === formTabs.length - 1) {
+                            nextBtn.style.display = 'none';
+                            submitBtn.style.display = 'flex';
+                        } else {
+                            nextBtn.style.display = 'flex';
+                            submitBtn.style.display = 'none';
+                        }
+                    }
+                }
+                
+                // Inicializar la primera pestaña
+                showFormTab(0);
+            }, 100);
+        });
+    </script>
+</body>
+</html>

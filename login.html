@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <a href="index.html" class="home-link">← Inicio</a>
+    
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Iniciar Sesión</h1>
+                <p>Accede a tu cuenta</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" name="username" required placeholder="Ingresa tu usuario">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required placeholder="Ingresa tu contraseña">
+                </div>
+                
+                <button type="submit" id="loginBtn" class="auth-btn">🔐 Iniciar Sesión</button>
+            </form>
+            
+            <div class="register-link">
+                ¿No tienes cuenta? <a href="registrar.html">Crear una cuenta</a>
+            </div>
+            
+            <!-- Contenedor de alertas AQUÍ -->
+            <div id="alertContainer"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar usuarios predeterminados si no existen
+            if (!localStorage.getItem('appUsers')) {
+                const defaultUsers = [
+                    { username: 'admin', email: 'admin@test.com', password: 'admin123' },
+                    { username: 'usuario1', email: 'user1@test.com', password: '123456' },
+                    { username: 'demo', email: 'demo@test.com', password: 'demo123' }
+                ];
+                localStorage.setItem('appUsers', JSON.stringify(defaultUsers));
+            }
+            
+            // Verificar si ya está logueado
+            if (localStorage.getItem('currentUser')) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Manejar el formulario de login
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Mostrar indicador de carga
+                const loginBtn = document.getElementById('loginBtn');
+                const originalText = loginBtn.textContent;
+                loginBtn.textContent = '⏳ Verificando...';
+                loginBtn.disabled = true;
+                
+                // Simular un pequeño delay para mejor UX
+                setTimeout(() => {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    
+                    // Función para restaurar el botón
+                    function restoreButton() {
+                        loginBtn.textContent = originalText;
+                        loginBtn.disabled = false;
+                    }
+                    
+                    if (!username || !password) {
+                        alert('ERROR: Completa todos los campos');
+                        showAlert('ERROR: Completa todos los campos', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Función de login desde login.js
+                    const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                    const user = users.find(u => u.username === username && u.password === password);
+                    
+                    if (user) {
+                        const userSession = {
+                            username: user.username,
+                            email: user.email,
+                            loginTime: new Date().toISOString()
+                        };
+                        localStorage.setItem('currentUser', JSON.stringify(userSession));
+                        
+                        showAlert(`EXITO: Bienvenido ${user.username}!`, 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    } else {
+                        alert('ERROR: Usuario o contraseña incorrectos');
+                        showAlert('ERROR: Usuario o contraseña incorrectos', 'error');
+                        restoreButton();
+                    }
+                }, 500); // Delay de 500ms para mostrar el indicador de carga
+            });
+        });
+        
+        function showAlert(message, type = 'success') {
+            console.log('showAlert llamada con:', message, type);
+            
+            const alertContainer = document.getElementById('alertContainer');
+            console.log('alertContainer encontrado:', alertContainer);
+            
+            if (!alertContainer) {
+                console.error('No se encontró alertContainer');
+                return;
+            }
+            
+            // Limpiar completamente
+            alertContainer.innerHTML = '';
+            console.log('Container limpiado');
+            
+            // Crear alerta SIMPLE
+            const alertDiv = document.createElement('div');
+            console.log('Div creado');
+            
+            // Estilo directo y simple
+            if (type === 'error') {
+                alertDiv.style.cssText = `
+                    background: #ff4444 !important;
+                    color: white !important;
+                    padding: 20px !important;
+                    margin: 15px 0 !important;
+                    border-radius: 8px !important;
+                    text-align: center !important;
+                    font-size: 16px !important;
+                    font-weight: bold !important;
+                    border: 3px solid #cc0000 !important;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+                    display: block !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                `;
+                console.log('Estilo error aplicado');
+            } else {
+                alertDiv.style.cssText = `
+                    background: #44aa44 !important;
+                    color: white !important;
+                    padding: 20px !important;
+                    margin: 15px 0 !important;
+                    border-radius: 8px !important;
+                    text-align: center !important;
+                    font-size: 16px !important;
+                    font-weight: bold !important;
+                    border: 3px solid #006600 !important;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+                    display: block !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                `;
+                console.log('Estilo success aplicado');
+            }
+            
+            // Agregar el texto sin formato especial
+            alertDiv.textContent = message;
+            console.log('Texto agregado:', message);
+            
+            // Mostrar inmediatamente
+            alertContainer.appendChild(alertDiv);
+            console.log('Div agregado al container');
+            
+            // Verificar que se agregó
+            console.log('Children del container:', alertContainer.children.length);
+            
+            // Auto-remover después de 5 segundos
+            setTimeout(() => {
+                if (alertDiv && alertDiv.parentNode) {
+                    alertDiv.remove();
+                    console.log('Alerta removida después de 5 segundos');
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
