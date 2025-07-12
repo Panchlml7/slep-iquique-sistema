@@ -1,3 +1,6 @@
+# Archivos de configuración sensibles
+ADMIN_SETUP.md
+
 # Archivos del sistema
 .DS_Store
 Thumbs.db
