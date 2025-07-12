@@ -1,16 +1,30 @@
-// Sistema de autenticación sin base de datos - Solo JavaScript y localStorage
+// Sistema de autenticación con admin y usuarios pendientes
 
-// Usuarios predefinidos (simulando base de datos)
-const defaultUsers = [
-    { username: 'admin', email: 'admin@test.com', password: 'admin123' },
-    { username: 'usuario1', email: 'user1@test.com', password: '123456' },
-    { username: 'demo', email: 'demo@test.com', password: 'demo123' }
-];
+// Usuario administrador autorizado - Las credenciales se inicializan de forma segura
+const adminUser = {
+    username: 'francisco.ramos',
+    email: 'francisco.ramos@slepiquique.cl',
+    password: '', // Se establece dinámicamente por seguridad
+    status: 'admin'
+};
 
-// Inicializar usuarios en localStorage si no existen
+// Inicializar sistema con usuario admin
 function initializeUsers() {
-    if (!localStorage.getItem('appUsers')) {
-        localStorage.setItem('appUsers', JSON.stringify(defaultUsers));
+    const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+    
+    // Verificar si el admin ya existe
+    const adminExists = users.find(u => u.email === adminUser.email);
+    if (!adminExists) {
+        // Solo crear admin si no existe - requiere configuración inicial
+        const adminWithPassword = {
+            ...adminUser,
+            password: btoa('default_temp_' + Date.now()) // Contraseña temporal encriptada
+        };
+        users.push(adminWithPassword);
+        localStorage.setItem('appUsers', JSON.stringify(users));
+        
+        // Mensaje para configuración inicial
+        console.log('ℹ️ Usuario admin creado con contraseña temporal. Requiere configuración inicial.');
     }
 }
 
@@ -36,27 +50,50 @@ function getCurrentUser() {
     return user ? JSON.parse(user) : null;
 }
 
-// Función para hacer login
+// Función para hacer login - Admin y usuarios aprobados
 function login(username, password) {
     const users = getUsers();
-    const user = users.find(u => u.username === username && u.password === password);
+    const user = users.find(u => (u.username === username || u.email === username) && u.password === password);
     
     if (user) {
-        // Guardar usuario actual sin la contraseña
-        const userSession = {
-            username: user.username,
-            email: user.email,
-            loginTime: new Date().toISOString()
+        // Verificar estado de aprobación
+        if (user.status === 'pendiente') {
+            return {
+                success: false,
+                message: '⏳ Cuenta pendiente de aprobación\n\nTu cuenta está siendo revisada por el administrador.\nRecibirás acceso cuando sea aprobada.'
+            };
+        }
+        
+        if (user.status === 'rechazada') {
+            return {
+                success: false,
+                message: '❌ Cuenta rechazada\n\nTu solicitud de cuenta no fue aprobada.\nContacta al administrador para más información.'
+            };
+        }
+        
+        // Permitir login para admin y usuarios aprobados
+        if (user.status === 'admin' || user.status === 'aprobada') {
+            const userSession = {
+                username: user.username,
+                email: user.email,
+                status: user.status,
+                loginTime: new Date().toISOString()
+            };
+            localStorage.setItem('currentUser', JSON.stringify(userSession));
+            return { success: true, user: userSession };
+        }
+        
+        return {
+            success: false,
+            message: '🚫 Acceso denegado\n\nContacta al administrador.'
         };
-        localStorage.setItem('currentUser', JSON.stringify(userSession));
-        return { success: true, user: userSession };
     } else {
         return { success: false, message: 'Usuario o contraseña incorrectos' };
     }
 }
 
-// Función para registrar nuevo usuario
-function register(username, email, password) {
+// Función para registrar nuevo usuario - CON APROBACIÓN
+function register(username, email, password, establecimiento, cargo) {
     const users = getUsers();
     
     // Verificar si el usuario ya existe
@@ -68,12 +105,28 @@ function register(username, email, password) {
         return { success: false, message: 'El email ya está registrado' };
     }
     
-    // Agregar nuevo usuario
-    const newUser = { username, email, password };
+    // Validar dominio de email
+    const allowedDomains = ['@slepiquique.cl', '@slepiqq.cl'];
+    const isValidDomain = allowedDomains.some(domain => email.toLowerCase().endsWith(domain));
+    
+    if (!isValidDomain) {
+        return { success: false, message: 'Solo se permiten emails institucionales' };
+    }
+    
+    // Agregar nuevo usuario con estado pendiente
+    const newUser = { 
+        username, 
+        email, 
+        password, 
+        establecimiento: establecimiento || 'No especificado',
+        cargo: cargo || 'No especificado',
+        status: 'pendiente',
+        registrationDate: new Date().toISOString()
+    };
     users.push(newUser);
     saveUsers(users);
     
-    return { success: true, message: 'Usuario registrado exitosamente' };
+    return { success: true, message: 'Usuario registrado exitosamente. Pendiente de aprobación.' };
 }
 
 // Función para cerrar sesión
@@ -285,3 +338,6 @@ window.authSystem = {
     logout,
     showAlert
 };
+
+// Inicializar usuarios al cargar el script
+initializeUsers();

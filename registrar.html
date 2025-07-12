@@ -14,7 +14,10 @@
         <div class="register-container">
             <div class="register-header">
                 <h1>🏛️ Crear Cuenta SLEP</h1>
-                <p>Registro exclusivo para personal de SLEP Iquique</p>
+                <p>Registro para personal de SLEP Iquique</p>
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 10px; margin: 10px 0; color: #856404;">
+                    <strong>📋 Proceso:</strong> Tu cuenta será revisada por el administrador antes de ser aprobada.
+                </div>
             </div>
             
             <form id="registerForm">
@@ -39,364 +42,315 @@
                     <input type="password" id="newPassword" name="newPassword" required placeholder="Crea una contraseña segura">
                 </div>
                 
-                <div class="password-requirements">
-                    <strong>Requisitos de contraseña:</strong>
-                    <div class="requirement" id="length">• Al menos 6 caracteres</div>
-                    <div class="requirement" id="letter">• Al menos una letra</div>
-                    <div class="requirement" id="number">• Al menos un número</div>
+                <div class="form-group">
+                    <label for="establecimiento">Establecimiento:</label>
+                    <select id="establecimiento" name="establecimiento" required>
+                        <option value="">Selecciona tu establecimiento</option>
+                        <!-- Liceos -->
+                        <option value="Instituto Comercial de Iquique Baldomero Wolnitzky">Instituto Comercial de Iquique Baldomero Wolnitzky</option>
+                        <option value="Liceo Libertador General Bernardo O´Higgins">Liceo Libertador General Bernardo O´Higgins</option>
+                        <option value="Liceo Politécnico José Gutiérrez de la Fuente">Liceo Politécnico José Gutiérrez de la Fuente</option>
+                        <option value="Liceo Deportivo Técnico Profesional Elena Duvauchelle Cabezón">Liceo Deportivo Técnico Profesional Elena Duvauchelle Cabezón</option>
+                        <option value="Liceo Bicentenario Domingo Santa María de Iquique">Liceo Bicentenario Domingo Santa María de Iquique</option>
+                        <option value="Centro de Capacitación Laboral">Centro de Capacitación Laboral</option>
+                        <option value="Liceo Luis Cruz Martínez">Liceo Luis Cruz Martínez</option>
+                        <option value="Liceo Bicentenario S.S. Juan Pablo Segundo">Liceo Bicentenario S.S. Juan Pablo Segundo</option>
+                        <option value="Liceo C.E.I.A. José Alejandro Soria Varas">Liceo C.E.I.A. José Alejandro Soria Varas</option>
+                        <option value="Liceo Técnico Profesional de Adultos">Liceo Técnico Profesional de Adultos</option>
+                        
+                        <!-- Escuelas -->
+                        <option value="Escuela Educación Especial Flor del Inca">Escuela Educación Especial Flor del Inca</option>
+                        <option value="Escuela Educación General Básica y Desarrollo Artístico Violeta Parra">Escuela Educación General Básica y Desarrollo Artístico Violeta Parra</option>
+                        <option value="Escuela Gabriela Mistral">Escuela Gabriela Mistral</option>
+                        <option value="Escuela Eduardo Llanos">Escuela Eduardo Llanos</option>
+                        <option value="Escuela Almirante Patricio Lynch">Escuela Almirante Patricio Lynch</option>
+                        <option value="Escuela Placido Villarroel">Escuela Placido Villarroel</option>
+                        <option value="Colegio Republica De Croacia">Colegio Republica De Croacia</option>
+                        <option value="Escuela Paula Jaraquemada Alquizar">Escuela Paula Jaraquemada Alquizar</option>
+                        <option value="Escuela Centenario">Escuela Centenario</option>
+                        <option value="Escuela Thilda Portillo Olivares">Escuela Thilda Portillo Olivares</option>
+                        <option value="Colegio España">Colegio España</option>
+                        <option value="Escuela Profesor Manuel Castro Ramos">Escuela Profesor Manuel Castro Ramos</option>
+                        <option value="Colegio Republica De Italia">Colegio Republica De Italia</option>
+                        <option value="Escuela Caleta Chanavayita">Escuela Caleta Chanavayita</option>
+                        <option value="Escuela Chipana">Escuela Chipana</option>
+                        <option value="Escuela Caleta San Marcos">Escuela Caleta San Marcos</option>
+                        <option value="Colegio Simón Bolívar">Colegio Simón Bolívar</option>
+                        <option value="Escuela Especial de Lenguaje Oasis del Saber">Escuela Especial de Lenguaje Oasis del Saber</option>
+                        
+                        <!-- Jardines Infantiles -->
+                        <option value="Carita de Sol">Jardín Infantil Carita de Sol</option>
+                        <option value="Oasis Del Saber">Jardín Infantil Oasis Del Saber</option>
+                        <option value="Intina Wawapa">Jardín Infantil Intina Wawapa</option>
+                        <option value="Los Naranjos">Jardín Infantil Los Naranjos</option>
+                        <option value="Tortuguitas">Jardín Infantil Tortuguitas</option>
+                        <option value="Arumanti">Jardín Infantil Arumanti</option>
+                        <option value="Lucerito Dorado">Jardín Infantil Lucerito Dorado</option>
+                        <option value="Aventuras de Aprender">Jardín Infantil Aventuras de Aprender</option>
+                        <option value="Arcoíris del Desierto">Jardín Infantil Arcoíris del Desierto</option>
+                        <option value="Magia de Aprender">Jardín Infantil Magia de Aprender</option>
+                        <option value="Mi Pequeño Mundo">Jardín Infantil Mi Pequeño Mundo</option>
+                        <option value="Suma Inti">Jardín Infantil Suma Inti</option>
+                        
+                        <!-- SLEP Central -->
+                        <option value="SLEP Iquique - Oficina Central">SLEP Iquique - Oficina Central</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="confirmPassword">Confirmar Contraseña:</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Repite tu contraseña">
+                    <label for="cargo">Cargo/Función:</label>
+                    <select id="cargo" name="cargo" required>
+                        <option value="">Selecciona tu cargo</option>
+                        <option value="Director/a">Director/a</option>
+                        <option value="Subdirector/a">Subdirector/a</option>
+                        <option value="Inspector/a General">Inspector/a General</option>
+                        <option value="Jefe/a UTP">Jefe/a UTP</option>
+                        <option value="Coordinador/a Académico">Coordinador/a Académico</option>
+                        <option value="Coordinador/a PIE">Coordinador/a PIE</option>
+                        <option value="Coordinador/a SEP">Coordinador/a SEP</option>
+                        <option value="Profesor/a Jefe">Profesor/a Jefe</option>
+                        <option value="Profesor/a de Asignatura">Profesor/a de Asignatura</option>
+                        <option value="Profesor/a Diferencial">Profesor/a Diferencial</option>
+                        <option value="Educador/a de Párvulos">Educador/a de Párvulos</option>
+                        <option value="Psicólogo/a">Psicólogo/a</option>
+                        <option value="Trabajador/a Social">Trabajador/a Social</option>
+                        <option value="Fonoaudiólogo/a">Fonoaudiólogo/a</option>
+                        <option value="Terapeuta Ocupacional">Terapeuta Ocupacional</option>
+                        <option value="Orientador/a">Orientador/a</option>
+                        <option value="Bibliotecario/a">Bibliotecario/a</option>
+                        <option value="Secretario/a">Secretario/a</option>
+                        <option value="Asistente de Aula">Asistente de Aula</option>
+                        <option value="Asistente de Párvulos">Asistente de Párvulos</option>
+                        <option value="Auxiliar de Servicios">Auxiliar de Servicios</option>
+                        <option value="Manipulador/a de Alimentos">Manipulador/a de Alimentos</option>
+                        <option value="Portero/a">Portero/a</option>
+                        <option value="Administrativo/a SLEP">Administrativo/a SLEP</option>
+                        <option value="Profesional SLEP">Profesional SLEP</option>
+                        <option value="Directivo SLEP">Directivo SLEP</option>
+                        <option value="Otro">Otro</option>
+                    </select>
                 </div>
                 
-                <button type="submit" class="auth-btn" id="registerBtn">✨ Crear Cuenta</button>
-            </form>
-                      
-            <!-- Modal de información de dominios -->
-            <div id="domainModal" class="modal-overlay" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>📧 Dominios Institucionales Permitidos</h3>
-                        <span class="modal-close" onclick="closeDomainInfo()">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Solo se permiten emails con estos dominios:</strong></p>
-                        <ul class="domain-list">
-                            <li><strong>@slepiquique.cl</strong> - Personal SLEP Iquique</li>
-                            <li><strong>@slepiqq.cl</strong> - Personal SLEP Iquique (abreviado)</li>
-                        </ul>
-                        <div class="domain-examples">
-                            <h4>Ejemplos válidos:</h4>
-                            <div class="example-item">✅ nombre.apellido@slepiquique.cl</div>
-                            <div class="example-item">✅ nombre.apellido@slepiqq.cl</div>
-                        </div>
-                    </div>
+                <div class="form-group" id="otroCargoGroup" style="display: none;">
+                    <label for="otroCargo">Especifica tu cargo:</label>
+                    <input type="text" id="otroCargo" name="otroCargo" placeholder="Describe tu cargo/función">
                 </div>
-            </div>
+                
+                <div class="password-requirements">
+                    <strong>Requisitos de contraseña:</strong>
+                    <ul>
+                        <li>Mínimo 6 caracteres</li>
+                        <li>Al menos una letra y un número</li>
+                        <li>Sin espacios en blanco</li>
+                    </ul>
+                </div>
+                
+                <button type="submit" id="registerBtn" class="auth-btn">📝 Crear Cuenta (Pendiente Aprobación)</button>
+            </form>
             
             <div class="login-link">
                 ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
             </div>
+            
+            <!-- Contenedor de alertas -->
+            <div id="alertContainer"></div>
         </div>
     </div>
-    
+
+    <!-- Modal de información de dominios -->
+    <div id="domainModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📧 Dominios de Email Permitidos</h3>
+                <span class="close" onclick="toggleDomainInfo()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Solo se permiten emails institucionales:</strong></p>
+                <ul>
+                    <li>✅ @slepiquique.cl</li>
+                    <li>✅ @slepiqq.cl</li>
+                </ul>
+                <p class="note">⚠️ Los emails personales (gmail, hotmail, etc.) no están permitidos</p>
+            </div>
+        </div>
+    </div>
+
     <script src="js/login.js"></script>
-    <script src="js/resigtrar.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Verificar si ya está logueado
-            if (window.authSystem && window.authSystem.isUserLoggedIn()) {
+            if (localStorage.getItem('currentUser')) {
                 window.location.href = 'index.html';
                 return;
             }
             
-            // Inicializar usuarios si no existen
-            if (!localStorage.getItem('appUsers')) {
-                const defaultUsers = [
-                    { username: 'admin', email: 'admin@slepiquique.cl', password: 'admin123' },
-                    { username: 'director', email: 'director@slepiquique.cl', password: 'director123' },
-                    { username: 'asesor1', email: 'asesor1@slepiqq.cl', password: 'asesor123' },
-                    { username: 'coordinador', email: 'coordinador@slepiquique.cl', password: 'coord123' }
-                ];
-                localStorage.setItem('appUsers', JSON.stringify(defaultUsers));
-            }
-            
-            // Validación en tiempo real de contraseña
-            const passwordInput = document.getElementById('newPassword');
-            const confirmInput = document.getElementById('confirmPassword');
-            const registerBtn = document.getElementById('registerBtn');
-            
-            passwordInput.addEventListener('input', validatePassword);
-            confirmInput.addEventListener('input', validatePasswordMatch);
-            
-            function validatePassword() {
-                const password = passwordInput.value;
-                const lengthReq = document.getElementById('length');
-                const letterReq = document.getElementById('letter');
-                const numberReq = document.getElementById('number');
+            // Manejar el campo "Otro" cargo
+            document.getElementById('cargo').addEventListener('change', function() {
+                const otroCargoGroup = document.getElementById('otroCargoGroup');
+                const otroCargo = document.getElementById('otroCargo');
                 
-                // Validar longitud
-                if (password.length >= 6) {
-                    lengthReq.classList.add('valid');
-                    lengthReq.classList.remove('invalid');
+                if (this.value === 'Otro') {
+                    otroCargoGroup.style.display = 'block';
+                    otroCargo.required = true;
                 } else {
-                    lengthReq.classList.add('invalid');
-                    lengthReq.classList.remove('valid');
+                    otroCargoGroup.style.display = 'none';
+                    otroCargo.required = false;
+                    otroCargo.value = '';
                 }
-                
-                // Validar letra
-                if (/[A-Za-z]/.test(password)) {
-                    letterReq.classList.add('valid');
-                    letterReq.classList.remove('invalid');
-                } else {
-                    letterReq.classList.add('invalid');
-                    letterReq.classList.remove('valid');
-                }
-                
-                // Validar número
-                if (/\d/.test(password)) {
-                    numberReq.classList.add('valid');
-                    numberReq.classList.remove('invalid');
-                } else {
-                    numberReq.classList.add('invalid');
-                    numberReq.classList.remove('valid');
-                }
-                
-                validatePasswordMatch();
-            }
-            
-            function validatePasswordMatch() {
-                const password = passwordInput.value;
-                const confirmPassword = confirmInput.value;
-                
-                if (confirmPassword && password !== confirmPassword) {
-                    confirmInput.style.borderColor = '#e53e3e';
-                } else if (confirmPassword) {
-                    confirmInput.style.borderColor = '#38a169';
-                } else {
-                    confirmInput.style.borderColor = '#e2e8f0';
-                }
-            }
+            });
             
             // Manejar el formulario de registro
             document.getElementById('registerForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // Mostrar indicador de carga
                 const registerBtn = document.getElementById('registerBtn');
                 const originalText = registerBtn.textContent;
                 registerBtn.textContent = '⏳ Creando cuenta...';
                 registerBtn.disabled = true;
                 
-                // Simular un pequeño delay para mejor UX
+                function restoreButton() {
+                    registerBtn.textContent = originalText;
+                    registerBtn.disabled = false;
+                }
+                
                 setTimeout(() => {
-                    const username = document.getElementById('newUsername').value;
-                    const email = document.getElementById('newEmail').value;
+                    const username = document.getElementById('newUsername').value.trim();
+                    const email = document.getElementById('newEmail').value.trim();
                     const password = document.getElementById('newPassword').value;
-                    const confirmPassword = document.getElementById('confirmPassword').value;
-                    
-                    // Función para restaurar el botón
-                    function restoreButton() {
-                        registerBtn.textContent = originalText;
-                        registerBtn.disabled = false;
-                    }
+                    const establecimiento = document.getElementById('establecimiento').value;
+                    const cargo = document.getElementById('cargo').value;
+                    const otroCargo = document.getElementById('otroCargo').value.trim();
                     
                     // Validaciones
-                    if (!username || !email || !password || !confirmPassword) {
-                        showAlert('⚠️ Error: Campos incompletos\n\nPor favor completa todos los campos requeridos', 'error');
+                    if (!username || !email || !password || !establecimiento || !cargo) {
+                        showAlert('ERROR: Completa todos los campos obligatorios', 'error');
                         restoreButton();
                         return;
                     }
                     
-                    if (!isValidInstitutionalEmail(email)) {
-                        showAlert('❌ Email no válido. Solo se permiten emails institucionales:\n• @slepiquique.cl\n• @slepiqq.cl', 'error');
+                    // Validar "Otro" cargo
+                    if (cargo === 'Otro' && !otroCargo) {
+                        showAlert('ERROR: Especifica tu cargo cuando selecciones "Otro"', 'error');
                         restoreButton();
                         return;
                     }
                     
-                    if (password !== confirmPassword) {
-                        showAlert('❌ Error: Las contraseñas no coinciden\n\nVerifica que ambas contraseñas sean idénticas', 'error');
+                    // Validar dominio de email
+                    const allowedDomains = ['@slepiquique.cl', '@slepiqq.cl'];
+                    const isValidDomain = allowedDomains.some(domain => email.toLowerCase().endsWith(domain));
+                    
+                    if (!isValidDomain) {
+                        showAlert('ERROR: Solo se permiten emails institucionales (@slepiquique.cl o @slepiqq.cl)', 'error');
                         restoreButton();
                         return;
                     }
                     
+                    // Validar contraseña
                     if (password.length < 6) {
-                        showAlert('❌ Error: Contraseña muy corta\n\nLa contraseña debe tener al menos 6 caracteres', 'error');
+                        showAlert('ERROR: La contraseña debe tener al menos 6 caracteres', 'error');
                         restoreButton();
                         return;
                     }
                     
-                    // Verificar si el usuario ya existe
-                    const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
-                    
-                    if (users.find(u => u.username === username)) {
-                        showAlert('❌ Error: El nombre de usuario ya existe\n\nPor favor elige otro nombre de usuario', 'error');
+                    if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+                        showAlert('ERROR: La contraseña debe contener al menos una letra y un número', 'error');
                         restoreButton();
                         return;
                     }
                     
-                    if (users.find(u => u.email === email)) {
-                        showAlert('❌ Error: El email ya está registrado\n\nEste email institucional ya tiene una cuenta asociada', 'error');
+                    if (/\s/.test(password)) {
+                        showAlert('ERROR: La contraseña no puede contener espacios', 'error');
                         restoreButton();
                         return;
                     }
                     
-                    // Registrar nuevo usuario
-                    const newUser = { 
-                        username, 
-                        email, 
-                        password,
-                        registeredAt: new Date().toISOString()
-                    };
-                    users.push(newUser);
-                    localStorage.setItem('appUsers', JSON.stringify(users));
+                    // Registrar usuario con estado pendiente
+                    const finalCargo = cargo === 'Otro' ? otroCargo : cargo;
+                    const result = registerWithApproval(username, email, password, establecimiento, finalCargo);
                     
-                    showAlert('✅ ¡Cuenta creada exitosamente!\n\nSerás redirigido al login en unos segundos...', 'success');
-                    
-                    // Limpiar formulario
-                    document.getElementById('registerForm').reset();
-                    
-                    // Redirigir a login después de 3 segundos
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 3000);
-                    
-                }, 500); // Delay de 500ms para mostrar el indicador de carga
+                    if (result.success) {
+                        showAlert('✅ ÉXITO: Cuenta creada exitosamente\n\n⏳ Tu cuenta está pendiente de aprobación por el administrador.\nRecibirás acceso una vez que sea revisada.', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 4000);
+                    } else {
+                        showAlert(`ERROR: ${result.message}`, 'error');
+                        restoreButton();
+                    }
+                }, 500);
             });
         });
         
-        // Función para validar emails institucionales
-        function isValidInstitutionalEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Función para registrar usuario con estado pendiente
+        function registerWithApproval(username, email, password, establecimiento, cargo) {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
             
-            // Primero verificar que sea un email válido
-            if (!emailRegex.test(email)) {
-                return false;
+            // Verificar si el usuario ya existe
+            if (users.find(u => u.username === username)) {
+                return { success: false, message: 'El nombre de usuario ya existe' };
             }
             
-            // Verificar que termine con uno de los dominios permitidos
-            const allowedDomains = ['@slepiquique.cl', '@slepiqq.cl'];
-            
-            return allowedDomains.some(domain => email.toLowerCase().endsWith(domain.toLowerCase()));
-        }
-        
-        // Validación en tiempo real del email
-        document.getElementById('newEmail').addEventListener('input', function() {
-            const email = this.value;
-            const emailInput = this;
-            
-            // Remover mensaje de validación anterior si existe
-            const existingValidation = emailInput.parentNode.querySelector('.email-validation');
-            if (existingValidation) {
-                existingValidation.remove();
+            if (users.find(u => u.email === email)) {
+                return { success: false, message: 'El email ya está registrado' };
             }
             
-            if (email.length > 0) {
-                const validationDiv = document.createElement('div');
-                validationDiv.className = 'email-validation';
-                
-                if (isValidInstitutionalEmail(email)) {
-                    emailInput.style.borderColor = '#38a169';
-                    emailInput.style.background = '#f0fff4';
-                    validationDiv.textContent = '✅ Email institucional válido';
-                    validationDiv.classList.remove('invalid');
-                } else {
-                    emailInput.style.borderColor = '#e53e3e';
-                    emailInput.style.background = '#fef2f2';
-                    validationDiv.textContent = '❌ Debe usar @slepiquique.cl o @slepiqq.cl';
-                    validationDiv.classList.add('invalid');
-                }
-                
-                emailInput.parentNode.appendChild(validationDiv);
-            } else {
-                emailInput.style.borderColor = '#e2e8f0';
-                emailInput.style.background = '';
-            }
-        });
-        
-        function showAlert(message, type = 'success') {
-            // Remover alertas existentes
-            const existingOverlays = document.querySelectorAll('.alert-overlay');
-            existingOverlays.forEach(overlay => overlay.remove());
-            
-            const registerContainer = document.querySelector('.register-container');
-            
-            // Crear overlay
-            const overlay = document.createElement('div');
-            overlay.className = 'alert-overlay';
-            
-            // Crear alerta
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            
-            // Convertir saltos de línea en <br> para HTML
-            const formattedMessage = message.replace(/\n/g, '<br>');
-            alertDiv.innerHTML = formattedMessage;
-            
-            // Agregar botón de cerrar
-            const closeBtn = document.createElement('button');
-            closeBtn.innerHTML = '✕';
-            closeBtn.style.cssText = `
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                background: none;
-                border: none;
-                color: white;
-                font-size: 18px;
-                font-weight: bold;
-                cursor: pointer;
-                opacity: 0.8;
-                transition: opacity 0.3s ease;
-            `;
-            closeBtn.onmouseover = () => closeBtn.style.opacity = '1';
-            closeBtn.onmouseout = () => closeBtn.style.opacity = '0.8';
-            
-            alertDiv.appendChild(closeBtn);
-            overlay.appendChild(alertDiv);
-            document.body.appendChild(overlay);
-            
-            // Función para cerrar alerta
-            function closeAlert() {
-                alertDiv.style.animation = 'alertPopOut 0.3s ease';
-                overlay.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => {
-                    if (overlay.parentNode) {
-                        overlay.remove();
-                        registerContainer.classList.remove('blurred');
-                    }
-                }, 300);
-            }
-            
-            // Eventos para cerrar
-            closeBtn.onclick = closeAlert;
-            overlay.onclick = (e) => {
-                if (e.target === overlay) closeAlert();
+            // Agregar nuevo usuario con estado pendiente
+            const newUser = { 
+                username, 
+                email, 
+                password, 
+                establecimiento,
+                cargo,
+                status: 'pendiente',
+                registrationDate: new Date().toISOString()
             };
+            users.push(newUser);
             
-            // Agregar desenfoque al fondo
-            registerContainer.classList.add('blurred');
+            // Guardar usuarios
+            localStorage.setItem('appUsers', JSON.stringify(users));
             
-            // Auto-cerrar después de 6 segundos (excepto para success)
-            if (type !== 'success') {
-                setTimeout(closeAlert, 6000);
-            }
-            
-            // Agregar animación de fadeOut si no existe
-            if (!document.getElementById('fadeOutStyle')) {
-                const style = document.createElement('style');
-                style.id = 'fadeOutStyle';
-                style.textContent = `
-                    @keyframes fadeOut {
-                        from { opacity: 1; }
-                        to { opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
+            return { success: true, message: 'Usuario registrado exitosamente' };
         }
         
-        // Funciones para el modal de dominios
         function toggleDomainInfo() {
             const modal = document.getElementById('domainModal');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
         }
         
-        function closeDomainInfo() {
-            const modal = document.getElementById('domainModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-        
-        // Cerrar modal al hacer clic fuera de él
-        document.getElementById('domainModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeDomainInfo();
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            
+            // Limpiar alertas previas
+            alertContainer.innerHTML = '';
+            
+            // Crear nueva alerta
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.cssText = `
+                background: ${type === 'success' ? '#d4edda' : '#f8d7da'};
+                color: ${type === 'success' ? '#155724' : '#721c24'};
+                border: 1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'};
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+                font-weight: 500;
+                white-space: pre-line;
+                text-align: center;
+            `;
+            alertDiv.textContent = message;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            // Auto-remover después de 5 segundos (solo para errores)
+            if (type === 'error') {
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
             }
-        });
+        }
     </script>
 </body>
 </html>

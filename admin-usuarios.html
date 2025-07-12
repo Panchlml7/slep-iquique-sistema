@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Usuarios - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .admin-header h1 {
+            color: #2c5aa0;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #3182ce;
+            border-bottom-color: #3182ce;
+        }
+
+        .tab-btn:hover {
+            background: #f7fafc;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .users-table th {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .users-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        .users-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pendiente {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .status-aprobada {
+            background: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .status-rechazada {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #38a169;
+        }
+
+        .btn-reject {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #e53e3e;
+        }
+
+        .btn-delete {
+            background: #a0aec0;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #718096;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .user-email {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .user-date {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .user-establecimiento {
+            font-size: 0.9rem;
+            color: #4a5568;
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+
+        .user-cargo {
+            font-size: 0.9rem;
+            color: #2d3748;
+            font-weight: 500;
+            max-width: 150px;
+            word-wrap: break-word;
+        }
+
+        .users-table th:nth-child(3),
+        .users-table th:nth-child(4) {
+            min-width: 150px;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3182ce;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Responsivo para tabla */
+        @media (max-width: 1200px) {
+            .users-table {
+                font-size: 0.85rem;
+            }
+            
+            .users-table th,
+            .users-table td {
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .user-establecimiento,
+            .user-cargo {
+                font-size: 0.8rem;
+                max-width: 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+            }
+            
+            .users-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-link">← Volver al Inicio</a>
+    
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>👥 Administración de Usuarios</h1>
+            <p>Gestiona las solicitudes de registro y usuarios del sistema</p>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">Total Usuarios</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingUsers">0</div>
+                <div class="stat-label">Solicitudes Pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="approvedUsers">0</div>
+                <div class="stat-label">Usuarios Aprobados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="rejectedUsers">0</div>
+                <div class="stat-label">Solicitudes Rechazadas</div>
+            </div>
+        </div>
+
+        <!-- Pestañas de estado -->
+        <div class="status-tabs">
+            <button class="tab-btn active" onclick="showTab('pendiente')">⏳ Pendientes</button>
+            <button class="tab-btn" onclick="showTab('aprobada')">✅ Aprobados</button>
+            <button class="tab-btn" onclick="showTab('rechazada')">❌ Rechazados</button>
+            <button class="tab-btn" onclick="showTab('todos')">👥 Todos</button>
+        </div>
+
+        <!-- Tabla de usuarios -->
+        <div class="table-container">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Establecimiento</th>
+                        <th>Cargo</th>
+                        <th>Estado</th>
+                        <th>Fecha de Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <!-- Los datos se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'pendiente';
+        
+        // Verificar que el usuario sea admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            console.log('🔍 Verificando acceso admin:', currentUser);
+            
+            if (currentUser.status !== 'admin') {
+                alert('❌ Acceso denegado. Solo el administrador puede acceder a esta página.');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            console.log('✅ Acceso admin concedido');
+            loadUsers();
+            updateStats();
+        });
+
+        function loadUsers(filterStatus = 'pendiente') {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const tableBody = document.getElementById('usersTableBody');
+            tableBody.innerHTML = '';
+
+            let filteredUsers = users;
+            if (filterStatus !== 'todos') {
+                filteredUsers = users.filter(user => user.status === filterStatus);
+            }
+
+            // Excluir admin de la lista (por status, no por username)
+            filteredUsers = filteredUsers.filter(user => user.status !== 'admin');
+
+            if (filteredUsers.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: #666;">
+                            ${filterStatus === 'pendiente' ? '📭 No hay solicitudes pendientes' : 
+                              filterStatus === 'aprobada' ? '👤 No hay usuarios aprobados' :
+                              filterStatus === 'rechazada' ? '🚫 No hay solicitudes rechazadas' : 
+                              '👥 No hay usuarios registrados'}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            filteredUsers.forEach((user, index) => {
+                const row = document.createElement('tr');
+                const registeredDate = new Date(user.registeredAt).toLocaleDateString('es-CL');
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="user-info">
+                            <strong>${user.username}</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="user-email">${user.email}</div>
+                    </td>
+                    <td>
+                        <div class="user-establecimiento">${user.establecimiento || 'No especificado'}</div>
+                    </td>
+                    <td>
+                        <div class="user-cargo">${user.cargo || 'No especificado'}</div>
+                    </td>
+                    <td>
+                        <span class="status-badge status-${user.status}">${user.status}</span>
+                    </td>
+                    <td>
+                        <div class="user-date">${registeredDate}</div>
+                        ${user.approvedAt ? `<div class="user-date">Aprobado: ${new Date(user.approvedAt).toLocaleDateString('es-CL')}</div>` : ''}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            ${user.status === 'pendiente' ? `
+                                <button class="btn-action btn-approve" onclick="approveUser('${user.username}')">
+                                    ✅ Aprobar
+                                </button>
+                                <button class="btn-action btn-reject" onclick="rejectUser('${user.username}')">
+                                    ❌ Rechazar
+                                </button>
+                            ` : ''}
+                            ${user.status === 'rechazada' ? `
+                                <button class="btn-action btn-approve" onclick="approveUser('${user.username}')">
+                                    ✅ Aprobar
+                                </button>
+                            ` : ''}
+                            <button class="btn-action btn-delete" onclick="deleteUser('${user.username}')">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function updateStats() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const nonAdminUsers = users.filter(user => user.status !== 'admin');
+            
+            document.getElementById('totalUsers').textContent = nonAdminUsers.length;
+            document.getElementById('pendingUsers').textContent = nonAdminUsers.filter(u => u.status === 'pendiente').length;
+            document.getElementById('approvedUsers').textContent = nonAdminUsers.filter(u => u.status === 'aprobada').length;
+            document.getElementById('rejectedUsers').textContent = nonAdminUsers.filter(u => u.status === 'rechazada').length;
+        }
+
+        function showTab(status) {
+            currentTab = status;
+            
+            // Actualizar pestañas activas
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            loadUsers(status);
+        }
+
+        function approveUser(username) {
+            if (confirm(`¿Aprobar la cuenta de "${username}"?`)) {
+                const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                const userIndex = users.findIndex(u => u.username === username);
+                
+                if (userIndex !== -1) {
+                    users[userIndex].status = 'aprobada';
+                    users[userIndex].approvedAt = new Date().toISOString();
+                    users[userIndex].approvedBy = 'admin';
+                    
+                    localStorage.setItem('appUsers', JSON.stringify(users));
+                    loadUsers(currentTab);
+                    updateStats();
+                    
+                    alert(`✅ Usuario "${username}" aprobado correctamente`);
+                }
+            }
+        }
+
+        function rejectUser(username) {
+            const reason = prompt(`¿Por qué rechazas la cuenta de "${username}"?\n(Opcional - este mensaje se puede enviar al usuario)`);
+            
+            if (reason !== null) { // null significa que canceló
+                const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                const userIndex = users.findIndex(u => u.username === username);
+                
+                if (userIndex !== -1) {
+                    users[userIndex].status = 'rechazada';
+                    users[userIndex].rejectedAt = new Date().toISOString();
+                    users[userIndex].rejectedBy = 'admin';
+                    users[userIndex].rejectionReason = reason;
+                    
+                    localStorage.setItem('appUsers', JSON.stringify(users));
+                    loadUsers(currentTab);
+                    updateStats();
+                    
+                    alert(`❌ Usuario "${username}" rechazado`);
+                }
+            }
+        }
+
+        function deleteUser(username) {
+            if (confirm(`⚠️ ¿Estás seguro de eliminar permanentemente la cuenta de "${username}"?\n\nEsta acción no se puede deshacer.`)) {
+                const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                const filteredUsers = users.filter(u => u.username !== username);
+                
+                localStorage.setItem('appUsers', JSON.stringify(filteredUsers));
+                loadUsers(currentTab);
+                updateStats();
+                
+                alert(`🗑️ Usuario "${username}" eliminado permanentemente`);
+            }
+        }
+    </script>
+</body>
+</html>
