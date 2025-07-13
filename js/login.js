@@ -4,7 +4,11 @@
 const adminUser = {
     username: 'francisco.ramos',
     email: 'francisco.ramos@slepiquique.cl',
+<<<<<<< HEAD
     password: '13Jul1993', // Contraseña fija del administrador
+=======
+    password: '', // Se establece dinámicamente por seguridad
+>>>>>>> f7ae8cc434af35caefeefe6387da3f90c46c93f0
     status: 'admin'
 };
 
@@ -15,14 +19,22 @@ function initializeUsers() {
     // Verificar si el admin ya existe
     const adminExists = users.find(u => u.email === adminUser.email);
     if (!adminExists) {
+<<<<<<< HEAD
         // Crear admin con contraseña fija
         const adminWithPassword = {
             ...adminUser,
             password: '13Jul1993' // Contraseña fija del administrador
+=======
+        // Solo crear admin si no existe - requiere configuración inicial
+        const adminWithPassword = {
+            ...adminUser,
+            password: btoa('default_temp_' + Date.now()) // Contraseña temporal encriptada
+>>>>>>> f7ae8cc434af35caefeefe6387da3f90c46c93f0
         };
         users.push(adminWithPassword);
         localStorage.setItem('appUsers', JSON.stringify(users));
         
+<<<<<<< HEAD
         console.log('✅ Usuario admin creado con contraseña establecida.');
     } else {
         // Si ya existe, verificar que tenga la contraseña correcta
@@ -32,6 +44,10 @@ function initializeUsers() {
             localStorage.setItem('appUsers', JSON.stringify(users));
             console.log('✅ Contraseña del admin actualizada.');
         }
+=======
+        // Mensaje para configuración inicial
+        console.log('ℹ️ Usuario admin creado con contraseña temporal. Requiere configuración inicial.');
+>>>>>>> f7ae8cc434af35caefeefe6387da3f90c46c93f0
     }
 }
 
