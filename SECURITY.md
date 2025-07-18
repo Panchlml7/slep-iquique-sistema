@@ -23,7 +23,7 @@ El sistema tiene una **contraseña maestra** que protege el acceso a páginas ad
 
 #### Páginas Protegidas:
 - ✅ Administración de Usuarios (`admin-usuarios.html`)
-- ✅ Gestión de Establecimientos (`establecimiento.html`)  
+- ❌ Gestión de Establecimientos (`establecimiento.html`) - **ACCESO LIBRE**
 - ✅ Gestión de Documentos (`documentos/documentos.html`)
 
 #### Cambiar Contraseña Maestra:
