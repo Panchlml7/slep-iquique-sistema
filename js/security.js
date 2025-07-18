@@ -9,6 +9,7 @@ class ProjectSecurity {
         this.lockoutTime = 15 * 60 * 1000; // 15 minutos
         this.attempts = 0;
         this.lastAttempt = 0;
+        this.onAuthSuccess = null; // Callback para después de autenticación exitosa
         
         this.initSecurity();
     }
@@ -99,6 +100,12 @@ class ProjectSecurity {
 
     // Mostrar prompt de contraseña maestra
     showMasterPasswordPrompt() {
+        // Primero verificar si ya hay un modal activo
+        const existingModal = document.querySelector('.security-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
         const modal = document.createElement('div');
         modal.className = 'security-modal';
         modal.innerHTML = `
@@ -106,11 +113,18 @@ class ProjectSecurity {
                 <div class="security-header">
                     <h2>🔐 SISTEMA PROTEGIDO</h2>
                     <p>Este proyecto requiere autorización del propietario</p>
+                    <p style="color: #ffeb3b; font-weight: bold;">⚠️ Solo Francisco Ramos puede acceder</p>
                 </div>
                 <div class="security-form">
-                    <input type="password" id="masterPassword" placeholder="Contraseña maestra del proyecto" maxlength="50">
-                    <button type="button" id="verifyBtn">Verificar Acceso</button>
-                    <button type="button" id="backBtn">Volver al Inicio</button>
+                    <label for="masterPassword" style="color: white; display: block; margin-bottom: 10px;">Contraseña Maestra:</label>
+                    <input type="password" id="masterPassword" placeholder="Ingresa la contraseña maestra" maxlength="50" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; border: 2px solid #4CAF50;">
+                    <div style="margin: 15px 0;">
+                        <button type="button" id="verifyBtn" style="background: #4CAF50; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-right: 10px;">🔓 Verificar Acceso</button>
+                        <button type="button" id="backBtn" style="background: #f44336; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">🚫 Cancelar</button>
+                    </div>
+                    <div style="background: rgba(255,235,59,0.2); padding: 10px; border-radius: 8px; margin: 10px 0;">
+                        <small style="color: #ffeb3b;">💡 Pista: francisco.ramos.slep2025</small>
+                    </div>
                 </div>
                 <div class="security-info">
                     <small>⚠️ Máximo 3 intentos - Bloqueo temporal por 15 minutos</small>
@@ -229,6 +243,11 @@ class ProjectSecurity {
                 this.showMessage(messageDiv, '✅ Acceso autorizado', 'success');
                 setTimeout(() => {
                     modal.remove();
+                    // Ejecutar callback si existe
+                    if (this.onAuthSuccess) {
+                        this.onAuthSuccess();
+                        this.onAuthSuccess = null; // Limpiar callback
+                    }
                 }, 1000);
             } catch (error) {
                 this.showMessage(messageDiv, error.message, 'error');

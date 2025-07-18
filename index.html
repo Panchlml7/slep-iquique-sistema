@@ -6,6 +6,8 @@
     <title>Página Principal - SLEP Iquique</title>
     <link rel="stylesheet" href="css/estilo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Sistema de Seguridad del Proyecto -->
+    <script src="js/security.js"></script>
     <style>
         /* Estilos para notificaciones de administrador */
         .notification-container {
@@ -545,7 +547,17 @@
 
         function showUsers() {
             if (isUserLoggedIn()) {
-                window.location.href = 'establecimiento.html';
+                // Verificar autenticación de seguridad antes de acceder
+                if (window.projectSecurity && !window.projectSecurity.checkAuthentication()) {
+                    // Mostrar prompt de contraseña maestra con callback
+                    window.projectSecurity.showMasterPasswordPrompt();
+                    // Configurar callback para después de la autenticación
+                    window.projectSecurity.onAuthSuccess = () => {
+                        window.location.href = 'establecimiento.html';
+                    };
+                } else {
+                    window.location.href = 'establecimiento.html';
+                }
             } else {
                 window.location.href = 'login.html';
             }
@@ -574,7 +586,17 @@
         
         function goToAdmin() {
             if (isUserLoggedIn()) {
-                window.location.href = 'admin-usuarios.html';
+                // Verificar autenticación de seguridad antes de acceder
+                if (window.projectSecurity && !window.projectSecurity.checkAuthentication()) {
+                    // Mostrar prompt de contraseña maestra con callback
+                    window.projectSecurity.showMasterPasswordPrompt();
+                    // Configurar callback para después de la autenticación
+                    window.projectSecurity.onAuthSuccess = () => {
+                        window.location.href = 'admin-usuarios.html';
+                    };
+                } else {
+                    window.location.href = 'admin-usuarios.html';
+                }
             } else {
                 window.location.href = 'login.html';
             }
