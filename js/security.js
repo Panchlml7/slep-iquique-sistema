@@ -6,7 +6,15 @@ class ProjectSecurity {
         this.masterKey = null;
         this.isAuthenticated = false;
         this.maxAttempts = 3;
-        this.lockoutTime = 15 * 60 * 1000; // 15 minutos
+        this.lockoutTime = 1// Auto-verificación en páginas sensibles
+document.addEventListener('DOMContentLoaded', function() {
+    const sensitivePaths = ['admin-usuarios.html', 'documentos'];
+    const currentPath = window.location.pathname.toLowerCase();
+    
+    if (sensitivePaths.some(path => currentPath.includes(path))) {
+        requireMasterAuth();
+    }
+});1000; // 15 minutos
         this.attempts = 0;
         this.lastAttempt = 0;
         this.onAuthSuccess = null; // Callback para después de autenticación exitosa
@@ -122,9 +130,7 @@ class ProjectSecurity {
                         <button type="button" id="verifyBtn" style="background: #4CAF50; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-right: 10px;">🔓 Verificar Acceso</button>
                         <button type="button" id="backBtn" style="background: #f44336; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">🚫 Cancelar</button>
                     </div>
-                    <div style="background: rgba(255,235,59,0.2); padding: 10px; border-radius: 8px; margin: 10px 0;">
-                        <small style="color: #ffeb3b;">💡 Pista: francisco.ramos.slep2025</small>
-                    </div>
+                  
                 </div>
                 <div class="security-info">
                     <small>⚠️ Máximo 3 intentos - Bloqueo temporal por 15 minutos</small>
@@ -150,10 +156,10 @@ class ProjectSecurity {
                 backdrop-filter: blur(10px);
             }
             .security-modal-content {
-                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                background: linear-gradient(135deg, #000000ff 0%, #000000ff 100%);
                 padding: 2rem;
                 border-radius: 15px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                box-shadow: 0 20px 60px rgba(201, 201, 201, 0.5);
                 max-width: 400px;
                 width: 90%;
                 text-align: center;
@@ -190,16 +196,20 @@ class ProjectSecurity {
             }
             #verifyBtn {
                 background: #4CAF50;
+                width: 100%;
                 color: white;
             }
             #verifyBtn:hover {
+                width: 100%;
                 background: #45a049;
             }
             #backBtn {
                 background: #f44336;
+                width: 100%;
                 color: white;
             }
             #backBtn:hover {
+                width: 100%;
                 background: #da190b;
             }
             .security-info {
@@ -291,7 +301,7 @@ function requireMasterAuth() {
 
 // Auto-verificación en páginas sensibles
 document.addEventListener('DOMContentLoaded', function() {
-    const sensitivePaths = ['admin-usuarios.html', 'establecimiento.html', 'documentos'];
+    const sensitivePaths = ['admin-usuarios.html'];
     const currentPath = window.location.pathname.toLowerCase();
     
     if (sensitivePaths.some(path => currentPath.includes(path))) {

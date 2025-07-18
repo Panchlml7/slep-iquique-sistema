@@ -252,7 +252,7 @@
             </div>
 
             <div class="menu-card">
-                <div class="card-icon">✅</div>
+                <div class="card-icon">🚧</div>
                 <h3>Habilitación</h3>
                 <p>Gestionar habilitaciones del sistema</p>
                 <button class="btn-menu" onclick="showHabilitacion()">Acceder</button>
@@ -547,17 +547,8 @@
 
         function showUsers() {
             if (isUserLoggedIn()) {
-                // Verificar autenticación de seguridad antes de acceder
-                if (window.projectSecurity && !window.projectSecurity.checkAuthentication()) {
-                    // Mostrar prompt de contraseña maestra con callback
-                    window.projectSecurity.showMasterPasswordPrompt();
-                    // Configurar callback para después de la autenticación
-                    window.projectSecurity.onAuthSuccess = () => {
-                        window.location.href = 'establecimiento.html';
-                    };
-                } else {
-                    window.location.href = 'establecimiento.html';
-                }
+                // Acceso directo a establecimientos - SIN protección de contraseña
+                window.location.href = 'establecimiento.html';
             } else {
                 window.location.href = 'login.html';
             }
