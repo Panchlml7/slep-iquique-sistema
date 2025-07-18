@@ -7,6 +7,8 @@
     <title>Gestión de Documentos - SLEP IQUIQUE</title>
     <link rel="stylesheet" href="../css/estilo.css">
     <link rel="stylesheet" href="../css/documentos.css">
+    <!-- Sistema de Seguridad del Proyecto -->
+    <script src="../js/security.js"></script>
 </head>
 
 <body>
@@ -219,8 +221,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="capacidadBasal" class="required">Capacidad Basal Focalizada</label>
-                                <select id="capacidadBasal" name="capacidadBasal" required>
-                                    <option value="">Seleccionar capacidad...</option>
+                                <select id="cicloApoyo" name="cicloApoyo" required>
+                                    <option value="">Seleccionar ciclo...</option>
                                     <option value="reflexión">Reflexión</option>
                                     <option value="colaboración">Colaboración</option>
                                     <option value="confianza relacional">Confianza Relacional</option>
@@ -267,9 +269,11 @@
                             });
                         });
                     </script>
-                    </div>
-
-                    <!-- Sub-pestaña 2: Desarrollo de la Visita -->
+                    </select>
+            </div>
+        </div>
+    </div>
+    <!-- Sub-pestaña 2: Desarrollo de la Visita -->
     <div class="form-tab-content" data-formtab="desarrollo-visita">
         <div class="form-group full-width">
             <label for="objetivoVisita" class="required">Objetivo de la Visita</label>

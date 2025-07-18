@@ -4,11 +4,7 @@
 const adminUser = {
     username: 'francisco.ramos',
     email: 'francisco.ramos@slepiquique.cl',
-<<<<<<< HEAD
-    password: '13Jul1993', // Contraseña fija del administrador
-=======
-    password: '', // Se establece dinámicamente por seguridad
->>>>>>> f7ae8cc434af35caefeefe6387da3f90c46c93f0
+    password: '13Jul1993', // Contraseña del administrador
     status: 'admin'
 };
 
@@ -19,22 +15,14 @@ function initializeUsers() {
     // Verificar si el admin ya existe
     const adminExists = users.find(u => u.email === adminUser.email);
     if (!adminExists) {
-<<<<<<< HEAD
-        // Crear admin con contraseña fija
+        // Crear admin con contraseña establecida
         const adminWithPassword = {
             ...adminUser,
-            password: '13Jul1993' // Contraseña fija del administrador
-=======
-        // Solo crear admin si no existe - requiere configuración inicial
-        const adminWithPassword = {
-            ...adminUser,
-            password: btoa('default_temp_' + Date.now()) // Contraseña temporal encriptada
->>>>>>> f7ae8cc434af35caefeefe6387da3f90c46c93f0
+            password: '13Jul1993' // Contraseña del administrador
         };
         users.push(adminWithPassword);
         localStorage.setItem('appUsers', JSON.stringify(users));
         
-<<<<<<< HEAD
         console.log('✅ Usuario admin creado con contraseña establecida.');
     } else {
         // Si ya existe, verificar que tenga la contraseña correcta
@@ -44,10 +32,6 @@ function initializeUsers() {
             localStorage.setItem('appUsers', JSON.stringify(users));
             console.log('✅ Contraseña del admin actualizada.');
         }
-=======
-        // Mensaje para configuración inicial
-        console.log('ℹ️ Usuario admin creado con contraseña temporal. Requiere configuración inicial.');
->>>>>>> f7ae8cc434af35caefeefe6387da3f90c46c93f0
     }
 }
 
@@ -102,289 +86,274 @@ function login(username, password) {
                 status: user.status,
                 loginTime: new Date().toISOString()
             };
+            
             localStorage.setItem('currentUser', JSON.stringify(userSession));
-            return { success: true, user: userSession };
+            
+            return {
+                success: true,
+                user: userSession
+            };
         }
-        
-        return {
-            success: false,
-            message: '🚫 Acceso denegado\n\nContacta al administrador.'
-        };
-    } else {
-        return { success: false, message: 'Usuario o contraseña incorrectos' };
     }
+    
+    return {
+        success: false,
+        message: '❌ Credenciales incorrectas\n\nVerifica tu nombre de usuario/email y contraseña.'
+    };
 }
 
-// Función para registrar nuevo usuario - CON APROBACIÓN
-function register(username, email, password, establecimiento, cargo) {
+// Función para registro de usuarios pendientes de aprobación
+function register(username, email, password, nombreCompleto) {
     const users = getUsers();
     
-    // Verificar si el usuario ya existe
-    if (users.find(u => u.username === username)) {
-        return { success: false, message: 'El nombre de usuario ya existe' };
+    // Verificar si el email ya existe
+    const existingUser = users.find(u => u.email === email);
+    if (existingUser) {
+        return {
+            success: false,
+            message: '⚠️ Email ya registrado\n\nEste email ya está en uso. Si tienes problemas, contacta al administrador.'
+        };
     }
     
-    if (users.find(u => u.email === email)) {
-        return { success: false, message: 'El email ya está registrado' };
+    // Verificar si el username ya existe
+    const existingUsername = users.find(u => u.username === username);
+    if (existingUsername) {
+        return {
+            success: false,
+            message: '⚠️ Nombre de usuario no disponible\n\nEste nombre de usuario ya está en uso. Prueba con otro.'
+        };
     }
     
-    // Validar dominio de email
-    const allowedDomains = ['@slepiquique.cl', '@slepiqq.cl'];
-    const isValidDomain = allowedDomains.some(domain => email.toLowerCase().endsWith(domain));
-    
-    if (!isValidDomain) {
-        return { success: false, message: 'Solo se permiten emails institucionales' };
-    }
-    
-    // Agregar nuevo usuario con estado pendiente
-    const newUser = { 
-        username, 
-        email, 
-        password, 
-        establecimiento: establecimiento || 'No especificado',
-        cargo: cargo || 'No especificado',
+    // Crear nuevo usuario pendiente
+    const newUser = {
+        username: username,
+        email: email,
+        password: password,
+        nombreCompleto: nombreCompleto,
         status: 'pendiente',
-        registrationDate: new Date().toISOString()
+        fechaRegistro: new Date().toISOString(),
+        fechaUltimaActividad: new Date().toISOString()
     };
+    
     users.push(newUser);
     saveUsers(users);
     
-    return { success: true, message: 'Usuario registrado exitosamente. Pendiente de aprobación.' };
+    return {
+        success: true,
+        message: '✅ Registro exitoso\n\nTu cuenta ha sido creada y está pendiente de aprobación.\nRecibirás acceso cuando el administrador la apruebe.'
+    };
 }
 
-// Función para cerrar sesión
+// Función para hacer logout
 function logout() {
     localStorage.removeItem('currentUser');
-    updateUIForLoggedOutUser();
-    showAlert('Sesión cerrada exitosamente', 'success');
+    // Cerrar también la sesión de seguridad del proyecto
+    if (window.projectSecurity) {
+        window.projectSecurity.logout();
+    }
+    window.location.href = 'login.html';
 }
 
-// Funciones para mostrar/ocultar modales
-function showLoginModal() {
-    document.getElementById('loginModal').style.display = 'block';
-}
-
-function hideLoginModal() {
-    document.getElementById('loginModal').style.display = 'none';
-}
-
-function showRegisterModal() {
-    document.getElementById('registerModal').style.display = 'block';
-}
-
-function hideRegisterModal() {
-    document.getElementById('registerModal').style.display = 'none';
-}
-
-// Función para mostrar alertas
-function showAlert(message, type = 'success') {
-    // Remover alertas existentes
-    const existingAlerts = document.querySelectorAll('.alert');
-    existingAlerts.forEach(alert => alert.remove());
-    
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type}`;
-    alertDiv.textContent = message;
-    
-    // Insertar al inicio del container
-    const container = document.querySelector('.container');
-    container.insertBefore(alertDiv, container.firstChild);
-    
-    // Remover después de 3 segundos
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 3000);
-}
-
-// Actualizar UI para usuario logueado
-function updateUIForLoggedInUser(user) {
-    document.getElementById('loginBtn').style.display = 'none';
-    document.getElementById('userInfo').style.display = 'inline';
-    document.getElementById('userInfo').textContent = `Hola, ${user.username}`;
-    document.getElementById('userInfo').classList.add('user-logged');
-    document.getElementById('logoutBtn').style.display = 'inline';
-}
-
-// Actualizar UI para usuario no logueado
-function updateUIForLoggedOutUser() {
-    document.getElementById('loginBtn').style.display = 'inline';
-    document.getElementById('userInfo').style.display = 'none';
-    document.getElementById('logoutBtn').style.display = 'none';
-}
-
-// Event listeners cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar sistema
-    initializeUsers();
-    
-    // Verificar si hay usuario logueado
+// Función para verificar y mostrar info del usuario
+function checkUserSession() {
     const currentUser = getCurrentUser();
     if (currentUser) {
-        updateUIForLoggedInUser(currentUser);
+        updateUserInfo(currentUser);
+    }
+}
+
+// Actualizar información del usuario en la interfaz
+function updateUserInfo(user) {
+    const userInfoElement = document.getElementById('userInfo');
+    const welcomeElement = document.getElementById('welcomeMessage');
+    
+    if (userInfoElement) {
+        userInfoElement.textContent = user.username;
     }
     
-    // Event listeners para botones de navegación
-    document.getElementById('loginBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-        showLoginModal();
-    });
-    
-    document.getElementById('logoutBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-        logout();
-    });
-    
-    // Event listeners para mostrar registro
-    document.getElementById('showRegister').addEventListener('click', function(e) {
-        e.preventDefault();
-        hideLoginModal();
-        showRegisterModal();
-    });
-    
-    document.getElementById('showLogin').addEventListener('click', function(e) {
-        e.preventDefault();
-        hideRegisterModal();
-        showLoginModal();
-    });
-    
-    // Event listeners para cerrar modales
-    document.querySelectorAll('.close').forEach(closeBtn => {
-        closeBtn.addEventListener('click', function() {
-            hideLoginModal();
-            hideRegisterModal();
+    if (welcomeElement) {
+        let welcomeText = `Bienvenido, ${user.username}`;
+        if (user.status === 'admin') {
+            welcomeText += ' (Administrador)';
+        }
+        welcomeElement.textContent = welcomeText;
+    }
+}
+
+// Configurar logout button
+function setupLogoutButton() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
         });
-    });
+    }
+}
+
+// Función para redireccionar si no está logueado
+function requireLogin() {
+    if (!isUserLoggedIn()) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    return true;
+}
+
+// Función para verificar si es admin
+function isAdmin() {
+    const currentUser = getCurrentUser();
+    return currentUser && currentUser.status === 'admin';
+}
+
+// Función para requerir permisos de admin
+function requireAdmin() {
+    if (!isAdmin()) {
+        alert('⚠️ Acceso denegado\n\nEsta sección requiere permisos de administrador.');
+        window.location.href = 'index.html';
+        return false;
+    }
+    return true;
+}
+
+// Función para mostrar/ocultar contraseña
+function togglePasswordVisibility(inputId, toggleId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(toggleId);
     
-    // Cerrar modal al hacer click fuera
-    window.addEventListener('click', function(e) {
-        const loginModal = document.getElementById('loginModal');
-        const registerModal = document.getElementById('registerModal');
-        
-        if (e.target === loginModal) {
-            hideLoginModal();
-        }
-        if (e.target === registerModal) {
-            hideRegisterModal();
-        }
-    });
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+        `;
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+        `;
+    }
+}
+
+// Inicialización del sistema al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar usuarios (crear admin si no existe)
+    initializeUsers();
     
-    // Form de login
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
-        if (!username || !password) {
-            showAlert('Por favor completa todos los campos', 'error');
-            return;
-        }
-        
-        const result = login(username, password);
-        
-        if (result.success) {
-            hideLoginModal();
-            updateUIForLoggedInUser(result.user);
-            showAlert(`¡Bienvenido, ${result.user.username}!`, 'success');
-            
-            // Limpiar formulario
-            document.getElementById('loginForm').reset();
-        } else {
-            showAlert(result.message, 'error');
-        }
-    });
+    // Verificar sesión de usuario
+    checkUserSession();
     
-    // Form de registro
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const username = document.getElementById('newUsername').value;
-        const email = document.getElementById('newEmail').value;
-        const password = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        
-        // Validaciones
-        if (!username || !email || !password || !confirmPassword) {
-            showAlert('Por favor completa todos los campos', 'error');
-            return;
-        }
-        
-        if (password !== confirmPassword) {
-            showAlert('Las contraseñas no coinciden', 'error');
-            return;
-        }
-        
-        if (password.length < 6) {
-            showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
-            return;
-        }
-        
-        const result = register(username, email, password);
-        
-        if (result.success) {
-            hideRegisterModal();
-            showAlert(result.message, 'success');
+    // Configurar botón de logout
+    setupLogoutButton();
+    
+    // Configurar login form si existe
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Limpiar formulario
-            document.getElementById('registerForm').reset();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
             
-            // Mostrar modal de login
-            setTimeout(() => {
-                showLoginModal();
-            }, 1000);
-        } else {
-            showAlert(result.message, 'error');
-        }
-    });
+            if (!username || !password) {
+                alert('⚠️ Campos requeridos\n\nPor favor, completa todos los campos.');
+                return;
+            }
+            
+            const result = login(username, password);
+            
+            if (result.success) {
+                // Verificar también la autenticación de seguridad del proyecto
+                if (window.projectSecurity && !window.projectSecurity.checkAuthentication()) {
+                    // Si necesita autenticación adicional, mostrar prompt
+                    window.projectSecurity.showMasterPasswordPrompt();
+                } else {
+                    // Redirigir al dashboard principal
+                    window.location.href = 'index.html';
+                }
+            } else {
+                alert(result.message);
+            }
+        });
+    }
+    
+    // Configurar register form si existe
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const nombreCompleto = document.getElementById('regNombreCompleto').value.trim();
+            
+            // Validaciones
+            if (!username || !email || !password || !confirmPassword || !nombreCompleto) {
+                alert('⚠️ Campos requeridos\n\nPor favor, completa todos los campos.');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('⚠️ Contraseñas no coinciden\n\nVerifica que las contraseñas sean iguales.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('⚠️ Contraseña muy corta\n\nLa contraseña debe tener al menos 6 caracteres.');
+                return;
+            }
+            
+            const result = register(username, email, password, nombreCompleto);
+            alert(result.message);
+            
+            if (result.success) {
+                // Limpiar formulario
+                registerForm.reset();
+                // Opcional: redirigir al login
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        });
+    }
+    
+    // Configurar toggles de contraseña
+    const passwordToggle = document.getElementById('passwordToggle');
+    if (passwordToggle) {
+        passwordToggle.addEventListener('click', () => togglePasswordVisibility('password', 'passwordToggle'));
+    }
+    
+    const regPasswordToggle = document.getElementById('regPasswordToggle');
+    if (regPasswordToggle) {
+        regPasswordToggle.addEventListener('click', () => togglePasswordVisibility('regPassword', 'regPasswordToggle'));
+    }
+    
+    const regConfirmPasswordToggle = document.getElementById('regConfirmPasswordToggle');
+    if (regConfirmPasswordToggle) {
+        regConfirmPasswordToggle.addEventListener('click', () => togglePasswordVisibility('regConfirmPassword', 'regConfirmPasswordToggle'));
+    }
 });
 
-// Función para debug - mostrar usuarios registrados (solo para desarrollo)
-function showRegisteredUsers() {
-    const users = getUsers();
-    console.log('Usuarios registrados:');
-    users.forEach(user => {
-        console.log(`Username: ${user.username}, Email: ${user.email}`);
-    });
-}
-
-// Función para limpiar todos los datos (solo para desarrollo)
-function clearAllData() {
-    localStorage.removeItem('appUsers');
-    localStorage.removeItem('currentUser');
-    location.reload();
-}
-
-// Función para resetear admin con contraseña correcta (solo para desarrollo)
-function resetAdminPassword() {
-    const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+// Función para protección automática en páginas que requieren login
+function autoProtectPage() {
+    const protectedPages = ['index.html', 'admin-usuarios.html', 'establecimiento.html', 'asistencia.html', 'documentos.html'];
+    const currentPage = window.location.pathname.split('/').pop();
     
-    // Buscar y actualizar admin
-    const adminIndex = users.findIndex(u => u.email === 'francisco.ramos@slepiquique.cl');
-    if (adminIndex !== -1) {
-        users[adminIndex].password = '13Jul1993';
-        localStorage.setItem('appUsers', JSON.stringify(users));
-        console.log('✅ Contraseña del admin actualizada a: 13Jul1993');
-    } else {
-        // Si no existe, crear admin
-        const newAdmin = {
-            username: 'francisco.ramos',
-            email: 'francisco.ramos@slepiquique.cl',
-            password: '13Jul1993',
-            status: 'admin'
-        };
-        users.push(newAdmin);
-        localStorage.setItem('appUsers', JSON.stringify(users));
-        console.log('✅ Usuario admin creado con contraseña: 13Jul1993');
+    if (protectedPages.includes(currentPage)) {
+        if (!requireLogin()) {
+            return false;
+        }
     }
+    
+    return true;
 }
 
-// Exportar funciones para uso en otras páginas
-window.authSystem = {
-    isUserLoggedIn,
-    getCurrentUser,
-    logout,
-    showAlert
-};
-
-// Inicializar usuarios al cargar el script
-initializeUsers();
+// Auto-proteger páginas al cargar
+document.addEventListener('DOMContentLoaded', autoProtectPage);
