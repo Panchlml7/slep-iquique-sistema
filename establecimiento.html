@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Establecimientos - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/establecimiento.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Establecimientos</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link" id="userInfo"></a>
+                <a href="#" class="nav-link" id="logoutBtn">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="establishments-container">
+        <div class="page-header">
+            <h1>🏫 Gestión de Establecimientos</h1>
+            <p>Administra la información de todos los establecimientos del SLEP Iquique</p>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEstablishments">0</div>
+                <div class="stat-label">Total Establecimientos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalDirectors">0</div>
+                <div class="stat-label">Jardines Infantiles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeEstablishments">0</div>
+                <div class="stat-label">Escuelas Básicas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalLiceos">0</div>
+                <div class="stat-label">Liceos</div>
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="controls-section">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar por tipo, RBD, nombre, comuna, dirección o correo...">
+            </div>
+        </div>
+
+        <!-- Tabla de establecimientos -->
+        <div class="table-container">
+            <table class="establishments-table">
+                <thead>
+                    <tr>
+                        <th>TIPO</th>
+                        <th>RBD</th>
+                        <th>NOMBRE ESTABLECIMIENTO</th>
+                        <th>COBERTURA</th>
+                        <th>COMUNA</th>
+                        <th>DIRECCIÓN</th>
+                        <th>CONTACTO</th>
+                    </tr>
+                </thead>
+                <tbody id="establishmentsTableBody">
+                    <!-- Los datos se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Datos reales de establecimientos del SLEP Iquique (ordenados por RBD)
+        const sampleEstablishments = [
+            // Liceos (RBD más bajos)
+            { tipo: "Liceo", rbd: "97-3", nombre: "Instituto Comercial de Iquique Baldomero Wolnitzky", cobertura: "1° medio a 4° medio", comuna: "Iquique", direccion: "Aníbal Pinto N°1255", telefono: "572544805", correo: "icomercial@slepiquique.cl" },
+            
+            // Escuelas (RBD 100-199)
+            { tipo: "Escuela", rbd: "102-3", nombre: "Escuela Educación Especial Flor del Inca", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "Pedro Aguirre Cerda N°2098", telefono: "572544781", correo: "eflordelinca@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "103-1", nombre: "Escuela Educación General Básica y Desarrollo Artístico Violeta Parra", cobertura: "1° básico a 4° medio", comuna: "Iquique", direccion: "Orella N°1820", telefono: "572544789", correo: "vparra@slepiquique.cl" },
+            { tipo: "Liceo", rbd: "105-8", nombre: "Centro de Capacitación Laboral", cobertura: "Laboral 1 a Laboral 3", comuna: "Iquique", direccion: "Avda. Francisco Vergara N°2877", telefono: "572544777", correo: "centrocapacitacion@slepiquique.cl" },
+            { tipo: "Liceo", rbd: "107-4", nombre: "Liceo Libertador General Bernardo O´Higgins", cobertura: "7° básico a 4° medio", comuna: "Iquique", direccion: "Baquedano N°1200", telefono: "572544813", correo: "lbohiggins@slepiquique.cl" },
+            { tipo: "Liceo", rbd: "108-2", nombre: "Liceo Politécnico José Gutiérrez de la Fuente", cobertura: "1° medio a 4° medio", comuna: "Iquique", direccion: "Avda. Arturo Prat con Libertad S/N", telefono: "572544821", correo: "politecnico@slepiquique.cl" },
+            { tipo: "Liceo", rbd: "109-0", nombre: "Liceo Deportivo Técnico Profesional Elena Duvauchelle Cabezón", cobertura: "1° básico a 4° medio", comuna: "Iquique", direccion: "Aníbal Pinto N°955", telefono: "572544821", correo: "codetp@slepiquique.cl" },
+            { tipo: "Liceo", rbd: "110-4", nombre: "Liceo Bicentenario Domingo Santa María de Iquique", cobertura: "NT1 a 4° medio", comuna: "Iquique", direccion: "Vicente Zegers N°818", telefono: "572573478", correo: "lbdsm@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "111-2", nombre: "Escuela Gabriela Mistral", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "Libertad N°1525", telefono: "572544749", correo: "egmistral@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "112-0", nombre: "Escuela Eduardo Llanos", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "Genaro Gallo N°527", telefono: "572544843", correo: "eellanos@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "113-9", nombre: "Escuela Almirante Patricio Lynch", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "Genaro Gallo N°2408", telefono: "572544849", correo: "plynch@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "114-7", nombre: "Escuela Placido Villarroel", cobertura: "NT2 a 8° básico", comuna: "Iquique", direccion: "Arturo Fernández N°1260", telefono: "572544753", correo: "epvillarroel@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "116-3", nombre: "Colegio Republica De Croacia", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "Avda. Salvador Allende N°1890", telefono: "572547527", correo: "croacia@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "117-1", nombre: "Escuela Paula Jaraquemada Alquizar", cobertura: "Nivel Medio Mayor a 8° Básico", comuna: "Iquique", direccion: "Orella N°960", telefono: "572544761", correo: "paulajaraquemada@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "119-8", nombre: "Escuela Centenario", cobertura: "Nivel Medio Mayor a 8° Básico", comuna: "Iquique", direccion: "Ignacio Serrano N°998", telefono: "572544765", correo: "ecentenario@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "122-8", nombre: "Escuela Thilda Portillo Olivares", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "Las Magnolias N°1843", telefono: "572544853", correo: "etportillo@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "123-6", nombre: "Colegio España", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "El Monte S/N con Cerro Dragón", telefono: "572544853", correo: "espana@slepiquique.cl" },
+            { tipo: "Liceo", rbd: "124-4", nombre: "Liceo Luis Cruz Martínez", cobertura: "1° medio a 4° medio", comuna: "Iquique", direccion: "Anker Nielsen N°2250", telefono: "572544821", correo: "llcm@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "125-2", nombre: "Escuela Profesor Manuel Castro Ramos", cobertura: "NT1 a 4° medio", comuna: "Iquique", direccion: "Manuel Castro Ramos N°2188", telefono: "572544785", correo: "castroramos@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "126-0", nombre: "Colegio Republica De Italia", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "Avda. Rancagua N°2958", telefono: "572544793", correo: "italia@slepiquique.cl" },
+            
+            // Escuelas (RBD 10000+)
+            { tipo: "Escuela", rbd: "10916-9", nombre: "Escuela Caleta Chanavayita", cobertura: "NT2 a 8° básico", comuna: "Iquique", direccion: "Caleta Chanavayita S/N", telefono: "", correo: "echanavayita@slepiquique.cl" },
+            { tipo: "Liceo", rbd: "10917-7", nombre: "Liceo Bicentenario S.S. Juan Pablo Segundo", cobertura: "7° básico a 4° medio", comuna: "Alto Hospicio", direccion: "El Salitre N°3397", telefono: "572216545", correo: "lbmjp@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "12538-5", nombre: "Escuela Chipana", cobertura: "Nivel Medio Mayor a 8° Básico", comuna: "Iquique", direccion: "Los Algarrobos N°3416", telefono: "572544737", correo: "chipana@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "12542-3", nombre: "Escuela Caleta San Marcos", cobertura: "NT1 a 8° Básico", comuna: "Iquique", direccion: "Caleta San Marcos S/N", telefono: "", correo: "esmarcos@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "12632-2", nombre: "Colegio Simón Bolívar", cobertura: "NT1 a 4° medio , EPJA N 3 B a EPJA N 3 M y Laboral 1 a Laboral 3", comuna: "Alto Hospicio", direccion: "Alfonsina Storni 4004", telefono: "572583287", correo: "sbolivar@slepiquique.cl" },
+            { tipo: "Escuela", rbd: "12739-6", nombre: "Escuela Especial de Lenguaje Oasis del Saber", cobertura: "Nivel Medio Mayor a NT2", comuna: "Alto Hospicio", direccion: "Avda. Teniente Hernán Merino Correa N°3895", telefono: "572583224", correo: "eoasis@slepiquique.cl" },
+            { tipo: "Liceo", rbd: "12758-2", nombre: "Liceo C.E.I.A. José Alejandro Soria Varas", cobertura: "EPJA N 1 B a EPJA N 3 M", comuna: "Iquique", direccion: "Avda. Salvador Allende N°1659", telefono: "572544837", correo: "ceia@slepiquique.cl" },
+            
+            // Jardines Infantiles (RBD 33000+)
+            { tipo: "Jardín", rbd: "33015-9", nombre: "Carita de Sol", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Avda. Los Álamos N°2810", telefono: "", correo: "Ji.CaritadeSol@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33019-1", nombre: "Oasis Del Saber", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Avda. Los Aromos N°3895", telefono: "", correo: "Ji.OasisdelSaber@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33020-5", nombre: "Intina Wawapa", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Las Frutillas N°2890", telefono: "", correo: "Ji.IntinaWawapa@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33021-3", nombre: "Los Naranjos", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Los Naranjos N°3389", telefono: "", correo: "Ji.LosNaranjos@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33022-1", nombre: "Tortuguitas", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Avda. La Pampa N° 3624", telefono: "", correo: "Ji.Tortuguitas@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33024-8", nombre: "Arumanti", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Los Nogales N°3017", telefono: "", correo: "Ji.Arumanti@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33025-6", nombre: "Lucerito Dorado", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Lenka Franulic N°4406", telefono: "", correo: "Ji.LuceritoDorado@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33026-4", nombre: "Aventuras de Aprender", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Pje. Bélgica N°3111", telefono: "", correo: "Ji.AventuradeAprender@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33027-2", nombre: "Arcoíris del Desierto", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Pasaje Nicaragua N°4135", telefono: "", correo: "Ji.ArcoirisdelDesierto@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33028-0", nombre: "Magia de Aprender", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Avda. Jericó 2326", telefono: "", correo: "Ji.MagiadeAprender@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "33030-2", nombre: "Mi Pequeño Mundo", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "El Mirador N°3697", telefono: "", correo: "Ji.MiPequenoMundo@slepiquique.cl" },
+            { tipo: "Jardín", rbd: "35987-4", nombre: "Suma Inti", cobertura: "Sala Cuna Menor a Nivel Medio Mayor", comuna: "Alto Hospicio", direccion: "Calle La Serena N°4450", telefono: "", correo: "Ji.SumaInti@slepiquique.cl" },
+            
+            // Liceos con RBD altos
+            { tipo: "Liceo", rbd: "40429-2", nombre: "Liceo Técnico Profesional de Adultos", cobertura: "EPJA N 3 B a EPJA N 3 M", comuna: "Iquique", direccion: "Avda. Arturo Prat con Libertad S/N", telefono: "572544821", correo: "ltpa@slepiquique.cl" }
+        ];
+
+        // Cargar establecimientos al iniciar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEstablishments();
+            updateStats();
+            setupSearch();
+        });
+
+        function loadEstablishments(establishments = sampleEstablishments) {
+            const tableBody = document.getElementById('establishmentsTableBody');
+            tableBody.innerHTML = '';
+
+            establishments.forEach((est, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <span class="type-badge type-${est.tipo.toLowerCase()}">${est.tipo}</span>
+                    </td>
+                    <td>
+                        <span class="rbd-code">${est.rbd}</span>
+                    </td>
+                    <td>
+                        <div class="establishment-name">${est.nombre}</div>
+                    </td>
+                    <td>
+                        <div class="cobertura-info">${est.cobertura}</div>
+                    </td>
+                    <td>
+                        <div class="comuna-info">${est.comuna}</div>
+                    </td>
+                    <td>
+                        <div class="address">${est.direccion}</div>
+                    </td>
+                    <td>
+                        <div class="contact-info">
+                            ${est.telefono ? `<div class="phone">📞 ${est.telefono}</div>` : ''}
+                            <div class="email">📧 ${est.correo}</div>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function updateStats() {
+            const jardines = sampleEstablishments.filter(est => est.tipo === 'Jardín').length;
+            const escuelas = sampleEstablishments.filter(est => est.tipo === 'Escuela').length;
+            const liceos = sampleEstablishments.filter(est => est.tipo === 'Liceo').length;
+            
+            document.getElementById('totalEstablishments').textContent = sampleEstablishments.length;
+            document.getElementById('totalDirectors').textContent = jardines;
+            document.getElementById('activeEstablishments').textContent = escuelas;
+            document.getElementById('totalLiceos').textContent = liceos;
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filteredEstablishments = sampleEstablishments.filter(est => 
+                    est.tipo.toLowerCase().includes(searchTerm) ||
+                    est.rbd.toLowerCase().includes(searchTerm) ||
+                    est.nombre.toLowerCase().includes(searchTerm) ||
+                    est.cobertura.toLowerCase().includes(searchTerm) ||
+                    est.comuna.toLowerCase().includes(searchTerm) ||
+                    est.direccion.toLowerCase().includes(searchTerm) ||
+                    est.correo.toLowerCase().includes(searchTerm)
+                );
+                loadEstablishments(filteredEstablishments);
+            });
+        }
+    </script>
+
+    <script src="js/login.js"></script>
+    <script>
+        // Actualizar interfaz de usuario para establecimientos
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInterface();
+        });
+
+        function updateUserInterface() {
+            const currentUser = localStorage.getItem('currentUser');
+            const userInfo = document.getElementById('userInfo');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (userInfo) {
+                    userInfo.style.display = 'block';
+                    userInfo.textContent = `Hola, ${user.username}`;
+                }
+                if (logoutBtn) {
+                    logoutBtn.style.display = 'block';
+                    logoutBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        logout();
+                    });
+                }
+            } else {
+                if (userInfo) userInfo.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

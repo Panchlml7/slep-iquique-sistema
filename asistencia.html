@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencia - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/asistencia.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Asistencia</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link" id="userInfo"></a>
+                <a href="#" class="nav-link" id="logoutBtn">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <a href="index.html" class="back-btn">← Volver al Menú Principal</a>
+        
+        <header class="header">
+            <h1>Registro de Asistencia</h1>
+            <p id="welcomeMessage">Panel de control de asistencia y estadísticas</p>
+        </header>
+
+        <!-- Contenido de asistencia se agregará aquí -->
+        
+        <!-- Tabla de datos de asistencia desde Excel -->
+        <div class="asistencia-data-section">
+            <div class="data-header">
+                <h2>📊 Datos de Asistencia</h2>
+                <p id="lastUpdateInfo">Datos cargados por el administrador</p>
+                <button class="btn-refresh" onclick="loadAsistenciaData()">
+                    🔄 Actualizar Datos
+                </button>
+            </div>
+            
+            <div class="filters-section">
+                <input type="text" id="searchFilter" placeholder="🔍 Buscar en los datos..." class="search-input">
+                <button class="btn-export-csv" onclick="exportToCSV()">
+                    📋 Exportar CSV
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <div id="noDataMessage" class="no-data-message" style="display: none;">
+                    <div class="no-data-icon">📭</div>
+                    <h3>No hay datos de asistencia</h3>
+                    <p>El administrador debe subir un archivo Excel en el módulo de Administración.</p>
+                </div>
+                
+                <table id="asistenciaTable" class="asistencia-table" style="display: none;">
+                    <thead id="tableHeaders">
+                        <!-- Los headers se generarán dinámicamente -->
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination-section" id="paginationSection" style="display: none;">
+                <button class="btn-page" onclick="previousPage()">« Anterior</button>
+                <span id="pageInfo">Página 1 de 1</span>
+                <button class="btn-page" onclick="nextPage()">Siguiente »</button>
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="js/login.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        let allAsistenciaData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const recordsPerPage = 20;
+
+        // Cargar datos al iniciar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAsistenciaData();
+            setupSearch();
+        });
+
+        function loadAsistenciaData() {
+            console.log('📊 Cargando datos de asistencia...');
+            
+            // Intentar cargar datos normales primero
+            let savedData = localStorage.getItem('asistenciaData');
+            let lastUpdate = localStorage.getItem('asistenciaLastUpdate');
+            
+            // Si no hay datos normales, intentar cargar fragmentos
+            if (!savedData) {
+                const fragmentedData = loadDataFromChunks();
+                if (fragmentedData && fragmentedData.length > 0) {
+                    allAsistenciaData = fragmentedData;
+                    filteredData = [...allAsistenciaData];
+                    
+                    updateLastUpdateInfo(lastUpdate);
+                    displayData();
+                    
+                    console.log(`✅ ${allAsistenciaData.length} registros cargados desde fragmentos`);
+                    return;
+                }
+            }
+            
+            if (savedData) {
+                try {
+                    allAsistenciaData = JSON.parse(savedData);
+                    filteredData = [...allAsistenciaData];
+                    
+                    updateLastUpdateInfo(lastUpdate);
+                    displayData();
+                    
+                    console.log(`✅ ${allAsistenciaData.length} registros cargados`);
+                } catch (error) {
+                    console.error('❌ Error cargando datos:', error);
+                    showNoData();
+                }
+            } else {
+                showNoData();
+                console.log('📭 No hay datos de asistencia disponibles');
+            }
+        }
+
+        function loadDataFromChunks() {
+            const chunkCount = parseInt(localStorage.getItem('asistenciaChunkCount') || '0');
+            
+            if (chunkCount === 0) {
+                return null;
+            }
+            
+            console.log(`📦 Cargando datos de ${chunkCount} fragmentos...`);
+            
+            const allData = [];
+            
+            for (let i = 0; i < chunkCount; i++) {
+                const chunkData = localStorage.getItem(`asistenciaChunk_${i}`);
+                if (chunkData) {
+                    try {
+                        const chunk = JSON.parse(chunkData);
+                        allData.push(...chunk);
+                    } catch (error) {
+                        console.error(`❌ Error cargando fragmento ${i}:`, error);
+                    }
+                }
+            }
+            
+            return allData.length > 0 ? allData : null;
+        }
+
+        function updateLastUpdateInfo(lastUpdate) {
+            const lastUpdateInfo = document.getElementById('lastUpdateInfo');
+            const totalRecords = localStorage.getItem('asistenciaTotalRecords');
+            const chunkCount = localStorage.getItem('asistenciaChunkCount');
+            
+            if (lastUpdate) {
+                const updateDate = new Date(lastUpdate);
+                let infoText = `Última actualización: ${updateDate.toLocaleString('es-CL')}`;
+                
+                // Mostrar información de fragmentación si aplica
+                if (chunkCount && parseInt(chunkCount) > 0) {
+                    infoText += ` | Datos fragmentados en ${chunkCount} partes`;
+                }
+                
+                if (totalRecords) {
+                    infoText += ` | Total: ${totalRecords} registros`;
+                }
+                
+                lastUpdateInfo.textContent = infoText;
+            }
+        }
+
+        function showNoData() {
+            document.getElementById('noDataMessage').style.display = 'block';
+            document.getElementById('asistenciaTable').style.display = 'none';
+            document.getElementById('paginationSection').style.display = 'none';
+        }
+
+        function displayData() {
+            if (filteredData.length === 0) {
+                showNoData();
+                return;
+            }
+
+            document.getElementById('noDataMessage').style.display = 'none';
+            document.getElementById('asistenciaTable').style.display = 'table';
+            
+            generateTableHeaders();
+            generateTableBody();
+            setupPagination();
+        }
+
+        function generateTableHeaders() {
+            const headersRow = document.getElementById('tableHeaders');
+            headersRow.innerHTML = '';
+
+            if (filteredData.length > 0) {
+                const headers = Object.keys(filteredData[0]).filter(key => 
+                    key !== 'procesadoEn' && key !== 'id'
+                );
+
+                const headerRow = document.createElement('tr');
+                headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = formatHeaderName(header);
+                    headerRow.appendChild(th);
+                });
+                headersRow.appendChild(headerRow);
+            }
+        }
+
+        function formatHeaderName(header) {
+            return header
+                .replace(/([a-z])([A-Z])/g, '$1 $2')
+                .replace(/^./, str => str.toUpperCase())
+                .replace(/_/g, ' ');
+        }
+
+        function generateTableBody() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * recordsPerPage;
+            const endIndex = startIndex + recordsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            pageData.forEach(record => {
+                const row = document.createElement('tr');
+                
+                Object.keys(record).forEach(key => {
+                    if (key !== 'procesadoEn' && key !== 'id') {
+                        const td = document.createElement('td');
+                        td.textContent = formatCellValue(record[key]);
+                        row.appendChild(td);
+                    }
+                });
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function formatCellValue(value) {
+            if (value === null || value === undefined) {
+                return '-';
+            }
+            
+            // Formatear fechas
+            if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}/)) {
+                try {
+                    return new Date(value).toLocaleDateString('es-CL');
+                } catch (e) {
+                    return value;
+                }
+            }
+            
+            return value.toString();
+        }
+
+        function setupPagination() {
+            const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+            const paginationSection = document.getElementById('paginationSection');
+            const pageInfo = document.getElementById('pageInfo');
+            
+            if (totalPages > 1) {
+                paginationSection.style.display = 'flex';
+                pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+                
+                // Actualizar botones
+                const prevBtn = paginationSection.querySelector('.btn-page:first-child');
+                const nextBtn = paginationSection.querySelector('.btn-page:last-child');
+                
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+            } else {
+                paginationSection.style.display = 'none';
+            }
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchFilter');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                if (searchTerm === '') {
+                    filteredData = [...allAsistenciaData];
+                } else {
+                    filteredData = allAsistenciaData.filter(record => {
+                        return Object.values(record).some(value => {
+                            if (value === null || value === undefined) return false;
+                            return value.toString().toLowerCase().includes(searchTerm);
+                        });
+                    });
+                }
+                
+                currentPage = 1;
+                displayData();
+            });
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                generateTableBody();
+                setupPagination();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                generateTableBody();
+                setupPagination();
+            }
+        }
+
+        function exportToCSV() {
+            if (filteredData.length === 0) {
+                alert('❌ No hay datos para exportar');
+                return;
+            }
+
+            const headers = Object.keys(filteredData[0]).filter(key => 
+                key !== 'procesadoEn' && key !== 'id'
+            );
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += headers.map(header => formatHeaderName(header)).join(",") + "\n";
+
+            filteredData.forEach(record => {
+                const row = headers.map(header => {
+                    const value = record[header];
+                    if (value === null || value === undefined) return '';
+                    
+                    const stringValue = value.toString();
+                    // Escapar comillas y agregar comillas si contiene comas
+                    if (stringValue.includes(',') || stringValue.includes('"')) {
+                        return `"${stringValue.replace(/"/g, '""')}"`;
+                    }
+                    return stringValue;
+                });
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `asistencia_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            alert(`✅ Archivo CSV exportado con ${filteredData.length} registros`);
+        }
+    </script>
+</body>
+</html>

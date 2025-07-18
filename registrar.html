@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Registro</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="login.html" class="nav-link">Iniciar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="register-page">
+        <div class="register-container">
+            <div class="register-header">
+                <h1>🏛️ Crear Cuenta SLEP</h1>
+                <p>Registro para personal de SLEP Iquique</p>
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 10px; margin: 10px 0; color: #856404;">
+                    <strong>📋 Proceso:</strong> Tu cuenta será revisada por el administrador antes de ser aprobada.
+                </div>
+            </div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="newUsername">Usuario:</label>
+                    <input type="text" id="newUsername" name="newUsername" required placeholder="Elige un nombre de usuario">
+                </div>
+                
+                <div class="form-group">
+                    <label for="newEmail">
+                        Email Institucional:
+                        <span class="help-icon" onclick="toggleDomainInfo()" title="Ver dominios permitidos">?</span>
+                    </label>
+                    <input type="email" id="newEmail" name="newEmail" required placeholder="tu correo institucional">
+                    <small style="color: #666; font-size: 0.8rem; margin-top: 0.5rem; display: block; text-align: center;">
+                        Solo se permiten emails institucionales
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">Contraseña:</label>
+                    <div class="password-input-container">
+                        <input type="password" id="newPassword" name="newPassword" required placeholder="Crea una contraseña segura">
+                        <button type="button" class="password-toggle" onclick="togglePassword('newPassword')" aria-label="Mostrar/ocultar contraseña">
+                            <svg class="eye-icon eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-icon eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="establecimiento">Establecimiento:</label>
+                    <select id="establecimiento" name="establecimiento" required>
+                        <option value="">Selecciona tu establecimiento</option>
+                        <!-- Liceos -->
+                        <option value="Instituto Comercial de Iquique Baldomero Wolnitzky">Instituto Comercial de Iquique Baldomero Wolnitzky</option>
+                        <option value="Liceo Libertador General Bernardo O´Higgins">Liceo Libertador General Bernardo O´Higgins</option>
+                        <option value="Liceo Politécnico José Gutiérrez de la Fuente">Liceo Politécnico José Gutiérrez de la Fuente</option>
+                        <option value="Liceo Deportivo Técnico Profesional Elena Duvauchelle Cabezón">Liceo Deportivo Técnico Profesional Elena Duvauchelle Cabezón</option>
+                        <option value="Liceo Bicentenario Domingo Santa María de Iquique">Liceo Bicentenario Domingo Santa María de Iquique</option>
+                        <option value="Centro de Capacitación Laboral">Centro de Capacitación Laboral</option>
+                        <option value="Liceo Luis Cruz Martínez">Liceo Luis Cruz Martínez</option>
+                        <option value="Liceo Bicentenario S.S. Juan Pablo Segundo">Liceo Bicentenario S.S. Juan Pablo Segundo</option>
+                        <option value="Liceo C.E.I.A. José Alejandro Soria Varas">Liceo C.E.I.A. José Alejandro Soria Varas</option>
+                        <option value="Liceo Técnico Profesional de Adultos">Liceo Técnico Profesional de Adultos</option>
+                        
+                        <!-- Escuelas -->
+                        <option value="Escuela Educación Especial Flor del Inca">Escuela Educación Especial Flor del Inca</option>
+                        <option value="Escuela Educación General Básica y Desarrollo Artístico Violeta Parra">Escuela Educación General Básica y Desarrollo Artístico Violeta Parra</option>
+                        <option value="Escuela Gabriela Mistral">Escuela Gabriela Mistral</option>
+                        <option value="Escuela Eduardo Llanos">Escuela Eduardo Llanos</option>
+                        <option value="Escuela Almirante Patricio Lynch">Escuela Almirante Patricio Lynch</option>
+                        <option value="Escuela Placido Villarroel">Escuela Placido Villarroel</option>
+                        <option value="Colegio Republica De Croacia">Colegio Republica De Croacia</option>
+                        <option value="Escuela Paula Jaraquemada Alquizar">Escuela Paula Jaraquemada Alquizar</option>
+                        <option value="Escuela Centenario">Escuela Centenario</option>
+                        <option value="Escuela Thilda Portillo Olivares">Escuela Thilda Portillo Olivares</option>
+                        <option value="Colegio España">Colegio España</option>
+                        <option value="Escuela Profesor Manuel Castro Ramos">Escuela Profesor Manuel Castro Ramos</option>
+                        <option value="Colegio Republica De Italia">Colegio Republica De Italia</option>
+                        <option value="Escuela Caleta Chanavayita">Escuela Caleta Chanavayita</option>
+                        <option value="Escuela Chipana">Escuela Chipana</option>
+                        <option value="Escuela Caleta San Marcos">Escuela Caleta San Marcos</option>
+                        <option value="Colegio Simón Bolívar">Colegio Simón Bolívar</option>
+                        <option value="Escuela Especial de Lenguaje Oasis del Saber">Escuela Especial de Lenguaje Oasis del Saber</option>
+                        
+                        <!-- Jardines Infantiles -->
+                        <option value="Carita de Sol">Jardín Infantil Carita de Sol</option>
+                        <option value="Oasis Del Saber">Jardín Infantil Oasis Del Saber</option>
+                        <option value="Intina Wawapa">Jardín Infantil Intina Wawapa</option>
+                        <option value="Los Naranjos">Jardín Infantil Los Naranjos</option>
+                        <option value="Tortuguitas">Jardín Infantil Tortuguitas</option>
+                        <option value="Arumanti">Jardín Infantil Arumanti</option>
+                        <option value="Lucerito Dorado">Jardín Infantil Lucerito Dorado</option>
+                        <option value="Aventuras de Aprender">Jardín Infantil Aventuras de Aprender</option>
+                        <option value="Arcoíris del Desierto">Jardín Infantil Arcoíris del Desierto</option>
+                        <option value="Magia de Aprender">Jardín Infantil Magia de Aprender</option>
+                        <option value="Mi Pequeño Mundo">Jardín Infantil Mi Pequeño Mundo</option>
+                        <option value="Suma Inti">Jardín Infantil Suma Inti</option>
+                        
+                        <!-- SLEP Central -->
+                        <option value="SLEP Iquique - Oficina Central">SLEP Iquique - Oficina Central</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cargo">Cargo/Función:</label>
+                    <select id="cargo" name="cargo" required>
+                        <option value="">Selecciona tu cargo</option>
+                        <option value="Director/a">Director/a</option>
+                        <option value="Subdirector/a">Subdirector/a</option>
+                        <option value="Inspector/a General">Inspector/a General</option>
+                        <option value="Jefe/a UTP">Jefe/a UTP</option>
+                        <option value="Coordinador/a Académico">Coordinador/a Académico</option>
+                        <option value="Coordinador/a PIE">Coordinador/a PIE</option>
+                        <option value="Coordinador/a SEP">Coordinador/a SEP</option>
+                        <option value="Profesor/a Jefe">Profesor/a Jefe</option>
+                        <option value="Profesor/a de Asignatura">Profesor/a de Asignatura</option>
+                        <option value="Profesor/a Diferencial">Profesor/a Diferencial</option>
+                        <option value="Educador/a de Párvulos">Educador/a de Párvulos</option>
+                        <option value="Psicólogo/a">Psicólogo/a</option>
+                        <option value="Trabajador/a Social">Trabajador/a Social</option>
+                        <option value="Fonoaudiólogo/a">Fonoaudiólogo/a</option>
+                        <option value="Terapeuta Ocupacional">Terapeuta Ocupacional</option>
+                        <option value="Orientador/a">Orientador/a</option>
+                        <option value="Bibliotecario/a">Bibliotecario/a</option>
+                        <option value="Secretario/a">Secretario/a</option>
+                        <option value="Asistente de Aula">Asistente de Aula</option>
+                        <option value="Asistente de Párvulos">Asistente de Párvulos</option>
+                        <option value="Auxiliar de Servicios">Auxiliar de Servicios</option>
+                        <option value="Manipulador/a de Alimentos">Manipulador/a de Alimentos</option>
+                        <option value="Portero/a">Portero/a</option>
+                        <option value="Administrativo/a SLEP">Administrativo/a SLEP</option>
+                        <option value="Profesional SLEP">Profesional SLEP</option>
+                        <option value="Directivo SLEP">Directivo SLEP</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="otroCargoGroup" style="display: none;">
+                    <label for="otroCargo">Especifica tu cargo:</label>
+                    <input type="text" id="otroCargo" name="otroCargo" placeholder="Describe tu cargo/función">
+                </div>
+                
+                <div class="password-requirements">
+                    <strong>Requisitos de contraseña:</strong>
+                    <ul>
+                        <li>Mínimo 6 caracteres</li>
+                        <li>Al menos una letra y un número</li>
+                        <li>Sin espacios en blanco</li>
+                    </ul>
+                </div>
+                
+                <button type="submit" id="registerBtn" class="auth-btn">📝 Crear Cuenta (Pendiente Aprobación)</button>
+            </form>
+            
+            <div class="login-link">
+                ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
+            </div>
+            
+            <!-- Contenedor de alertas -->
+            <div id="alertContainer"></div>
+        </div>
+    </div>
+
+    <!-- Modal de información de dominios -->
+    <div id="domainModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📧 Dominios de Email Permitidos</h3>
+                <span class="close" onclick="toggleDomainInfo()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Solo se permiten emails institucionales:</strong></p>
+                <ul>
+                    <li>✅ @slepiquique.cl</li>
+                    <li>✅ @slepiqq.cl</li>
+                </ul>
+                <p class="note">⚠️ Los emails personales (gmail, hotmail, etc.) no están permitidos</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/login.js"></script>
+    <script src="js/resigtrar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si ya está logueado
+            if (localStorage.getItem('currentUser')) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Manejar el campo "Otro" cargo
+            document.getElementById('cargo').addEventListener('change', function() {
+                const otroCargoGroup = document.getElementById('otroCargoGroup');
+                const otroCargo = document.getElementById('otroCargo');
+                
+                if (this.value === 'Otro') {
+                    otroCargoGroup.style.display = 'block';
+                    otroCargo.required = true;
+                } else {
+                    otroCargoGroup.style.display = 'none';
+                    otroCargo.required = false;
+                    otroCargo.value = '';
+                }
+            });
+            
+            // Manejar el formulario de registro
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const registerBtn = document.getElementById('registerBtn');
+                const originalText = registerBtn.textContent;
+                registerBtn.textContent = '⏳ Creando cuenta...';
+                registerBtn.disabled = true;
+                
+                function restoreButton() {
+                    registerBtn.textContent = originalText;
+                    registerBtn.disabled = false;
+                }
+                
+                setTimeout(() => {
+                    const username = document.getElementById('newUsername').value.trim();
+                    const email = document.getElementById('newEmail').value.trim();
+                    const password = document.getElementById('newPassword').value;
+                    const establecimiento = document.getElementById('establecimiento').value;
+                    const cargo = document.getElementById('cargo').value;
+                    const otroCargo = document.getElementById('otroCargo').value.trim();
+                    
+                    // Validaciones
+                    if (!username || !email || !password || !establecimiento || !cargo) {
+                        showAlert('ERROR: Completa todos los campos obligatorios', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Validar "Otro" cargo
+                    if (cargo === 'Otro' && !otroCargo) {
+                        showAlert('ERROR: Especifica tu cargo cuando selecciones "Otro"', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Validar dominio de email
+                    const allowedDomains = ['@slepiquique.cl', '@slepiqq.cl'];
+                    const isValidDomain = allowedDomains.some(domain => email.toLowerCase().endsWith(domain));
+                    
+                    if (!isValidDomain) {
+                        showAlert('ERROR: Solo se permiten emails institucionales (@slepiquique.cl o @slepiqq.cl)', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Validar contraseña
+                    if (password.length < 6) {
+                        showAlert('ERROR: La contraseña debe tener al menos 6 caracteres', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+                        showAlert('ERROR: La contraseña debe contener al menos una letra y un número', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (/\s/.test(password)) {
+                        showAlert('ERROR: La contraseña no puede contener espacios', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Registrar usuario con estado pendiente
+                    const finalCargo = cargo === 'Otro' ? otroCargo : cargo;
+                    const result = registerWithApproval(username, email, password, establecimiento, finalCargo);
+                    
+                    if (result.success) {
+                        showAlert('✅ ÉXITO: Cuenta creada exitosamente\n\n⏳ Tu cuenta está pendiente de aprobación por el administrador.\nRecibirás acceso una vez que sea revisada.', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 4000);
+                    } else {
+                        showAlert(`ERROR: ${result.message}`, 'error');
+                        restoreButton();
+                    }
+                }, 500);
+            });
+        });
+        
+        // Función para registrar usuario con estado pendiente
+        function registerWithApproval(username, email, password, establecimiento, cargo) {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            // Verificar si el usuario ya existe
+            if (users.find(u => u.username === username)) {
+                return { success: false, message: 'El nombre de usuario ya existe' };
+            }
+            
+            if (users.find(u => u.email === email)) {
+                return { success: false, message: 'El email ya está registrado' };
+            }
+            
+            // Agregar nuevo usuario con estado pendiente
+            const newUser = { 
+                username, 
+                email, 
+                password, 
+                establecimiento,
+                cargo,
+                status: 'pendiente',
+                registrationDate: new Date().toISOString()
+            };
+            users.push(newUser);
+            
+            // Guardar usuarios
+            localStorage.setItem('appUsers', JSON.stringify(users));
+            
+            return { success: true, message: 'Usuario registrado exitosamente' };
+        }
+        
+        function toggleDomainInfo() {
+            const modal = document.getElementById('domainModal');
+            modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            
+            // Limpiar alertas previas
+            alertContainer.innerHTML = '';
+            
+            // Crear nueva alerta
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.cssText = `
+                background: ${type === 'success' ? '#d4edda' : '#f8d7da'};
+                color: ${type === 'success' ? '#155724' : '#721c24'};
+                border: 1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'};
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+                font-weight: 500;
+                white-space: pre-line;
+                text-align: center;
+            `;
+            alertDiv.textContent = message;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            // Auto-remover después de 5 segundos (solo para errores)
+            if (type === 'error') {
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            }
+        }
+        
+        // Función para mostrar/ocultar contraseña (respaldo)
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling;
+            const eyeOpen = toggle.querySelector('.eye-open');
+            const eyeClosed = toggle.querySelector('.eye-closed');
+            
+            console.log('togglePassword called for:', inputId);
+            console.log('Current input type:', input.type);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOpen.style.display = 'none';
+                eyeClosed.style.display = 'block';
+                toggle.setAttribute('aria-label', 'Ocultar contraseña');
+                console.log('Changed to text type');
+                
+                // Forzar estilos para visibilidad
+                input.style.color = '#1a202c';
+                input.style.backgroundColor = '#f7fafc';
+                input.style.fontWeight = '600';
+            } else {
+                input.type = 'password';
+                eyeOpen.style.display = 'block';
+                eyeClosed.style.display = 'none';
+                toggle.setAttribute('aria-label', 'Mostrar contraseña');
+                console.log('Changed to password type');
+                
+                // Restaurar estilos de contraseña
+                input.style.backgroundColor = '#ffffff';
+                input.style.fontWeight = '500';
+            }
+        }
+    </script>
+</body>
+</html>

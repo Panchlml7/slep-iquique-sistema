@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Estilos para notificaciones de administrador */
+        .notification-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .notification-bell {
+            cursor: pointer;
+            font-size: 1.5rem;
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .notification-panel {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 350px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+
+        .notification-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .notification-header h3 {
+            margin: 0;
+            color: #2d3748;
+            font-size: 1rem;
+        }
+
+        .close-panel {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #a0aec0;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-panel:hover {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .notification-content {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 0.5rem 0;
+        }
+
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-user {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-establishment {
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-rbd {
+            font-size: 0.75rem;
+            color: #718096;
+            background: #edf2f7;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .notification-time {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            margin-top: 0.25rem;
+        }
+
+        .notification-footer {
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .btn-admin-panel {
+            width: 100%;
+            background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-admin-panel:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
+        }
+
+        .empty-notifications {
+            padding: 2rem;
+            text-align: center;
+            color: #a0aec0;
+        }
+
+        .empty-notifications-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Sistema</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="login.html" class="nav-link" id="loginBtn">Iniciar Sesión</a>
+                <a href="#" class="nav-link" id="userInfo" style="display: none;"></a>
+                <!-- Notificaciones para administrador -->
+                <div class="notification-container" id="adminNotifications" style="display: none;">
+                    <div class="notification-bell" onclick="toggleNotificationPanel()">
+                        🔔
+                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                    </div>
+                    <div class="notification-panel" id="notificationPanel" style="display: none;">
+                        <div class="notification-header">
+                            <h3>📋 Solicitudes Pendientes</h3>
+                            <button class="close-panel" onclick="toggleNotificationPanel()">×</button>
+                        </div>
+                        <div class="notification-content" id="notificationContent">
+                            <!-- Las notificaciones se cargarán aquí -->
+                        </div>
+                        <div class="notification-footer">
+                            <button class="btn-admin-panel" onclick="goToAdmin()">Ver Panel Completo</button>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="nav-link" id="logoutBtn" style="display: none;">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <header class="header">
+            <h1>Bienvenido al Sistema</h1>
+            <p>Selecciona una opción del menú principal</p>
+        </header>
+
+        <!-- Menú principal con 4 botones -->
+        <div class="menu-grid">
+            <div class="menu-card">
+                <div class="card-icon">👤</div>
+                <h3>Asistencia</h3>
+                <p>Ver registro de asistencia y estadísticas</p>
+                <button class="btn-menu" onclick="goToAsistencia()">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">🏫</div>
+                <h3>Establecimientos</h3>
+                <p>Gestionar establecimientos del sistema</p>
+                <button class="btn-menu" onclick="showUsers()">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">📁</div>
+                <h3>Documentos</h3>
+                <p>Gestionar documentos de equipos</p>
+                <button class="btn-menu" onclick="checkLoginAndRedirect()">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">✅</div>
+                <h3>Habilitación</h3>
+                <p>Gestionar habilitaciones del sistema</p>
+                <button class="btn-menu" onclick="showHabilitacion()">Acceder</button>
+            </div>
+            
+            <!-- Panel de administración (solo para admin) -->
+            <div class="menu-card" id="adminCard" style="display: none;">
+                <div class="card-icon">⚙️</div>
+                <h3>Administración</h3>
+                <p>Gestionar usuarios y solicitudes</p>
+                <button class="btn-menu" onclick="goToAdmin()">Acceder</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mapping de establecimientos con sus RBDs
+        const establishmentRBD = {
+            "Instituto Comercial de Iquique Baldomero Wolnitzky": "97-3",
+            "Escuela Educación Especial Flor del Inca": "102-3",
+            "Escuela Educación General Básica y Desarrollo Artístico Violeta Parra": "103-1",
+            "Centro de Capacitación Laboral": "105-8",
+            "Liceo Libertador General Bernardo O´Higgins": "107-4",
+            "Liceo Politécnico José Gutiérrez de la Fuente": "108-2",
+            "Liceo Deportivo Técnico Profesional Elena Duvauchelle Cabezón": "109-0",
+            "Liceo Bicentenario Domingo Santa María de Iquique": "110-4",
+            "Escuela Gabriela Mistral": "111-2",
+            "Escuela Eduardo Llanos": "112-0",
+            "Escuela Almirante Patricio Lynch": "113-9",
+            "Escuela Placido Villarroel": "114-7",
+            "Colegio Republica De Croacia": "116-3",
+            "Escuela Paula Jaraquemada Alquizar": "117-1",
+            "Escuela Centenario": "119-8",
+            "Escuela Thilda Portillo Olivares": "122-8",
+            "Colegio España": "123-6",
+            "Liceo Luis Cruz Martínez": "124-4",
+            "Escuela Profesor Manuel Castro Ramos": "125-2",
+            "Colegio Republica De Italia": "126-0",
+            "Escuela Caleta Chanavayita": "10916-9",
+            "Liceo Bicentenario S.S. Juan Pablo Segundo": "10917-7",
+            "Escuela Chipana": "12538-5",
+            "Escuela Caleta San Marcos": "12542-3",
+            "Colegio Simón Bolívar": "12632-2",
+            "Escuela Especial de Lenguaje Oasis del Saber": "12739-6",
+            "Liceo C.E.I.A. José Alejandro Soria Varas": "12758-2",
+            "Carita de Sol": "33015-9",
+            "Oasis Del Saber": "33019-1",
+            "Intina Wawapa": "33020-5",
+            "Los Naranjos": "33021-3",
+            "Tortuguitas": "33022-1",
+            "Arumanti": "33024-8",
+            "Lucerito Dorado": "33025-6",
+            "Aventuras de Aprender": "33026-4",
+            "Arcoíris del Desierto": "33027-2",
+            "Magia de Aprender": "33028-0",
+            "Mi Pequeño Mundo": "33030-2",
+            "Suma Inti": "35987-4",
+            "Liceo Técnico Profesional de Adultos": "40429-2",
+            "SLEP Iquique - Oficina Central": "SLEP-IQQ"
+        };
+
+        // Usuario administrador autorizado - Credenciales configuradas de forma segura
+        const adminUser = {
+            username: 'francisco.ramos',
+            email: 'francisco.ramos@slepiquique.cl',
+            password: '', // Se establece durante la configuración inicial
+            status: 'admin'
+        };
+
+        // Inicializar sistema con usuario admin
+        function initializeUsers() {
+            console.log('🔧 Inicializando usuarios...');
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            // Verificar que el admin existe (debe ser configurado previamente)
+            const adminExists = users.find(u => u.email === adminUser.email);
+            if (!adminExists) {
+                console.log('⚠️ Usuario admin no encontrado. Redirigiendo a configuración...');
+                window.location.href = 'login.html';
+                return;
+            } else {
+                console.log('✅ Usuario admin configurado correctamente');
+            }
+        }
+
+        // Función para obtener RBD del establecimiento
+        function getEstablishmentRBD(establishmentName) {
+            return establishmentRBD[establishmentName] || "No disponible";
+        }
+
+        // Función para alternar el panel de notificaciones
+        function toggleNotificationPanel() {
+            const panel = document.getElementById('notificationPanel');
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'block';
+                loadNotifications();
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        // Función para cargar notificaciones
+        function loadNotifications() {
+            console.log('🔔 Cargando notificaciones...');
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const pendingUsers = users.filter(user => user.status === 'pendiente');
+            
+            console.log('📊 Usuarios pendientes encontrados:', pendingUsers.length);
+            
+            const notificationContent = document.getElementById('notificationContent');
+            const notificationBadge = document.getElementById('notificationBadge');
+            
+            if (pendingUsers.length === 0) {
+                notificationContent.innerHTML = `
+                    <div class="empty-notifications">
+                        <div class="empty-notifications-icon">✅</div>
+                        <p>No hay solicitudes pendientes</p>
+                    </div>
+                `;
+                notificationBadge.style.display = 'none';
+                console.log('✅ No hay usuarios pendientes');
+            } else {
+                notificationBadge.style.display = 'flex';
+                notificationBadge.textContent = pendingUsers.length;
+                console.log(`🔴 Mostrando badge con ${pendingUsers.length} notificaciones`);
+                
+                const notificationsHTML = pendingUsers.map(user => {
+                    const rbd = getEstablishmentRBD(user.establecimiento);
+                    const registrationDate = new Date(user.registrationDate).toLocaleDateString('es-CL');
+                    const timeAgo = getTimeAgo(user.registrationDate);
+                    
+                    return `
+                        <div class="notification-item">
+                            <div class="notification-user">👤 ${user.username}</div>
+                            <div class="notification-establishment">🏢 ${user.establecimiento || 'No especificado'}</div>
+                            <div class="notification-rbd">RBD: ${rbd}</div>
+                            <div class="notification-time">📅 ${timeAgo}</div>
+                        </div>
+                    `;
+                }).join('');
+                
+                notificationContent.innerHTML = notificationsHTML;
+            }
+        }
+
+        // Función para calcular tiempo transcurrido
+        function getTimeAgo(dateString) {
+            const now = new Date();
+            const date = new Date(dateString);
+            const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+            
+            if (diffInMinutes < 1) return 'Hace un momento';
+            if (diffInMinutes < 60) return `Hace ${diffInMinutes} min`;
+            
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            if (diffInHours < 24) return `Hace ${diffInHours}h`;
+            
+            const diffInDays = Math.floor(diffInHours / 24);
+            return `Hace ${diffInDays} día${diffInDays > 1 ? 's' : ''}`;
+        }
+
+        // Función para actualizar la interfaz de usuario incluyendo notificaciones
+        function updateUserInterface() {
+            console.log('🔄 Actualizando interfaz de usuario...');
+            const currentUser = localStorage.getItem('currentUser');
+            const loginBtn = document.getElementById('loginBtn');
+            const userInfo = document.getElementById('userInfo');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const adminCard = document.getElementById('adminCard');
+            const adminNotifications = document.getElementById('adminNotifications');
+            
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                console.log('👤 Usuario logueado:', user.username, 'Status:', user.status);
+                
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (userInfo) {
+                    userInfo.style.display = 'block';
+                    userInfo.textContent = `Hola, ${user.username}`;
+                }
+                if (logoutBtn) logoutBtn.style.display = 'block';
+                
+                // Mostrar panel de admin y notificaciones solo para el administrador
+                if (user.status === 'admin' && adminCard) {
+                    console.log('👑 Usuario es admin - Mostrando panel de administración');
+                    adminCard.style.display = 'block';
+                    if (adminNotifications) {
+                        console.log('🔔 Mostrando notificaciones de admin');
+                        adminNotifications.style.display = 'block';
+                        loadNotifications(); // Cargar notificaciones al inicio
+                    }
+                } else {
+                    console.log('👤 Usuario normal - Ocultando panel de admin');
+                    if (adminCard) adminCard.style.display = 'none';
+                    if (adminNotifications) adminNotifications.style.display = 'none';
+                }
+            } else {
+                console.log('🚫 No hay usuario logueado');
+                // Usuario no logueado
+                if (loginBtn) loginBtn.style.display = 'block';
+                if (userInfo) userInfo.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+                if (adminCard) adminCard.style.display = 'none';
+                if (adminNotifications) adminNotifications.style.display = 'none';
+            }
+        }
+
+        // Cerrar panel de notificaciones al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const notificationContainer = document.getElementById('adminNotifications');
+            const notificationPanel = document.getElementById('notificationPanel');
+            
+            if (notificationContainer && !notificationContainer.contains(event.target)) {
+                if (notificationPanel) {
+                    notificationPanel.style.display = 'none';
+                }
+            }
+        });
+
+        // Actualizar notificaciones cada 30 segundos
+        setInterval(() => {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.status === 'admin') {
+                    loadNotifications();
+                }
+            }
+        }, 30000); // 30 segundos
+
+        // Event listener para cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Página cargada, inicializando sistema...');
+            
+            // Verificar estado de login y actualizar interfaz
+            updateUserInterface();
+            
+            // Inicializar usuarios para asegurar que el admin existe
+            initializeUsers();
+            
+            // PARA TESTING: Agregar usuario pendiente automáticamente
+            setTimeout(() => {
+                addTestPendingUser();
+            }, 1000);
+            
+            const documentsBtn = document.getElementById('documentsBtn');
+            if (documentsBtn) {
+                documentsBtn.addEventListener('click', function() {
+                    // Verificar si el usuario está logueado
+                    const currentUser = localStorage.getItem('currentUser');
+                    
+                    if (currentUser) {
+                        // Usuario logueado, redirigir a documentos
+                        window.location.href = './documentos/documentos.html';
+                    } else {
+                        // Usuario no logueado, redirigir a login
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+
+            // Event listener para botón de logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+
+        // Función para verificar login y redirigir
+        function checkLoginAndRedirect() {
+            const currentUser = localStorage.getItem('currentUser');
+            
+            if (currentUser) {
+                window.location.href = 'documentos/documentos.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Funciones para los botones del menú
+        function goToAsistencia() {
+            if (isUserLoggedIn()) {
+                window.location.href = 'asistencia.html';
+            } else {
+                alert('Debes iniciar sesión para acceder al registro de asistencia');
+                showLoginModal();
+            }
+        }
+
+        function showUsers() {
+            if (isUserLoggedIn()) {
+                window.location.href = 'establecimiento.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function goToDocuments() {
+            // Verificar si el usuario está logueado
+            const currentUser = localStorage.getItem('currentUser');
+
+            if (currentUser) {
+                // Usuario logueado, redirigir a documentos
+                window.location.href = './documentos/documentos_new.html';
+            } else {
+                // Usuario no logueado, redirigir a login
+                window.location.href = 'login.html';
+            }
+        }
+
+        function showHabilitacion() {
+            if (isUserLoggedIn()) {
+                alert('Función de Habilitación - En desarrollo');
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+        
+        function goToAdmin() {
+            if (isUserLoggedIn()) {
+                window.location.href = 'admin-usuarios.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Funciones básicas de autenticación
+        function isUserLoggedIn() {
+            return localStorage.getItem('currentUser') !== null;
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            updateUserInterface();
+        }
+
+        // Función de prueba para agregar un usuario pendiente (solo para testing)
+        function addTestPendingUser() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const testUser = {
+                username: 'maria.gonzalez',
+                email: 'maria.gonzalez@slepiquique.cl',
+                password: 'test123',
+                establecimiento: 'Escuela Gabriela Mistral',
+                cargo: 'Profesor/a de Asignatura',
+                status: 'pendiente',
+                registrationDate: new Date().toISOString()
+            };
+            
+            const testUser2 = {
+                username: 'carlos.lopez',
+                email: 'carlos.lopez@slepiquique.cl',
+                password: 'test456',
+                establecimiento: 'Liceo Bicentenario Domingo Santa María de Iquique',
+                cargo: 'Director/a',
+                status: 'pendiente',
+                registrationDate: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() // 2 horas atrás
+            };
+            
+            // Solo agregar si no existen ya
+            if (!users.find(u => u.email === testUser.email)) {
+                users.push(testUser);
+                console.log('Usuario de prueba 1 agregado:', testUser.username);
+            }
+            
+            if (!users.find(u => u.email === testUser2.email)) {
+                users.push(testUser2);
+                console.log('Usuario de prueba 2 agregado:', testUser2.username);
+            }
+            
+            localStorage.setItem('appUsers', JSON.stringify(users));
+            
+            // Forzar actualización de notificaciones
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.status === 'admin') {
+                    loadNotifications();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

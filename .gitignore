@@ -1,0 +1,25 @@
+# Archivos de configuración sensibles
+ADMIN_SETUP.md
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+
+# Carpetas de node_modules (si usas Node.js)
+node_modules/
+
+# Archivos de backup
+*.backup
+*.bak
+
+# Archivos de VS Code
+.vscode/settings.json
+.vscode/launch.json
+
+# Archivos de Windows
+desktop.ini

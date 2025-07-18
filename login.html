@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Acceso</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="registrar.html" class="nav-link">Registrarse</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Iniciar Sesión</h1>
+                <p>Sistema de acceso restringido - Solo usuarios autorizados</p>
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 10px; margin: 10px 0; color: #856404;">
+                    <strong>⚠️ Aviso:</strong> Este sistema solo permite acceso a usuarios autorizados previamente.
+                </div>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" name="username" required placeholder="Ingresa tu usuario">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <div class="password-input-container">
+                        <input type="password" id="password" name="password" required placeholder="Ingresa tu contraseña">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')" aria-label="Mostrar/ocultar contraseña">
+                            <svg class="eye-icon eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-icon eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" id="loginBtn" class="auth-btn">🔐 Iniciar Sesión</button>
+            </form>
+              <div class="register-link">
+                ¿No tienes cuenta? <a href="registrar.html">Crear una cuenta</a>
+            </div>
+            
+            <!-- TEMPORAL: Botón de debug -->
+            <div style="margin-top: 20px; text-align: center;">
+                <button type="button" onclick="clearStorage()" style="background: #ff4757; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+                    🗑️ Limpiar Datos (Debug)
+                </button>
+            </div>
+
+            <!-- Contenedor de alertas AQUÍ -->
+            <div id="alertContainer"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Login page loaded');
+            
+            // Inicializar sistema con admin
+            const adminUser = {
+                username: 'francisco.ramos',
+                email: 'francisco.ramos@slepiquique.cl',
+                password: '', // Por seguridad, se configura dinámicamente
+                status: 'admin'
+            };
+            
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const adminExists = users.find(u => u.email === adminUser.email);
+            if (!adminExists) {
+                // Crear admin con contraseña segura inicial
+                const secureAdmin = {
+                    ...adminUser,
+                    password: prompt('🔐 Configuración inicial: Establece la contraseña del administrador:') || 'temporal123'
+                };
+                users.push(secureAdmin);
+                localStorage.setItem('appUsers', JSON.stringify(users));
+                console.log('✅ Admin user created with secure password');
+            } else {
+                console.log('✅ Admin user already exists');
+            }
+            
+            // Verificar si ya está logueado
+            if (localStorage.getItem('currentUser')) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Verificar que el formulario existe
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            console.log('📋 Form element:', loginForm);
+            console.log('🔘 Button element:', loginBtn);
+            
+            // Manejar el formulario de login
+            if (loginForm) {
+                console.log('✅ Adding event listener to form');
+                loginForm.addEventListener('submit', function(e) {
+                    console.log('🔥 Form submitted!');
+                    e.preventDefault();
+                
+                // Mostrar indicador de carga
+                const loginBtn = document.getElementById('loginBtn');
+                const originalText = loginBtn.textContent;
+                loginBtn.textContent = '⏳ Verificando...';
+                loginBtn.disabled = true;
+                
+                // Simular un pequeño delay para mejor UX
+                setTimeout(() => {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    
+                    console.log('🔍 Datos ingresados:');
+                    console.log('  Username:', username);
+                    console.log('  Password:', password);
+                    
+                    // Función para restaurar el botón
+                    function restoreButton() {
+                        loginBtn.textContent = originalText;
+                        loginBtn.disabled = false;
+                    }
+                    
+                    if (!username || !password) {
+                        alert('ERROR: Completa todos los campos');
+                        showAlert('ERROR: Completa todos los campos', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Sistema de login con validación de estados
+                    const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                    console.log('📊 Usuarios registrados:', users.length);
+                    console.log('👥 Lista completa de usuarios:', users);
+                    console.log('🔍 Buscando usuario:', username);
+                    
+                    const user = users.find(u => (u.username === username || u.email === username) && u.password === password);
+                    console.log('👤 Usuario encontrado:', user);
+                    
+                    // Debug: Ver si el usuario existe pero con contraseña incorrecta
+                    const userByUsernameOnly = users.find(u => u.username === username || u.email === username);
+                    console.log('🔓 Usuario por nombre/email (sin verificar contraseña):', userByUsernameOnly);
+                    
+                    if (user) {
+                        // Verificar estado del usuario
+                        if (user.status === 'pendiente') {
+                            alert('⏳ Cuenta pendiente de aprobación\n\nTu cuenta está siendo revisada por el administrador.');
+                            showAlert('⏳ Cuenta pendiente de aprobación\n\nTu cuenta está siendo revisada por el administrador.', 'error');
+                            restoreButton();
+                            return;
+                        }
+                        
+                        if (user.status === 'rechazada') {
+                            alert('❌ Cuenta rechazada\n\nTu solicitud no fue aprobada. Contacta al administrador.');
+                            showAlert('❌ Cuenta rechazada\n\nTu solicitud no fue aprobada. Contacta al administrador.', 'error');
+                            restoreButton();
+                            return;
+                        }
+                        
+                        // Login exitoso para admin o usuarios aprobados
+                        if (user.status === 'admin' || user.status === 'aprobada') {
+                            const userSession = {
+                                username: user.username,
+                                email: user.email,
+                                status: user.status,
+                                loginTime: new Date().toISOString()
+                            };
+                            localStorage.setItem('currentUser', JSON.stringify(userSession));
+                            
+                            showAlert(`EXITO: Bienvenido ${user.username}!`, 'success');
+                            
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 2000);
+                        } else {
+                            alert('🚫 Acceso denegado. Contacta al administrador.');
+                            showAlert('🚫 Acceso denegado. Contacta al administrador.', 'error');
+                            restoreButton();
+                        }
+                    } else {
+                        alert('ERROR: Usuario o contraseña incorrectos');
+                        showAlert('ERROR: Usuario o contraseña incorrectos', 'error');
+                        restoreButton();
+                    }
+                }, 500); // Delay de 500ms para mostrar el indicador de carga
+                });
+            } else {
+                console.log('❌ Login form not found!');
+            }
+        });
+        
+        // Función temporal para limpiar localStorage
+        function clearStorage() {
+            localStorage.removeItem('appUsers');
+            localStorage.removeItem('currentUser');
+            console.log('🗑️ LocalStorage limpiado');
+            location.reload();
+        }
+        
+        function showAlert(message, type = 'success') {
+            console.log('showAlert llamada con:', message, type);
+            
+            const alertContainer = document.getElementById('alertContainer');
+            console.log('alertContainer encontrado:', alertContainer);
+            
+            if (!alertContainer) {
+                console.error('No se encontró alertContainer');
+                return;
+            }
+            
+            // Limpiar completamente
+            alertContainer.innerHTML = '';
+            console.log('Container limpiado');
+            
+            // Crear alerta SIMPLE
+            const alertDiv = document.createElement('div');
+            console.log('Div creado');
+            
+            // Estilo directo y simple
+            if (type === 'error') {
+                alertDiv.style.cssText = `
+                    background: #ff4444 !important;
+                    color: white !important;
+                    padding: 20px !important;
+                    margin: 15px 0 !important;
+                    border-radius: 8px !important;
+                    text-align: center !important;
+                    font-size: 16px !important;
+                    font-weight: bold !important;
+                    border: 3px solid #cc0000 !important;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+                    display: block !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                `;
+                console.log('Estilo error aplicado');
+            } else {
+                alertDiv.style.cssText = `
+                    background: #44aa44 !important;
+                    color: white !important;
+                    padding: 20px !important;
+                    margin: 15px 0 !important;
+                    border-radius: 8px !important;
+                    text-align: center !important;
+                    font-size: 16px !important;
+                    font-weight: bold !important;
+                    border: 3px solid #006600 !important;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+                    display: block !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                `;
+                console.log('Estilo success aplicado');
+            }
+            
+            // Agregar el texto sin formato especial
+            alertDiv.textContent = message;
+            console.log('Texto agregado:', message);
+            
+            // Mostrar inmediatamente
+            alertContainer.appendChild(alertDiv);
+            console.log('Div agregado al container');
+            
+            // Verificar que se agregó
+            console.log('Children del container:', alertContainer.children.length);
+            
+            // Auto-remover después de 5 segundos
+            setTimeout(() => {
+                if (alertDiv && alertDiv.parentNode) {
+                    alertDiv.remove();
+                    console.log('Alerta removida después de 5 segundos');
+                }
+            }, 5000);
+        }
+        
+        // Función para mostrar/ocultar contraseña
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling;
+            const eyeOpen = toggle.querySelector('.eye-open');
+            const eyeClosed = toggle.querySelector('.eye-closed');
+            
+            console.log('togglePassword called for:', inputId);
+            console.log('Current input type:', input.type);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOpen.style.display = 'none';
+                eyeClosed.style.display = 'block';
+                toggle.setAttribute('aria-label', 'Ocultar contraseña');
+                console.log('Changed to text type');
+                
+                // Forzar estilos para visibilidad
+                input.style.color = '#1a202c !important';
+                input.style.backgroundColor = '#f7fafc !important';
+                input.style.fontWeight = '600';
+            } else {
+                input.type = 'password';
+                eyeOpen.style.display = 'block';
+                eyeClosed.style.display = 'none';
+                toggle.setAttribute('aria-label', 'Mostrar contraseña');
+                console.log('Changed to password type');
+                
+                // Restaurar estilos de contraseña
+                input.style.backgroundColor = '#ffffff';
+                input.style.fontWeight = '500';
+            }
+        }
+    </script>
+    <!-- <script src="js/login.js"></script> -->
+</body>
+</html>
