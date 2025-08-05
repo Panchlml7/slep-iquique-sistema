@@ -1,0 +1,42 @@
+baseurl: /slep-iquique-sistema
+url: https://panchlml7.github.io
+
+title: SLEP Iquique - Sistema de Gestión
+description: Sistema de gestión documental para establecimientos educacionales del SLEP Iquique
+author: Francisco Ramos
+
+# GitHub Pages Configuration
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Navigation
+navigation:
+  - title: "Inicio"
+    url: "/"
+  - title: "Registro"
+    url: "/registro.html"
+  - title: "Login"
+    url: "/login.html"
+  - title: "Administración"
+    url: "/admin-usuarios.html"
+
+# SEO and Social
+lang: es
+locale: es_CL
+
+# Build settings
+exclude:
+  - README.md
+  - .gitignore
+  - node_modules/
+  - vendor/
+
+# Include files
+include:
+  - _pages

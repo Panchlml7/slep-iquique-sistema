@@ -142,11 +142,33 @@ Sistema integral de gestión educativa desarrollado para el **Servicio Local de 
 
 ---
 
+## 🌐 **Acceso Público al Sistema**
+
+### **🔗 URL Principal para Usuarios:**
+**https://panchlml7.github.io/slep-iquique-sistema/**
+
+### **📱 Compatibilidad Completa:**
+- ✅ **iPhone/iPad** - Safari y Chrome
+- ✅ **Android** - Chrome, Firefox, Edge
+- ✅ **Computadoras** - Windows, Mac, Linux
+- ✅ **Navegadores** - Chrome, Firefox, Safari, Edge
+
+### **🔑 Acceso Rápido:**
+- **Página Principal:** [https://panchlml7.github.io/slep-iquique-sistema/](https://panchlml7.github.io/slep-iquique-sistema/)
+- **Registro:** [https://panchlml7.github.io/slep-iquique-sistema/registro.html](https://panchlml7.github.io/slep-iquique-sistema/registro.html)
+- **Login:** [https://panchlml7.github.io/slep-iquique-sistema/login.html](https://panchlml7.github.io/slep-iquique-sistema/login.html)
+- **Admin:** [https://panchlml7.github.io/slep-iquique-sistema/admin-usuarios.html](https://panchlml7.github.io/slep-iquique-sistema/admin-usuarios.html)
+
+### **🔒 Credenciales de Prueba:**
+- **Admin:** `admin` / `admin123`
+- **Usuario Demo:** `pedro.gonzalez` / `temp123`
+
+---
+
 ## 🌐 **Acceso al Sistema**
 
 ### **🔗 URLs del Proyecto:**
 - **Repositorio:** https://github.com/Panchlml7/slep-iquique-sistema
-- **Sitio Web:** https://panchlml7.github.io/slep-iquique-sistema/
 
 ### **🔑 Credenciales de Administrador:**
 - **Usuario:** francisco.ramos@slepiquique.cl
