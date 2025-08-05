@@ -12,6 +12,9 @@
     <script src="js/security.js"></script>
     <!-- Sistema de Inicialización -->
     <script src="js/system-init.js"></script>
+    <!-- Sistema de Pestañas -->
+    <script src="js/admin-tabs.js"></script>
+    <script src="js/user-sync.js"></script>
 </head>
 <body>
     <!-- Barra de navegación -->
@@ -69,10 +72,19 @@
         <div class="table-container">
             <div class="admin-controls">
                 <button class="btn-export" onclick="exportUserData()">
-                    � Exportar Datos
+                    📊 Exportar Datos
+                </button>
+                <button class="btn-test" onclick="testTabSystem()" style="background: #10b981; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; margin-left: 1rem; cursor: pointer;">
+                    🧪 Probar Pestañas
+                </button>
+                <button class="btn-reload" onclick="forceReloadUsers()" style="background: #3b82f6; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; margin-left: 1rem; cursor: pointer;">
+                    🔄 Recargar Usuarios
+                </button>
+                <button class="btn-debug" onclick="debugUserSystem()" style="background: #f59e0b; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; margin-left: 1rem; cursor: pointer;">
+                    🐛 Debug Sistema
                 </button>
                 <p style="color: #666; margin: 0; font-size: 0.9rem;">
-                    � Haz clic en "👁️ Ver Detalles" para acceder a la información confidencial
+                    🔒 Haz clic en "👁️ Ver Detalles" para acceder a la información confidencial
                 </p>
             </div>
             
@@ -506,8 +518,10 @@
         
         // Verificar que el usuario sea admin
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM CARGADO - Iniciando admin-usuarios...');
+            
             const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-            console.log('🔍 Verificando acceso admin:', currentUser);
+            console.log('🔍 Usuario actual:', currentUser);
             
             if (currentUser.status !== 'admin') {
                 alert('❌ Acceso denegado. Solo el administrador puede acceder a esta página.');
@@ -515,83 +529,112 @@
                 return;
             }
             
-            console.log('✅ Acceso admin concedido');
+            console.log('✅ Acceso admin confirmado');
             
             // Crear datos de ejemplo si no existen
-            createSampleUsers();
+            const usersCreated = createSampleUsers();
+            console.log('📊 Usuarios de ejemplo creados:', usersCreated);
             
-            // Inicializar con la pestaña de pendientes activa
-            currentTab = 'pendiente';
-            
-            // Cargar usuarios y estadísticas
-            loadUsers('pendiente');
-            updateStats();
+            // Dar tiempo para que se procesen los datos
+            setTimeout(() => {
+                console.log('🔄 Inicializando sistema de usuarios...');
+                
+                // Inicializar con la pestaña de pendientes activa
+                currentTab = 'pendiente';
+                console.log('📋 Tab actual:', currentTab);
+                
+                // Cargar usuarios y estadísticas
+                console.log('📊 Cargando usuarios y estadísticas...');
+                loadUsers('pendiente');
+                updateStats();
+                
+                // Mostrar información de debug
+                const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                console.log('👥 Total usuarios en localStorage:', users.length);
+                users.forEach((user, index) => {
+                    console.log(`${index + 1}. ${user.username} (${user.status})`);
+                });
+                
+                console.log('✅ Sistema de admin-usuarios inicializado completamente');
+                
+            }, 500);
             
             // Configurar upload de archivos
             setupFileUpload();
-            
-            // Mostrar información del último archivo subido si existe
-            const lastUpdate = localStorage.getItem('asistenciaLastUpdate');
-            const savedData = localStorage.getItem('asistenciaData');
-            
-            if (lastUpdate && savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-                    const updateDate = new Date(lastUpdate);
-                    
-                    console.log(`📄 Último archivo: ${data.length} registros (${updateDate.toLocaleString('es-CL')})`);
-                } catch (error) {
-                    console.error('Error leyendo datos guardados:', error);
-                }
-            }
         });
 
         function loadUsers(filterStatus = 'pendiente') {
-            console.log(`🔍 Cargando usuarios con filtro: ${filterStatus}`);
+            console.log(`🔍 === CARGANDO USUARIOS ===`);
+            console.log(`📋 Filtro aplicado: "${filterStatus}"`);
             
             const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
-            const tableBody = document.getElementById('usersTableBody');
+            console.log(`📊 Total usuarios en localStorage: ${users.length}`);
             
+            const tableBody = document.getElementById('usersTableBody');
             if (!tableBody) {
-                console.error('❌ No se encontró el elemento usersTableBody');
+                console.error('❌ ERROR: No se encontró el elemento usersTableBody');
+                alert('Error: No se puede mostrar la tabla de usuarios');
                 return;
             }
             
-            tableBody.innerHTML = '';
-            console.log(`📊 Total de usuarios en localStorage: ${users.length}`);
+            console.log('✅ Elemento tabla encontrado');
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem;">🔄 Cargando usuarios...</td></tr>';
 
             let filteredUsers = users;
             if (filterStatus !== 'todos') {
                 filteredUsers = users.filter(user => user.status === filterStatus);
+                console.log(`🔍 Usuarios con status "${filterStatus}": ${filteredUsers.length}`);
             }
 
             // Excluir admin de la lista (por status, no por username)
             filteredUsers = filteredUsers.filter(user => user.status !== 'admin');
+            console.log(`� Usuarios filtrados (sin admin): ${filteredUsers.length}`);
             
-            console.log(`📋 Usuarios filtrados para "${filterStatus}": ${filteredUsers.length}`);
+            // Debug detallado de cada usuario
+            filteredUsers.forEach((user, index) => {
+                console.log(`  ${index + 1}. ${user.username} (${user.status}) - ${user.email}`);
+            });
 
             if (filteredUsers.length === 0) {
+                console.warn(`⚠️ No hay usuarios para mostrar con filtro: ${filterStatus}`);
+                const messageMap = {
+                    'pendiente': '📭 No hay solicitudes pendientes',
+                    'aprobada': '👤 No hay usuarios aprobados', 
+                    'rechazada': '🚫 No hay solicitudes rechazadas',
+                    'todos': '👥 No hay usuarios registrados'
+                };
+                
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 2rem; color: #666;">
-                            ${filterStatus === 'pendiente' ? '📭 No hay solicitudes pendientes' : 
-                              filterStatus === 'aprobada' ? '👤 No hay usuarios aprobados' :
-                              filterStatus === 'rechazada' ? '🚫 No hay solicitudes rechazadas' : 
-                              '👥 No hay usuarios registrados'}
+                        <td colspan="8" style="text-align: center; padding: 3rem; color: #666; background: #f8f9fa;">
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">${getStatusIcon(filterStatus)}</div>
+                            <h3>${messageMap[filterStatus] || 'No hay usuarios'}</h3>
+                            <p style="margin-top: 1rem; color: #999;">
+                                ${filterStatus === 'pendiente' ? 'Las nuevas solicitudes aparecerán aquí' : 
+                                  filterStatus === 'aprobada' ? 'Los usuarios aprobados aparecerán aquí' :
+                                  filterStatus === 'rechazada' ? 'Las solicitudes rechazadas aparecerán aquí' :
+                                  'Todos los usuarios aparecerán aquí'}
+                            </p>
+                            <button onclick="createSampleUsers(); loadUsers('${filterStatus}')" style="
+                                background: #10b981; color: white; border: none; padding: 0.5rem 1rem; 
+                                border-radius: 6px; margin-top: 1rem; cursor: pointer;">
+                                🧪 Crear Usuarios de Prueba
+                            </button>
                         </td>
                     </tr>
                 `;
                 return;
             }
 
+            console.log(`✅ Generando tabla con ${filteredUsers.length} usuarios`);
+            tableBody.innerHTML = ''; // Limpiar tabla
+            
             filteredUsers.forEach((user, index) => {
+                console.log(`🔄 Procesando usuario ${index + 1}: ${user.username}`);
+                
                 const row = document.createElement('tr');
                 const registeredDate = user.registrationDate ? 
                     new Date(user.registrationDate).toLocaleDateString('es-CL') : 
-                    'No disponible';
-                
-                const birthDate = user.fechaNacimiento ? 
-                    new Date(user.fechaNacimiento).toLocaleDateString('es-CL') : 
                     'No disponible';
                 
                 const nombreCompleto = user.nombreCompleto || 
@@ -601,53 +644,82 @@
                 row.innerHTML = `
                     <td>
                         <div class="user-info">
-                            <strong>${nombreCompleto}</strong>
-                            <small style="display: block; color: #666;">
-                                ${user.nombre ? `Nombre: ${user.nombre}` : ''}
-                                ${user.apellidoPaterno ? `<br>Ap. Paterno: ${user.apellidoPaterno}` : ''}
-                                ${user.apellidoMaterno ? `<br>Ap. Materno: ${user.apellidoMaterno}` : ''}
-                            </div>
-                    </td>
-                    <td>
-                        <div class="user-info">
-                            <strong>${user.username}</strong>
+                            <strong style="color: #2c5aa0;">${nombreCompleto}</strong>
+                            <small style="display: block; color: #666; margin-top: 0.3rem;">
+                                ${user.nombre ? `${user.nombre} ` : ''}${user.apellidoPaterno || ''}
+                            </small>
                         </div>
                     </td>
                     <td>
-                        <div class="user-email">${user.email}</div>
+                        <div class="user-info">
+                            <code style="background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold;">
+                                ${user.username}
+                            </code>
+                        </div>
                     </td>
                     <td>
-                        <div class="user-establecimiento">${user.establecimiento || 'No especificado'}</div>
+                        <div class="user-email" style="color: #3b82f6;">
+                            📧 ${user.email}
+                        </div>
                     </td>
                     <td>
-                        <div class="user-cargo">${user.cargo || 'No especificado'}</div>
+                        <div class="user-establecimiento">
+                            🏢 ${user.establecimiento || 'No especificado'}
+                        </div>
                     </td>
                     <td>
-                        <span class="status-badge status-${user.status}">${user.status}</span>
+                        <div class="user-cargo">
+                            👔 ${user.cargo || 'No especificado'}
+                        </div>
                     </td>
                     <td>
-                        <div class="user-date">${registeredDate}</div>
-                        ${user.approvedAt ? `<div class="user-date">Aprobado: ${new Date(user.approvedAt).toLocaleDateString('es-CL')}</div>` : ''}
+                        <span class="status-badge status-${user.status}" style="
+                            padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.8rem;
+                            ${user.status === 'pendiente' ? 'background: #fef3c7; color: #92400e;' :
+                              user.status === 'aprobada' ? 'background: #d1fae5; color: #065f46;' :
+                              user.status === 'rechazada' ? 'background: #fee2e2; color: #991b1b;' : 
+                              'background: #f3f4f6; color: #374151;'}
+                        ">
+                            ${user.status === 'pendiente' ? '⏳ Pendiente' :
+                              user.status === 'aprobada' ? '✅ Aprobado' :
+                              user.status === 'rechazada' ? '❌ Rechazado' : user.status}
+                        </span>
                     </td>
                     <td>
-                        <div class="action-buttons">
+                        <div class="user-date" style="font-size: 0.9rem; color: #6b7280;">
+                            📅 ${registeredDate}
+                            ${user.approvedAt ? `<br><span style="color: #10b981;">✅ Aprobado: ${new Date(user.approvedAt).toLocaleDateString('es-CL')}</span>` : ''}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons" style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
                             ${user.status === 'pendiente' ? `
-                                <button class="btn-action btn-approve" onclick="approveUser('${user.username}')">
+                                <button class="btn-action btn-approve" onclick="approveUser('${user.username}')" style="
+                                    background: #10b981; color: white; border: none; padding: 0.4rem 0.8rem; 
+                                    border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
                                     ✅ Aprobar
                                 </button>
-                                <button class="btn-action btn-reject" onclick="rejectUser('${user.username}')">
+                                <button class="btn-action btn-reject" onclick="rejectUser('${user.username}')" style="
+                                    background: #ef4444; color: white; border: none; padding: 0.4rem 0.8rem; 
+                                    border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
                                     ❌ Rechazar
                                 </button>
                             ` : ''}
                             ${user.status === 'rechazada' ? `
-                                <button class="btn-action btn-approve" onclick="approveUser('${user.username}')">
+                                <button class="btn-action btn-approve" onclick="approveUser('${user.username}')" style="
+                                    background: #10b981; color: white; border: none; padding: 0.4rem 0.8rem; 
+                                    border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
                                     ✅ Aprobar
                                 </button>
                             ` : ''}
-                            <button class="btn-action btn-info" onclick="showUserDetailsModal('${user.username}')">
-                                👁️ Ver Detalles
+                            <button class="btn-action btn-info" onclick="showUserDetailsModal('${user.username}')" style="
+                                background: #3b82f6; color: white; border: none; padding: 0.4rem 0.8rem; 
+                                border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
+                                👁️ Ver
                             </button>
-                            <button class="btn-action btn-delete" onclick="deleteUser('${user.username}')">
+                            <button class="btn-action btn-delete" onclick="deleteUser('${user.username}')" style="
+                                background: #6b7280; color: white; border: none; padding: 0.4rem 0.8rem; 
+                                border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
                                 🗑️ Eliminar
                             </button>
                         </div>
@@ -655,6 +727,118 @@
                 `;
                 tableBody.appendChild(row);
             });
+            
+            console.log(`✅ Tabla generada exitosamente con ${filteredUsers.length} usuarios`);
+        }
+
+        // Función helper para iconos de estado
+        function getStatusIcon(status) {
+            const icons = {
+                'pendiente': '⏳',
+                'aprobada': '✅', 
+                'rechazada': '❌',
+                'todos': '👥'
+            };
+            return icons[status] || '📋';
+        }
+
+        // Función para forzar recarga de usuarios
+        function forceReloadUsers() {
+            console.log('🔄 === FORZANDO RECARGA DE USUARIOS ===');
+            
+            const currentTabElement = document.querySelector('.tab-btn.active');
+            const currentStatus = currentTabElement ? currentTabElement.id.replace('btn-', '') : 'pendiente';
+            
+            console.log(`📋 Tab actual: ${currentStatus}`);
+            
+            // Recargar usuarios y estadísticas
+            loadUsers(currentStatus);
+            updateStats();
+            
+            alert(`✅ Usuarios recargados para pestaña: ${currentStatus}`);
+        }
+
+        // Función de debugging mejorada
+        function debugUserSystem() {
+            console.log('🐛 === DEBUGGING SISTEMA DE USUARIOS ADMIN ===');
+            console.log('='.repeat(60));
+            
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            console.log(`📊 Total usuarios en localStorage: ${users.length}`);
+            
+            if (users.length === 0) {
+                console.warn('⚠️ No hay usuarios en localStorage');
+                alert('⚠️ No hay usuarios en el sistema. ¿Crear usuarios de ejemplo?');
+                if (confirm('¿Crear usuarios de ejemplo para testing?')) {
+                    createSampleUsers();
+                    loadUsers('pendiente');
+                    updateStats();
+                }
+                return;
+            }
+            
+            // Análisis por status
+            const statusCounts = {
+                admin: users.filter(u => u.status === 'admin').length,
+                pendiente: users.filter(u => u.status === 'pendiente').length,
+                aprobada: users.filter(u => u.status === 'aprobada').length,
+                rechazada: users.filter(u => u.status === 'rechazada').length
+            };
+            
+            console.log('📊 ESTADÍSTICAS POR ESTADO:');
+            Object.entries(statusCounts).forEach(([status, count]) => {
+                console.log(`  ${status}: ${count} usuarios`);
+            });
+            
+            console.log('\n👥 LISTA DETALLADA DE USUARIOS:');
+            users.forEach((user, index) => {
+                console.log(`${index + 1}. ${user.username} (${user.status}) - ${user.email}`);
+                console.log(`   Nombre: ${user.nombreCompleto || 'No disponible'}`);
+                console.log(`   Establecimiento: ${user.establecimiento || 'No especificado'}`);
+                console.log(`   Cargo: ${user.cargo || 'No especificado'}`);
+                console.log('   ---');
+            });
+            
+            // Verificar tabla HTML
+            const tableBody = document.getElementById('usersTableBody');
+            console.log('🔍 VERIFICACIÓN DE TABLA HTML:');
+            console.log(`  Elemento tabla encontrado: ${tableBody ? 'SÍ' : 'NO'}`);
+            if (tableBody) {
+                console.log(`  Filas en tabla: ${tableBody.children.length}`);
+            }
+            
+            // Verificar pestañas
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            console.log('🔍 VERIFICACIÓN DE PESTAÑAS:');
+            console.log(`  Botones de pestañas encontrados: ${tabButtons.length}`);
+            tabButtons.forEach((btn, index) => {
+                console.log(`  ${index + 1}. ${btn.id} - Activo: ${btn.classList.contains('active')}`);
+            });
+            
+            console.log('='.repeat(60));
+            
+            // Mostrar resumen en alert
+            const summary = `🐛 DEBUG SISTEMA DE USUARIOS
+
+📊 RESUMEN:
+• Total usuarios: ${users.length}
+• Admin: ${statusCounts.admin}
+• Pendientes: ${statusCounts.pendiente}  
+• Aprobados: ${statusCounts.aprobada}
+• Rechazados: ${statusCounts.rechazada}
+
+🔍 TABLA HTML:
+• Elemento encontrado: ${tableBody ? 'SÍ' : 'NO'}
+• Filas mostradas: ${tableBody ? tableBody.children.length : 0}
+
+🏷️ PESTAÑAS:
+• Botones encontrados: ${tabButtons.length}
+• Tab activo: ${document.querySelector('.tab-btn.active')?.id || 'Ninguno'}
+
+Ver consola para detalles completos.`;
+            
+            alert(summary);
+            return users;
         }
 
         function updateStats() {
@@ -667,47 +851,32 @@
             document.getElementById('rejectedUsers').textContent = nonAdminUsers.filter(u => u.status === 'rechazada').length;
         }
 
-        // Función única para cambiar pestañas
-        function switchTab(status, buttonElement) {
-            console.log('🔄 Cambiando a pestaña:', status);
-            
-            // Actualizar variable global
-            currentTab = status;
-            
-            // Remover clase active de todos los botones
-            const allButtons = document.querySelectorAll('.tab-btn');
-            allButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Agregar clase active al botón clickeado
-            buttonElement.classList.add('active');
-            
-            // Cargar usuarios filtrados
-            loadUsers(status);
-            updateStats();
-            
-            console.log('✅ Pestaña cambiada a:', status);
-        }
-
         // Función para crear usuarios de ejemplo para testing
         function createSampleUsers() {
+            console.log('🧪 === CREANDO USUARIOS DE EJEMPLO ===');
+            
             const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            console.log(`📊 Usuarios actuales en localStorage: ${users.length}`);
             
             // Solo crear usuarios de ejemplo si no hay usuarios (excepto admin)
             const nonAdminUsers = users.filter(u => u.status !== 'admin');
+            console.log(`👥 Usuarios no-admin existentes: ${nonAdminUsers.length}`);
+            
             if (nonAdminUsers.length === 0) {
-                console.log('🧪 Creando usuarios de ejemplo para testing...');
+                console.log('🏗️ Creando usuarios de ejemplo para testing...');
                 
                 const sampleUsers = [
                     {
                         username: 'juan.perez',
                         password: 'temp123',
                         email: 'juan.perez@slep-iquique.cl',
-                        nombre: 'Juan',
+                        nombre: 'Juan Carlos',
                         apellidoPaterno: 'Pérez',
                         apellidoMaterno: 'González',
+                        nombreCompleto: 'Juan Carlos Pérez González',
                         fechaNacimiento: '1985-03-15',
                         establecimiento: 'Escuela Básica Los Aromos',
-                        cargo: 'Profesor',
+                        cargo: 'Profesor de Matemáticas',
                         status: 'pendiente',
                         registrationDate: new Date().toISOString()
                     },
@@ -715,14 +884,15 @@
                         username: 'maria.lopez',
                         password: 'temp456',
                         email: 'maria.lopez@slep-iquique.cl',
-                        nombre: 'María',
+                        nombre: 'María Elena',
                         apellidoPaterno: 'López',
                         apellidoMaterno: 'Silva',
+                        nombreCompleto: 'María Elena López Silva',
                         fechaNacimiento: '1992-07-22',
                         establecimiento: 'Liceo Técnico Industrial',
                         cargo: 'Directora',
                         status: 'aprobada',
-                        registrationDate: new Date().toISOString(),
+                        registrationDate: new Date(Date.now() - 86400000).toISOString(), // 1 día atrás
                         approvedAt: new Date().toISOString(),
                         approvedBy: 'admin'
                     },
@@ -730,28 +900,72 @@
                         username: 'carlos.ruiz',
                         password: 'temp789',
                         email: 'carlos.ruiz@slep-iquique.cl',
-                        nombre: 'Carlos',
+                        nombre: 'Carlos Alberto',
                         apellidoPaterno: 'Ruiz',
                         apellidoMaterno: 'Morales',
+                        nombreCompleto: 'Carlos Alberto Ruiz Morales',
                         fechaNacimiento: '1988-11-10',
                         establecimiento: 'Colegio San Patricio',
-                        cargo: 'Inspector',
+                        cargo: 'Inspector General',
                         status: 'rechazada',
-                        registrationDate: new Date().toISOString(),
+                        registrationDate: new Date(Date.now() - 172800000).toISOString(), // 2 días atrás
                         rejectedAt: new Date().toISOString(),
                         rejectedBy: 'admin',
-                        rejectionReason: 'Documentación incompleta'
+                        rejectionReason: 'Documentación incompleta - falta certificado de título'
+                    },
+                    {
+                        username: 'ana.torres',
+                        password: 'temp321',
+                        email: 'ana.torres@slep-iquique.cl',
+                        nombre: 'Ana Sofía',
+                        apellidoPaterno: 'Torres',
+                        apellidoMaterno: 'Vargas',
+                        nombreCompleto: 'Ana Sofía Torres Vargas',
+                        fechaNacimiento: '1990-05-18',
+                        establecimiento: 'Escuela Gabriela Mistral',
+                        cargo: 'Educadora de Párvulos',
+                        status: 'pendiente',
+                        registrationDate: new Date(Date.now() - 43200000).toISOString() // 12 horas atrás
+                    },
+                    {
+                        username: 'luis.martinez',
+                        password: 'temp654',
+                        email: 'luis.martinez@slep-iquique.cl',
+                        nombre: 'Luis Fernando',
+                        apellidoPaterno: 'Martínez',
+                        apellidoMaterno: 'Herrera',
+                        nombreCompleto: 'Luis Fernando Martínez Herrera',
+                        fechaNacimiento: '1987-09-03',
+                        establecimiento: 'Liceo Domingo Santa María',
+                        cargo: 'Jefe de UTP',
+                        status: 'aprobada',
+                        registrationDate: new Date(Date.now() - 259200000).toISOString(), // 3 días atrás
+                        approvedAt: new Date(Date.now() - 86400000).toISOString(), // Aprobado hace 1 día
+                        approvedBy: 'admin'
                     }
                 ];
+                
+                console.log(`➕ Agregando ${sampleUsers.length} usuarios de ejemplo`);
                 
                 // Agregar usuarios de ejemplo
                 users.push(...sampleUsers);
                 localStorage.setItem('appUsers', JSON.stringify(users));
                 
-                console.log('✅ Usuarios de ejemplo creados');
+                console.log(`✅ ${sampleUsers.length} usuarios de ejemplo creados exitosamente`);
+                console.log('📋 Usuarios creados:');
+                sampleUsers.forEach((user, index) => {
+                    console.log(`  ${index + 1}. ${user.username} (${user.status}) - ${user.nombreCompleto}`);
+                });
+                
                 return true;
+            } else {
+                console.log('ℹ️ Ya existen usuarios en el sistema, no se crearán nuevos ejemplos');
+                console.log('👥 Usuarios existentes:');
+                nonAdminUsers.forEach((user, index) => {
+                    console.log(`  ${index + 1}. ${user.username} (${user.status})`);
+                });
+                return false;
             }
-            return false;
         }
 
         function showTab(status) {
@@ -1297,14 +1511,454 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
     <!-- Cargar sistema de monitoreo de usuarios -->
     <script src="js/user-monitor.js"></script>
     
-    <!-- Inicialización final del sistema -->
+    <!-- Inicialización del sistema de usuarios administrativos -->
     <script>
-        // Asegurar que las funciones estén disponibles globalmente
-        window.switchTab = switchTab;
-        window.loadUsers = loadUsers;
-        window.updateStats = updateStats;
+        // ===== SISTEMA DE GESTIÓN DE USUARIOS ADMINISTRATIVOS =====
+        console.log('🚀 Iniciando sistema admin-usuarios...');
         
-        // Función de debugging para verificar usuarios
+        // Variable global para el filtro actual
+        let currentFilter = 'pendiente';
+        
+        // Variable global para almacenar usuarios
+        let allUsers = [];
+        
+        // ===== FUNCIÓN PRINCIPAL PARA CAMBIAR PESTAÑAS =====
+        function switchTab(status, buttonElement) {
+            try {
+                console.log('🔄 INTERNAL switchTab ejecutado para:', status);
+                
+                // Validar parámetros
+                if (!status) {
+                    console.error('❌ Error: status es undefined');
+                    return;
+                }
+                
+                // Actualizar filtro actual
+                currentFilter = status;
+                
+                // Remover clase active de todos los botones
+                const allButtons = document.querySelectorAll('.tab-btn');
+                allButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Agregar clase active al botón clickeado
+                if (buttonElement) {
+                    buttonElement.classList.add('active');
+                } else {
+                    // Fallback: buscar el botón por ID
+                    const targetBtn = document.getElementById('btn-' + status);
+                    if (targetBtn) {
+                        targetBtn.classList.add('active');
+                        console.log('✅ Botón activado:', targetBtn.id);
+                    }
+                }
+                
+                // Cargar usuarios filtrados
+                console.log('📊 Cargando usuarios para filtro:', status);
+                loadUsers(status);
+                
+                // Actualizar estadísticas
+                updateStats();
+                
+                console.log('✅ Pestaña cambiada exitosamente a:', status);
+                
+            } catch (error) {
+                console.error('❌ Error en switchTab:', error);
+                alert('Error al cambiar pestañas: ' + error.message);
+            }
+        }
+        
+        // ===== FUNCIÓN PARA CARGAR USUARIOS =====
+        function loadUsers(filterStatus = 'todos') {
+            console.log('📁 loadUsers iniciado con filtro:', filterStatus);
+            
+            try {
+                // Verificar y crear usuarios de muestra si no existen
+                if (!localStorage.getItem('slep_users')) {
+                    console.log('� Creando usuarios de muestra...');
+                    createSampleUsers();
+                }
+                
+                // Obtener usuarios del localStorage
+                const usersJson = localStorage.getItem('slep_users');
+                console.log('📄 Datos raw del localStorage:', usersJson ? 'ENCONTRADOS' : 'NO ENCONTRADOS');
+                
+                if (!usersJson) {
+                    console.error('❌ No hay datos de usuarios en localStorage');
+                    showEmptyTable();
+                    return;
+                }
+                
+                // Parsear usuarios
+                allUsers = JSON.parse(usersJson);
+                console.log('👥 Total usuarios cargados:', allUsers.length);
+                console.log('🔍 Usuarios encontrados:', allUsers.map(u => `${u.nombre} (${u.estado})`));
+                
+                // Filtrar usuarios según el estado
+                let filteredUsers = [];
+                
+                if (filterStatus === 'todos') {
+                    filteredUsers = allUsers;
+                } else {
+                    filteredUsers = allUsers.filter(user => {
+                        const userStatus = user.estado.toLowerCase();
+                        const targetStatus = filterStatus.toLowerCase();
+                        
+                        // Mapear estados
+                        if (targetStatus === 'pendiente') {
+                            return userStatus === 'pendiente' || userStatus === 'pending';
+                        } else if (targetStatus === 'aprobada') {
+                            return userStatus === 'aprobada' || userStatus === 'aprobado' || userStatus === 'approved';
+                        } else if (targetStatus === 'rechazada') {
+                            return userStatus === 'rechazada' || userStatus === 'rechazado' || userStatus === 'rejected';
+                        }
+                        
+                        return userStatus === targetStatus;
+                    });
+                }
+                
+                console.log(`📊 Usuarios filtrados (${filterStatus}):`, filteredUsers.length);
+                console.log('👤 Usuarios filtrados:', filteredUsers.map(u => `${u.nombre} (${u.estado})`));
+                
+                // Mostrar usuarios en la tabla
+                displayUsers(filteredUsers);
+                
+                // Actualizar estadísticas
+                updateStats();
+                
+            } catch (error) {
+                console.error('❌ Error en loadUsers:', error);
+                showErrorTable('Error al cargar usuarios: ' + error.message);
+            }
+        }
+        
+        // ===== FUNCIÓN PARA MOSTRAR USUARIOS EN LA TABLA =====
+        function displayUsers(users) {
+            const tableBody = document.getElementById('usersTableBody');
+            if (!tableBody) {
+                console.error('❌ No se encontró usersTableBody');
+                return;
+            }
+            
+            console.log('🎨 Mostrando', users.length, 'usuarios en la tabla');
+            
+            if (users.length === 0) {
+                showEmptyTable();
+                return;
+            }
+            
+            let html = '';
+            
+            users.forEach((user, index) => {
+                const statusBadge = getStatusBadge(user.estado);
+                const registerDate = user.fechaRegistro || new Date().toISOString().split('T')[0];
+                const lastAccess = user.ultimoAcceso || 'Nunca';
+                
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${user.nombre || 'Sin nombre'}</td>
+                        <td>${user.email || 'Sin email'}</td>
+                        <td>${user.rut || 'Sin RUT'}</td>
+                        <td>${user.rol || 'Usuario'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${registerDate}</td>
+                        <td>
+                            <button class="btn-action btn-view" onclick="viewUser('${user.id || index}')">👁️</button>
+                            <button class="btn-action btn-edit" onclick="editUser('${user.id || index}')">✏️</button>
+                            ${user.estado === 'pendiente' ? 
+                                `<button class="btn-action btn-approve" onclick="approveUser('${user.id || index}')">✅</button>
+                                 <button class="btn-action btn-reject" onclick="rejectUser('${user.id || index}')">❌</button>` :
+                                `<button class="btn-action btn-delete" onclick="deleteUser('${user.id || index}')">🗑️</button>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = html;
+            console.log('✅ Tabla actualizada con', users.length, 'usuarios');
+        }
+        
+        // ===== FUNCIÓN PARA OBTENER BADGE DE ESTADO =====
+        function getStatusBadge(estado) {
+            const status = estado.toLowerCase();
+            
+            if (status === 'pendiente' || status === 'pending') {
+                return '<span class="badge badge-warning">⏳ Pendiente</span>';
+            } else if (status === 'aprobada' || status === 'aprobado' || status === 'approved') {
+                return '<span class="badge badge-success">✅ Aprobado</span>';
+            } else if (status === 'rechazada' || status === 'rechazado' || status === 'rejected') {
+                return '<span class="badge badge-danger">❌ Rechazado</span>';
+            }
+            
+            return `<span class="badge badge-secondary">${estado}</span>`;
+        }
+        
+        // ===== FUNCIÓN PARA MOSTRAR TABLA VACÍA =====
+        function showEmptyTable() {
+            const tableBody = document.getElementById('usersTableBody');
+            if (!tableBody) return;
+            
+            const filterText = {
+                'pendiente': 'usuarios pendientes',
+                'aprobada': 'usuarios aprobados',
+                'rechazada': 'usuarios rechazados',
+                'todos': 'usuarios'
+            };
+            
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 3rem; color: #666; background: #f8f9fa;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">📋</div>
+                        <h3 style="color: #2c5aa0; margin-bottom: 1rem;">No hay ${filterText[currentFilter] || 'usuarios'}</h3>
+                        <p style="margin: 0;">No se encontraron usuarios para mostrar.</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // ===== FUNCIÓN PARA MOSTRAR ERROR EN TABLA =====
+        function showErrorTable(message) {
+            const tableBody = document.getElementById('usersTableBody');
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 3rem; color: #d32f2f; background: #ffebee;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">⚠️</div>
+                        <h3 style="color: #d32f2f; margin-bottom: 1rem;">Error</h3>
+                        <p style="margin: 0;">${message}</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // ===== FUNCIÓN PARA CREAR USUARIOS DE MUESTRA =====
+        function createSampleUsers() {
+            console.log('👥 Creando usuarios de muestra...');
+            
+            const sampleUsers = [
+                {
+                    id: 'user001',
+                    nombre: 'María González',
+                    email: 'maria.gonzalez@ejemplo.com',
+                    rut: '12.345.678-9',
+                    rol: 'Profesor',
+                    estado: 'pendiente',
+                    fechaRegistro: '2024-01-15',
+                    ultimoAcceso: 'Nunca'
+                },
+                {
+                    id: 'user002',
+                    nombre: 'Carlos Rivera',
+                    email: 'carlos.rivera@ejemplo.com',
+                    rut: '98.765.432-1',
+                    rol: 'Administrativo',
+                    estado: 'aprobada',
+                    fechaRegistro: '2024-01-10',
+                    ultimoAcceso: '2024-01-20'
+                },
+                {
+                    id: 'user003',
+                    nombre: 'Ana Martínez',
+                    email: 'ana.martinez@ejemplo.com',
+                    rut: '11.222.333-4',
+                    rol: 'Auxiliar',
+                    estado: 'rechazada',
+                    fechaRegistro: '2024-01-12',
+                    ultimoAcceso: 'Nunca'
+                },
+                {
+                    id: 'user004',
+                    nombre: 'Pedro Sánchez',
+                    email: 'pedro.sanchez@ejemplo.com',
+                    rut: '55.666.777-8',
+                    rol: 'Director',
+                    estado: 'aprobada',
+                    fechaRegistro: '2024-01-08',
+                    ultimoAcceso: '2024-01-21'
+                },
+                {
+                    id: 'user005',
+                    nombre: 'Laura López',
+                    email: 'laura.lopez@ejemplo.com',
+                    rut: '33.444.555-6',
+                    rol: 'Profesor',
+                    estado: 'pendiente',
+                    fechaRegistro: '2024-01-18',
+                    ultimoAcceso: 'Nunca'
+                }
+            ];
+            
+            localStorage.setItem('slep_users', JSON.stringify(sampleUsers));
+            console.log('✅ Usuarios de muestra creados:', sampleUsers.length);
+            
+            return sampleUsers;
+        }
+        
+        // ===== FUNCIÓN PARA ACTUALIZAR ESTADÍSTICAS =====
+        function updateStats() {
+            try {
+                if (allUsers.length === 0) return;
+                
+                const stats = {
+                    total: allUsers.length,
+                    pendientes: allUsers.filter(u => u.estado.toLowerCase() === 'pendiente').length,
+                    aprobados: allUsers.filter(u => u.estado.toLowerCase() === 'aprobada' || u.estado.toLowerCase() === 'aprobado').length,
+                    rechazados: allUsers.filter(u => u.estado.toLowerCase() === 'rechazada' || u.estado.toLowerCase() === 'rechazado').length
+                };
+                
+                console.log('📊 Estadísticas actualizadas:', stats);
+                
+                // Actualizar contadores en los botones si existen
+                const btnPendiente = document.getElementById('btn-pendiente');
+                const btnAprobada = document.getElementById('btn-aprobada');
+                const btnRechazada = document.getElementById('btn-rechazada');
+                const btnTodos = document.getElementById('btn-todos');
+                
+                if (btnPendiente) btnPendiente.textContent = `⏳ Pendientes (${stats.pendientes})`;
+                if (btnAprobada) btnAprobada.textContent = `✅ Aprobados (${stats.aprobados})`;
+                if (btnRechazada) btnRechazada.textContent = `❌ Rechazados (${stats.rechazados})`;
+                if (btnTodos) btnTodos.textContent = `👥 Todos (${stats.total})`;
+                
+            } catch (error) {
+                console.error('❌ Error actualizando estadísticas:', error);
+            }
+        }
+        
+        // ===== FUNCIONES DE ACCIÓN DE USUARIOS =====
+        function viewUser(userId) {
+            console.log('👁️ Ver usuario:', userId);
+            alert('Función Ver Usuario - ID: ' + userId);
+        }
+        
+        function editUser(userId) {
+            console.log('✏️ Editar usuario:', userId);
+            alert('Función Editar Usuario - ID: ' + userId);
+        }
+        
+        function approveUser(userId) {
+            console.log('✅ Aprobar usuario:', userId);
+            // Implementar lógica de aprobación
+            const user = allUsers.find(u => u.id === userId);
+            if (user) {
+                user.estado = 'aprobada';
+                localStorage.setItem('slep_users', JSON.stringify(allUsers));
+                loadUsers(currentFilter);
+                alert('Usuario aprobado exitosamente');
+            }
+        }
+        
+        function rejectUser(userId) {
+            console.log('❌ Rechazar usuario:', userId);
+            // Implementar lógica de rechazo
+            const user = allUsers.find(u => u.id === userId);
+            if (user) {
+                user.estado = 'rechazada';
+                localStorage.setItem('slep_users', JSON.stringify(allUsers));
+                loadUsers(currentFilter);
+                alert('Usuario rechazado');
+            }
+        }
+        
+        function deleteUser(userId) {
+            console.log('🗑️ Eliminar usuario:', userId);
+            if (confirm('¿Está seguro de eliminar este usuario?')) {
+                allUsers = allUsers.filter(u => u.id !== userId);
+                localStorage.setItem('slep_users', JSON.stringify(allUsers));
+                loadUsers(currentFilter);
+                alert('Usuario eliminado');
+            }
+        }
+        
+        // ===== FUNCIONES DE DEPURACIÓN =====
+        function testTabSystem() {
+            const tabs = ['pendiente', 'aprobada', 'rechazada', 'todos'];
+            
+            console.log('🧪 Iniciando test del sistema de pestañas...');
+            
+            let currentIndex = 0;
+            const interval = setInterval(() => {
+                if (currentIndex < tabs.length) {
+                    const status = tabs[currentIndex];
+                    const button = document.getElementById('btn-' + status);
+                    console.log(`🔄 Testing pestaña ${currentIndex + 1}: ${status}`);
+                    switchTab(status, button);
+                    currentIndex++;
+                } else {
+                    clearInterval(interval);
+                    console.log('✅ Test de pestañas completado');
+                    // Volver a la primera pestaña
+                    const firstBtn = document.getElementById('btn-pendiente');
+                    switchTab('pendiente', firstBtn);
+                }
+            }, 2000);
+        }
+        
+        function forceReloadUsers() {
+            console.log('🔄 Forzando recarga de usuarios...');
+            loadUsers(currentFilter);
+        }
+        
+        function debugUserSystem() {
+            console.log('🔍 === DEBUG DEL SISTEMA DE USUARIOS ===');
+            console.log('📊 Filtro actual:', currentFilter);
+            console.log('👥 Total usuarios en memoria:', allUsers.length);
+            console.log('💾 LocalStorage:', localStorage.getItem('slep_users') ? 'TIENE DATOS' : 'VACÍO');
+            
+            const tableBody = document.getElementById('usersTableBody');
+            console.log('📋 Tabla encontrada:', !!tableBody);
+            
+            if (tableBody) {
+                console.log('📋 Contenido de tabla:', tableBody.innerHTML.length > 0 ? 'TIENE CONTENIDO' : 'VACÍA');
+            }
+            
+            console.log('🏷️ Botones de pestañas:');
+            ['pendiente', 'aprobada', 'rechazada', 'todos'].forEach(status => {
+                const btn = document.getElementById('btn-' + status);
+                console.log(`  - btn-${status}:`, btn ? 'ENCONTRADO' : 'NO ENCONTRADO');
+                if (btn) {
+                    console.log(`    Activo: ${btn.classList.contains('active')}`);
+                }
+            });
+            
+            console.log('=== FIN DEBUG ===');
+        }
+        
+        // ===== SOBRESCRIBIR LA FUNCIÓN GLOBAL =====
+        window.switchTab = switchTab;
+        console.log('🔧 Función switchTab sobrescrita globalmente');
+        
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM cargado - inicializando admin-usuarios...');
+            
+            setTimeout(() => {
+                console.log('⚡ Iniciando sistema de usuarios con delay...');
+                
+                // Asegurar que el primer botón esté activo
+                const firstBtn = document.getElementById('btn-pendiente');
+                if (firstBtn) {
+                    firstBtn.classList.add('active');
+                    console.log('✅ Botón pendiente activado');
+                }
+                
+                // Cargar usuarios iniciales
+                loadUsers('pendiente');
+                
+                console.log('🚀 Sistema admin-usuarios inicializado completamente');
+                
+            }, 500);
+        });
+        
+        // ===== EXPORTAR FUNCIONES GLOBALES =====
+        window.loadUsers = loadUsers;
+        window.testTabSystem = testTabSystem;
+        window.forceReloadUsers = forceReloadUsers;
+        window.debugUserSystem = debugUserSystem;
+        
+        console.log('✅ Todas las funciones exportadas globalmente');
+    </script>
         function debugUserSystem() {
             console.log('🔍 DEBUGGING SISTEMA DE USUARIOS ADMIN');
             console.log('=' .repeat(50));

@@ -1,105 +1,101 @@
-// SCRIPT LIMPIO PARA PESTAÑAS - admin-tabs.js
+// SCRIPT SIMPLE PARA PESTAÑAS ADMIN - Solo funcionalidad básica
 
 // Variable global para el tab actual
 let currentTab = 'pendiente';
 
-// Función principal para cambiar pestañas
+// Función principal para cambiar pestañas (será sobrescrita por el HTML si existe)
 function switchTab(status, buttonElement) {
     try {
-        console.log('🔄 Ejecutando switchTab con status:', status);
+        console.log('🔄 admin-tabs.js: switchTab ejecutado para:', status);
         
-        // Debug: verificar que recibimos los parámetros
-        if (!status) {
-            console.error('❌ Error: status es undefined');
-            alert('Error: status no definido');
-            return;
-        }
+        // Esta función será sobrescrita por el HTML principal
+        // Solo proporciona funcionalidad básica de respaldo
         
-        if (!buttonElement) {
-            console.error('❌ Error: buttonElement es undefined');
-            alert('Error: buttonElement no definido');
-            return;
-        }
-        
-        // Mostrar alert de confirmación
-        alert('✅ Función switchTab ejecutándose correctamente para: ' + status);
-        
-        // Actualizar variable global
         currentTab = status;
-        console.log('📝 currentTab actualizado a:', currentTab);
         
         // Remover clase active de todos los botones
         const allButtons = document.querySelectorAll('.tab-btn');
-        console.log('🔍 Encontrados', allButtons.length, 'botones');
-        
-        allButtons.forEach(btn => {
-            btn.classList.remove('active');
-            console.log('🔲 Removida clase active de botón');
-        });
+        allButtons.forEach(btn => btn.classList.remove('active'));
         
         // Agregar clase active al botón clickeado
-        buttonElement.classList.add('active');
-        console.log('✅ Clase active agregada al botón clickeado');
-        
-        // Verificar si existe la función loadUsers
-        if (typeof loadUsers === 'function') {
-            console.log('📊 Llamando a loadUsers con status:', status);
-            loadUsers(status);
-        } else {
-            console.warn('⚠️ Función loadUsers no encontrada');
-            // Mostrar contenido simple para testing
-            const tableBody = document.getElementById('usersTableBody');
-            if (tableBody) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 2rem; color: #666;">
-                            🔍 Mostrando datos para: <strong>${status}</strong>
-                            <br><small>Función loadUsers no disponible - modo testing</small>
-                        </td>
-                    </tr>
-                `;
-            }
+        if (buttonElement) {
+            buttonElement.classList.add('active');
         }
         
-        console.log('✅ switchTab completado exitosamente');
+        console.log('✅ admin-tabs.js: Pestaña básica cambiada a:', status);
         
     } catch (error) {
-        console.error('❌ Error en switchTab:', error);
-        alert('Error en switchTab: ' + error.message);
+        console.error('❌ Error en admin-tabs.js switchTab:', error);
     }
 }
 
-// Función de inicialización
+// Función de inicialización básica
 function initializeTabs() {
-    console.log('🚀 Inicializando sistema de pestañas...');
+    console.log('� admin-tabs.js: Inicializando pestañas básicas...');
     
-    // Verificar que existen los botones
     const buttons = document.querySelectorAll('.tab-btn');
-    console.log('🔍 Botones encontrados:', buttons.length);
+    console.log('🔍 admin-tabs.js: Botones encontrados:', buttons.length);
     
-    if (buttons.length === 0) {
-        console.error('❌ No se encontraron botones .tab-btn');
-        return;
+    if (buttons.length > 0) {
+        const firstButton = buttons[0];
+        if (firstButton && !firstButton.classList.contains('active')) {
+            firstButton.classList.add('active');
+        }
     }
     
-    // Verificar que el primer botón tiene la clase active
-    const firstButton = buttons[0];
-    if (firstButton && !firstButton.classList.contains('active')) {
-        firstButton.classList.add('active');
-        console.log('✅ Clase active agregada al primer botón');
-    }
+    console.log('✅ admin-tabs.js: Inicialización básica completada');
+}
+
+// Función de testing para verificar funcionamiento
+function testTabSystem() {
+    const tabs = ['pendiente', 'aprobada', 'rechazada', 'todos'];
     
-    console.log('✅ Sistema de pestañas inicializado');
+    console.log('🧪 Iniciando test del sistema de pestañas...');
+    
+    let currentIndex = 0;
+    const interval = setInterval(() => {
+        if (currentIndex < tabs.length) {
+            const status = tabs[currentIndex];
+            const button = document.getElementById('btn-' + status);
+            console.log(`🔄 Testing pestaña ${currentIndex + 1}: ${status}`);
+            
+            // Usar la función global switchTab (que puede ser sobrescrita)
+            if (window.switchTab) {
+                window.switchTab(status, button);
+            } else {
+                switchTab(status, button);
+            }
+            
+            currentIndex++;
+        } else {
+            clearInterval(interval);
+            console.log('✅ Test de pestañas completado');
+            // Volver a la primera pestaña
+            const firstBtn = document.getElementById('btn-pendiente');
+            if (window.switchTab) {
+                window.switchTab('pendiente', firstBtn);
+            } else {
+                switchTab('pendiente', firstBtn);
+            }
+        }
+    }, 1500);
 }
 
 // Ejecutar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM cargado - inicializando pestañas');
-    setTimeout(initializeTabs, 100); // Pequeño delay para asegurar que todo esté cargado
+    console.log('📄 admin-tabs.js: DOM cargado');
+    setTimeout(() => {
+        // Solo inicializar si no hay una función switchTab más específica
+        if (!window.switchTab || window.switchTab === switchTab) {
+            initializeTabs();
+        } else {
+            console.log('ℹ️ admin-tabs.js: Función switchTab ya sobrescrita, no inicializando');
+        }
+    }, 100);
 });
 
-// Función simple para testing sin dependencias
-function testTabFunction() {
-    alert('🧪 Función de testing ejecutada correctamente');
-    console.log('🧪 Test function ejecutada');
+// Exportar funciones para uso global (serán sobrescritas si es necesario)
+if (!window.switchTab) {
+    window.switchTab = switchTab;
 }
+window.testTabSystem = testTabSystem;

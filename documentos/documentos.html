@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +7,189 @@
     <link rel="stylesheet" href="../css/estilo.css">
     <link rel="stylesheet" href="../css/documentos.css">
     <link rel="stylesheet" href="../css/iconos-extension.css">
-    <!-- Sistema de Seguridad del Proyecto -->
-    <script src="../js/security.js"></script>
-    <!-- Sistema de Inicialización -->
-    <script src="../js/system-init.js"></script>
+    
+    <style>
+        /* ESTILOS OPTIMIZADOS */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 100px; /* Espacio para la barra de navegación estándar */
+        }
+        
+        .back-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #2c5aa0;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .main-tabs-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .main-tab-btn {
+            flex: 1;
+            background: #f8f9fa;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .main-tab-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .main-tab-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .main-content-section {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .main-content-section.active {
+            display: block;
+        }
+        
+        .form-tabs-navigation {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+        
+        .form-tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .form-tab-btn.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .form-tab-content {
+            display: none;
+        }
+        
+        .form-tab-content.active {
+            display: block;
+        }
+        
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .document-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+        
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+    </style>
 </head>
-
 <body>
     <!-- Barra de navegación -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <img src="../images/slep-logo.png" alt="SLEP IQUIQUE" class="logo-image" style="height: 40px; width: auto; margin-right: 10px;" onerror="this.style.display='none'">
                 <div class="logo-text">
                     <span class="logo-main">SLEP IQUIQUE</span>
                     <span class="logo-subtitle">Documentos</span>
@@ -27,162 +197,137 @@
             </div>
             <div class="nav-menu">
                 <a href="../index.html" class="nav-link">Inicio</a>
-                <a href="#" class="nav-link" id="userInfo"></a>
+                <a href="#" class="nav-link" id="userInfo">Usuario</a>
                 <a href="#" class="nav-link" id="logoutBtn">Cerrar Sesión</a>
             </div>
         </div>
     </nav>
 
-    <div class="container documents-container">
-        <a href="../index.html" class="back-btn">← Volver al Menú Principal</a>
-
-        <header class="header">
-            <h1>📋 Gestión de Documentos de Acompañamiento</h1>
-            <p id="welcomeMessage">Sistema de gestión de documentos pedagógicos</p>
-        </header>
+    <div class="container">
+        
+        
+        <div class="header">
+            <h1>📋 Gestión de Documentos</h1>
+            <p>Sistema SLEP IQUIQUE - Acompañamiento Pedagógico</p>
+        </div>
 
         <!-- Estadísticas -->
         <div class="stats-section">
             <div class="stat-box">
                 <div class="stat-number" id="totalDocs">0</div>
-                <div class="stat-label">Total Documentos</div>
+                <div class="stat-label">📄 Documentos Totales</div>
             </div>
             <div class="stat-box">
                 <div class="stat-number" id="totalEstablecimientos">0</div>
-                <div class="stat-label">Establecimientos</div>
+                <div class="stat-label">🏫 Establecimientos</div>
             </div>
             <div class="stat-box">
                 <div class="stat-number" id="recentUploads">0</div>
-                <div class="stat-label">Este Mes</div>
+                <div class="stat-label">📅 Este Mes</div>
             </div>
             <div class="stat-box">
                 <div class="stat-number" id="totalAsesores">0</div>
-                <div class="stat-label">Asesores Activos</div>
+                <div class="stat-label">👥 Asesores</div>
             </div>
         </div>
 
-        <!-- Navegación principal por pestañas -->
+        <!-- Navegación de pestañas principales -->
         <div class="main-tabs-navigation">
-            <button class="main-tab-btn active" data-maintab="nuevo-documento" onclick="switchMainTab('nuevo-documento', this)">
+            <button class="main-tab-btn active" data-maintab="nuevo-documento" onclick="switchMainTab('nuevo-documento')">
                 📝 Nuevo Documento
             </button>
-            <button class="main-tab-btn" data-maintab="documentos-guardados" onclick="switchMainTab('documentos-guardados', this)">
-                📁 Documentos Guardados
+            <button class="main-tab-btn" data-maintab="documentos-guardados" onclick="switchMainTab('documentos-guardados')">
+                📂 Documentos Guardados
             </button>
         </div>
 
-        <!-- Pestaña Principal: Nuevo Documento -->
-        <div class="main-tab-content active" data-maintab="nuevo-documento">
+        <!-- Sección: Nuevo Documento -->
+        <div id="nuevo-documento" class="main-content-section active">
             <div class="upload-section">
-                <h3>📋 Registrar Nuevo Documento de Acompañamiento</h3>
-
-                <!-- Sub-pestañas para el formulario -->
-                <div class="form-tabs-navigation">
-                    <button type="button" class="form-tab-btn active" data-formtab="datos-basicos">
-                        📋 Datos Básicos
-                    </button>
-                    <button type="button" class="form-tab-btn" data-formtab="desarrollo-visita">
-                        📝 Desarrollo de la Visita
-                    </button>
-                </div>
-
                 <form id="uploadForm">
-                    <!-- Sub-pestaña 1: Datos Básicos -->
-                    <div class="form-tab-content active" data-formtab="datos-basicos">
-                        <!-- Grid principal de datos básicos -->
-                        <div class="datos-basicos-grid">
-                            <!-- Fila 1: N° ACTA | Fecha de Visita -->
-                            <div class="grid-row acta-fecha">
+                    <!-- Pestañas del formulario -->
+                    <div class="form-tabs-navigation">
+                        <button type="button" class="form-tab-btn active" data-tab="datos-basicos" onclick="switchFormTab('datos-basicos')">
+                            📋 Datos Básicos
+                        </button>
+                        <button type="button" class="form-tab-btn" data-tab="desarrollo-visita" onclick="switchFormTab('desarrollo-visita')">
+                            🔄 Desarrollo de Visita
+                        </button>
+                    </div>
+
+                    <!-- Pestaña: Datos Básicos -->
+                    <div id="datos-basicos" class="form-tab-content active">
+                        <div class="form-section">
+                            <h3>📋 Información General</h3>
+                            
+                            <div class="form-row">
                                 <div class="form-group">
-                                    <label for="acta" class="required">📋 N° ACTA</label>
-                                    <input type="text" id="acta" name="acta" required placeholder="Ej: ACTA-001-2025">
+                                    <label for="acta" class="required">🏷️ N° ACTA</label>
+                                    <input type="text" id="acta" name="acta" required readonly style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold; text-align: center;">
                                 </div>
-                                <div class="form-group fecha-destacada">
-                                    <label for="fecha" class="required">📅 Fecha de Visita</label>
+                                <div class="form-group">
+                                    <label for="fecha" class="required">📅 Fecha</label>
                                     <input type="date" id="fecha" name="fecha" required>
                                 </div>
                             </div>
 
-                            <!-- Fila 2: Objetivo Estratégico -->
-                            <div class="grid-row objetivo">
-                                <div class="form-group full-width">
-                                    <label for="objetivo" class="required">🎯 Objetivo Estratégico</label>
-                                    <textarea id="objetivo" name="objetivo" required rows="3"
-                                        placeholder="Describe el objetivo estratégico de esta visita de acompañamiento..."></textarea>
-                                </div>
+                            <div class="form-group">
+                                <label for="objetivo" class="required">🎯 Objetivo Estratégico</label>
+                                <textarea id="objetivo" name="objetivo" required rows="3" placeholder="Describir el objetivo estratégico del acompañamiento..."></textarea>
                             </div>
+                        </div>
 
-                            <!-- Fila 3: Establecimiento | RBD (automático) -->
-                            <div class="grid-row establecimiento-rbd">
-                                <div class="form-group establecimiento-select">
-                                    <label for="establecimiento" class="required">🏫 Establecimiento</label>
-                                    <select id="establecimiento" name="establecimiento" required>
-                                        <option value="">Seleccionar establecimiento...</option>
-                                        <option value="Instituto Comercial Baldomero Wolnitzky" data-rbd="97-3">Instituto Comercial Baldomero Wolnitzky</option>
-                                        <option value="Escuela Especial Flor del Inca" data-rbd="102-3">Escuela Especial Flor del Inca</option>
-                                        <option value="Escuela Artística Violeta Parra" data-rbd="103-1">Escuela Artística Violeta Parra</option>
-                                        <option value="Centro Capacitación Laboral" data-rbd="105-8">Centro Capacitación Laboral</option>
-                                        <option value="Liceo Libertador General Bernardo O'Higgins" data-rbd="107-4">Liceo Libertador General Bernardo O'Higgins</option>
-                                        <option value="Liceo Politécnico José Gutiérrez de la Fuente" data-rbd="108-2">Liceo Politécnico José Gutiérrez de la Fuente</option>
-                                        <option value="Liceo Deportivo Elena Duvauchelle Cabezón" data-rbd="109-0">Liceo Deportivo Elena Duvauchelle Cabezón</option>
-                                        <option value="Liceo Bicentenario Domingo Santa María" data-rbd="110-4">Liceo Bicentenario Domingo Santa María</option>
-                                        <option value="Escuela Gabriela Mistral" data-rbd="111-2">Escuela Gabriela Mistral</option>
-                                        <option value="Escuela Eduardo Llanos" data-rbd="112-0">Escuela Eduardo Llanos</option>
-                                        <option value="Escuela Almirante Patricio Lynch" data-rbd="113-9">Escuela Almirante Patricio Lynch</option>
-                                        <option value="Escuela Plácido Villarroel" data-rbd="114-7">Escuela Plácido Villarroel</option>
-                                        <option value="Colegio República de Croacia" data-rbd="116-3">Colegio República de Croacia</option>
-                                        <option value="Escuela Paula Jaraquemada Alquizar" data-rbd="117-1">Escuela Paula Jaraquemada Alquizar</option>
-                                        <option value="Escuela Centenario" data-rbd="119-8">Escuela Centenario</option>
-                                        <option value="Escuela Thilda Portillo Olivares" data-rbd="122-8">Escuela Thilda Portillo Olivares</option>
-                                        <option value="Colegio España" data-rbd="123-6">Colegio España</option>
-                                        <option value="Liceo Luis Cruz Martínez" data-rbd="124-4">Liceo Luis Cruz Martínez</option>
-                                        <option value="Escuela Profesor Manuel Castro Ramos" data-rbd="125-2">Escuela Profesor Manuel Castro Ramos</option>
-                                        <option value="Colegio República de Italia" data-rbd="126-0">Colegio República de Italia</option>
-                                        <option value="Escuela Caleta Chanavayita" data-rbd="10916-9">Escuela Caleta Chanavayita</option>
-                                        <option value="Liceo Bicentenario S.S. Juan Pablo Segundo" data-rbd="10917-7">Liceo Bicentenario S.S. Juan Pablo Segundo</option>
-                                        <option value="Escuela Chipana" data-rbd="12538-5">Escuela Chipana</option>
-                                        <option value="Escuela Caleta San Marcos" data-rbd="12542-3">Escuela Caleta San Marcos</option>
-                                        <option value="Colegio Simón Bolívar" data-rbd="12632-2">Colegio Simón Bolívar</option>
-                                        <option value="Escuela Especial de Lenguaje Oasis del Saber" data-rbd="12739-6">Escuela Especial de Lenguaje Oasis del Saber</option>
-                                        <option value="Liceo C.E.I.A. José Alejandro Soria Varas" data-rbd="12758-2">Liceo C.E.I.A. José Alejandro Soria Varas</option>
-                                        <option value="Liceo Técnico Profesional de Adultos" data-rbd="40429-2">Liceo Técnico Profesional de Adultos</option>
-                                        <option value="Carita de Sol" data-rbd="33015-9">Carita de Sol</option>
-                                        <option value="Oasis Del Saber" data-rbd="33019-1">Oasis Del Saber</option>
-                                        <option value="Intina Wawapa" data-rbd="33020-5">Intina Wawapa</option>
-                                        <option value="Los Naranjos" data-rbd="33021-3">Los Naranjos</option>
-                                        <option value="Tortuguitas" data-rbd="33022-1">Tortuguitas</option>
-                                        <option value="Arumanti" data-rbd="33024-8">Arumanti</option>
-                                        <option value="Lucerito Dorado" data-rbd="33025-6">Lucerito Dorado</option>
-                                        <option value="Aventuras de Aprender" data-rbd="33026-4">Aventuras de Aprender</option>
-                                        <option value="Arcoíris del Desierto" data-rbd="33027-2">Arcoíris del Desierto</option>
-                                        <option value="Magia de Aprender" data-rbd="33028-0">Magia de Aprender</option>
-                                        <option value="Mi Pequeño Mundo" data-rbd="33030-2">Mi Pequeño Mundo</option>
-                                        <option value="Suma Inti" data-rbd="35987-4">Suma Inti</option>
-                                        <option value="SLEP IQUIQUE CENTRAL" data-rbd="SLEP-IQQ">SLEP IQUIQUE CENTRAL</option>
+                        <div class="form-section">
+                            <h3>🏫 Establecimiento y Ubicación</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="establecimiento" class="required">🏢 Establecimiento</label>
+                                    <select id="establecimiento" name="establecimiento" required onchange="handleEstablecimientoChange(this.value)">>
+                                        <option value="">Seleccione un establecimiento</option>
+                                        <option value="Instituto Comercial Baldomero Wolnitzky">Instituto Comercial Baldomero Wolnitzky</option>
+                                        <option value="INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY">INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY</option>
+                                        <option value="Escuela Especial Flor del Inca">Escuela Especial Flor del Inca</option>
+                                        <option value="Escuela Artística Violeta Parra">Escuela Artística Violeta Parra</option>
+                                        <option value="Centro de Capacitación Laboral">Centro de Capacitación Laboral</option>
+                                        <option value="Liceo Libertador General Bernardo O'Higgins">Liceo Libertador General Bernardo O'Higgins</option>
+                                        <option value="Liceo Politécnico José Gutiérrez de la Fuente">Liceo Politécnico José Gutiérrez de la Fuente</option>
+                                        <option value="Liceo Deportivo Elena Duvauchelle Cabezón">Liceo Deportivo Elena Duvauchelle Cabezón</option>
+                                        <option value="Liceo Bicentenario Domingo Santa María">Liceo Bicentenario Domingo Santa María</option>
+                                        <option value="Escuela Gabriela Mistral">Escuela Gabriela Mistral</option>
+                                        <option value="Escuela Eduardo Llanos Nava">Escuela Eduardo Llanos Nava</option>
+                                        <option value="Escuela Almirante Patricio Lynch">Escuela Almirante Patricio Lynch</option>
+                                        <option value="Escuela Plácido Villarroel">Escuela Plácido Villarroel</option>
+                                        <option value="Escuela República de Croacia">Escuela República de Croacia</option>
+                                        <option value="Escuela Paula Jaraquemada">Escuela Paula Jaraquemada</option>
+                                        <option value="Escuela Centenario">Escuela Centenario</option>
+                                        <option value="Escuela Thilda Portillo Olivares">Escuela Thilda Portillo Olivares</option>
+                                        <option value="Escuela España">Escuela España</option>
+                                        <option value="Liceo Luis Cruz Martínez">Liceo Luis Cruz Martínez</option>
+                                        <option value="Colegio Manuel Castro Ramos">Colegio Manuel Castro Ramos</option>
+                                        <option value="Colegio República de Italia">Colegio República de Italia</option>
+                                        <option value="Escuela Caleta Chanavayita">Escuela Caleta Chanavayita</option>
+                                        <option value="Liceo Bicentenario Minero Juan Pablo II">Liceo Bicentenario Minero Juan Pablo II</option>
+                                        <option value="Escuela Chipana">Escuela Chipana</option>
+                                        <option value="Escuela San Marcos">Escuela San Marcos</option>
+                                        <option value="Colegio Simón Bolívar">Colegio Simón Bolívar</option>
+                                        <option value="Escuela Oasis del Saber">Escuela Oasis del Saber</option>
+                                        <option value="Liceo CEIA José Alejandro Soria Varas">Liceo CEIA José Alejandro Soria Varas</option>
+                                        <option value="Liceo Técnico Profesional de Adultos">Liceo Técnico Profesional de Adultos</option>
+                                        <option value="Otro establecimiento">Otro establecimiento</option>
                                     </select>
                                 </div>
-                                <div class="form-group rbd-input">
-                                    <label for="rbd" class="required">🏷️ RBD (automático)</label>
-                                    <input type="text" id="rbd" name="rbd" required placeholder="Se completa automáticamente" readonly>
+                                <div class="form-group">
+                                    <label for="rbd" class="required">🏢 RBD</label>
+                                    <input type="text" id="rbd" name="rbd" required readonly placeholder="Seleccione un establecimiento primero" style="background: #f8fafc; color: #64748b; text-align: center;">
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Fila 4: Asesor 1 | Asesor 2 -->
-                            <div class="grid-row asesores">
-                                <div class="form-group">
-                                    <label for="asesor1" class="required">👤 Asesor 1</label>
-                                    <input type="text" id="asesor1" name="asesor1" required
-                                        placeholder="Nombre completo del asesor principal">
-                                </div>
-                                <div class="form-group">
-                                    <label for="asesor2">👤 Asesor 2</label>
-                                    <input type="text" id="asesor2" name="asesor2"
-                                        placeholder="Nombre del asesor secundario (opcional)">
-                                </div>
-                            </div>
-
-                            <!-- Fila 5: Hora inicio | Hora término | Modalidad -->
-                            <div class="grid-row horarios">
+                        <div class="form-section">
+                            <h3>⏰ Horarios y Modalidad</h3>
+                            
+                            <div class="form-row">
                                 <div class="form-group">
                                     <label for="hora" class="required">🕐 Hora Inicio</label>
                                     <input type="time" id="hora" name="hora" required>
@@ -191,794 +336,294 @@
                                     <label for="horaTermino" class="required">🕐 Hora Término</label>
                                     <input type="time" id="horaTermino" name="horaTermino" required>
                                 </div>
+                            </div>
+
+                            <div class="form-row">
                                 <div class="form-group">
                                     <label for="modalidad" class="required">📍 Modalidad</label>
                                     <select id="modalidad" name="modalidad" required>
-                                        <option value="">Seleccionar modalidad...</option>
-                                        <option value="presencial">Presencial</option>
-                                        <option value="virtual">Virtual</option>
-                                        <option value="mixta">Mixta</option>
+                                        <option value="">Seleccione modalidad</option>
+                                        <option value="Presencial">Presencial</option>
+                                        <option value="Virtual">Virtual</option>
+                                        <option value="Híbrida">Híbrida</option>
                                     </select>
                                 </div>
-                            </div>
-
-                            <!-- Fila 6: Ciclo de apoyo técnico pedagógico | Capacidad basal focalizada -->
-                            <div class="grid-row ciclos">
                                 <div class="form-group">
-                                    <label for="cicloApoyo" class="required">🔄 Ciclo de Apoyo Técnico Pedagógico</label>
+                                    <label for="cicloApoyo" class="required">🔄 Ciclo de Apoyo</label>
                                     <select id="cicloApoyo" name="cicloApoyo" required>
-                                        <option value="">Seleccionar ciclo...</option>
-                                        <option value="involucramiento">Involucramiento</option>
-                                        <option value="diagnostico">Diagnóstico</option>
-                                        <option value="planificacion">Planificación</option>
-                                        <option value="ejecucion">Ejecución</option>
-                                        <option value="evaluacion">Evaluación</option>
+                                        <option value="">Seleccione ciclo</option>
+                                        <option value="Ciclo 1">Ciclo 1</option>
+                                        <option value="Ciclo 2">Ciclo 2</option>
+                                        <option value="Ciclo 3">Ciclo 3</option>
+                                        <option value="Ciclo 4">Ciclo 4</option>
                                     </select>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>👥 Equipo de Asesores</h3>
+                            
+                            <div class="form-row">
                                 <div class="form-group">
-                                    <label for="capacidadBasal" class="required">⚡ Capacidad Basal Focalizada</label>
+                                    <label for="asesor1" class="required">👨‍🏫 Asesor Principal</label>
+                                    <input type="text" id="asesor1" name="asesor1" required placeholder="Nombre completo del asesor principal">
+                                </div>
+                                <div class="form-group">
+                                    <label for="asesor2">👨‍🏫 Asesor Secundario</label>
+                                    <input type="text" id="asesor2" name="asesor2" placeholder="Nombre completo del asesor secundario (opcional)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>💡 Capacidades y Competencias</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="capacidadBasal" class="required">🎯 Capacidad Basal Focalizada</label>
                                     <select id="capacidadBasal" name="capacidadBasal" required>
-                                        <option value="">Seleccionar capacidad...</option>
-                                        <option value="reflexion">Reflexión</option>
-                                        <option value="colaboracion">Colaboración</option>
-                                        <option value="confianza-relacional">Confianza Relacional</option>
-                                        <option value="liderazgo-distribuido">Liderazgo Distribuido</option>
+                                        <option value="">Seleccione capacidad</option>
+                                        <option value="Liderazgo Pedagógico">Liderazgo Pedagógico</option>
+                                        <option value="Gestión Curricular">Gestión Curricular</option>
+                                        <option value="Convivencia Escolar">Convivencia Escolar</option>
+                                        <option value="Gestión de Recursos">Gestión de Recursos</option>
+                                        <option value="Evaluación y Monitoreo">Evaluación y Monitoreo</option>
                                     </select>
                                 </div>
-                            </div>
-
-                            <!-- Fila 7: Nivel implementación capacidad basal | Rol profesional -->
-                            <div class="grid-row nivel-rol">
                                 <div class="form-group">
-                                    <label for="nivelImplementacion" class="required">📊 Nivel Implementación Capacidad Basal</label>
+                                    <label for="nivelImplementacion" class="required">📊 Nivel de Implementación</label>
                                     <select id="nivelImplementacion" name="nivelImplementacion" required>
-                                        <option value="">Seleccionar nivel...</option>
-                                        <option value="exploracion">Exploración</option>
-                                        <option value="emergente">Emergente</option>
-                                        <option value="satisfactoria">Satisfactoria</option>
-                                        <option value="sustentabilidad">Sustentabilidad</option>
+                                        <option value="">Seleccione nivel</option>
+                                        <option value="Inicial">Inicial</option>
+                                        <option value="En Desarrollo">En Desarrollo</option>
+                                        <option value="Avanzado">Avanzado</option>
+                                        <option value="Consolidado">Consolidado</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label for="rolProfesional" class="required">👔 Rol Profesional</label>
-                                    <select id="rolProfesional" name="rolProfesional" required>
-                                        <option value="">Seleccionar rol...</option>
-                                        <option value="acompañante">Acompañante</option>
-                                        <option value="facilitador">Facilitador(a)</option>
-                                        <option value="orientador">Orientador(a)</option>
-                                        <option value="articulador">Articulador(a)</option>
-                                    </select>
-                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="rolProfesional" class="required">👔 Rol Profesional</label>
+                                <select id="rolProfesional" name="rolProfesional" required>
+                                    <option value="">Seleccione rol</option>
+                                    <option value="Director/a">Director/a</option>
+                                    <option value="Subdirector/a">Subdirector/a</option>
+                                    <option value="Jefe UTP">Jefe UTP</option>
+                                    <option value="Inspector General">Inspector General</option>
+                                    <option value="Coordinador/a">Coordinador/a</option>
+                                    <option value="Docente">Docente</option>
+                                    <option value="Equipo Directivo">Equipo Directivo</option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Sub-pestaña 2: Desarrollo de la Visita -->
-                    <div class="form-tab-content" data-formtab="desarrollo-visita">
-                        <div class="form-group full-width">
-                            <label for="objetivoVisita" class="required">🎯 Objetivo de la Visita</label>
-                            <textarea id="objetivoVisita" name="objetivoVisita" rows="3" required
-                                placeholder="Describe el objetivo principal de esta visita de acompañamiento..."></textarea>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="antecedentes">📋 Antecedentes</label>
-                            <textarea id="antecedentes" name="antecedentes" rows="3"
-                                placeholder="Describe los antecedentes relevantes para esta visita..."></textarea>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="instrumentos">🔧 Instrumentos/Insumos Utilizados</label>
-                            <textarea id="instrumentos" name="instrumentos" rows="3"
-                                placeholder="Lista los instrumentos, materiales o insumos utilizados durante la visita..."></textarea>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="practica">⚠️ Práctica Problemática</label>
-                            <textarea id="practica" name="practica" rows="4"
-                                placeholder="Describe las prácticas problemáticas identificadas durante la observación..."></textarea>
+                    <!-- Pestaña: Desarrollo de Visita -->
+                    <div id="desarrollo-visita" class="form-tab-content">
+                        <div class="form-section">
+                            <h3>🎯 Objetivos y Propósitos</h3>
+                            
+                            <div class="form-group">
+                                <label for="objetivoVisita" class="required">🎯 Objetivo de la Visita</label>
+                                <textarea id="objetivoVisita" name="objetivoVisita" required rows="3" placeholder="Describir el objetivo específico de esta visita de acompañamiento..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="antecedentes">📋 Antecedentes</label>
+                                <textarea id="antecedentes" name="antecedentes" rows="3" placeholder="Contexto y antecedentes relevantes para la visita..."></textarea>
+                            </div>
                         </div>
 
-                        <div class="form-group full-width">
-                            <label for="actividades" class="required">🔄 Actividades Realizadas</label>
-                            <textarea id="actividades" name="actividades" rows="4" required
-                                placeholder="Detalla las actividades desarrolladas durante el acompañamiento..."></textarea>
+                        <div class="form-section">
+                            <h3>🔧 Metodología e Instrumentos</h3>
+                            
+                            <div class="form-group">
+                                <label for="instrumentos">🔧 Instrumentos/Insumos Utilizados</label>
+                                <textarea id="instrumentos" name="instrumentos" rows="3" placeholder="Instrumentos, pautas, materiales utilizados durante la visita..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="practica">⚠️ Práctica Problemática</label>
+                                <textarea id="practica" name="practica" rows="3" placeholder="Descripción de prácticas problemáticas identificadas..."></textarea>
+                            </div>
                         </div>
 
-                        <div class="form-group full-width">
-                            <label for="acuerdos" class="required">📝 Acuerdos/Fecha de Implementación/Responsables</label>
-                            <textarea id="acuerdos" name="acuerdos" rows="4" required
-                                placeholder="Lista los acuerdos establecidos, fechas de implementación y responsables asignados..."></textarea>
+                        <div class="form-section">
+                            <h3>🔄 Desarrollo y Actividades</h3>
+                            
+                            <div class="form-group">
+                                <label for="actividades" class="required">🔄 Actividades Realizadas</label>
+                                <textarea id="actividades" name="actividades" required rows="4" placeholder="Descripción detallada de las actividades realizadas durante la visita..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="acuerdos" class="required">📝 Acuerdos/Fecha de Implementación/Responsables</label>
+                                <textarea id="acuerdos" name="acuerdos" required rows="4" placeholder="Acuerdos establecidos, fechas de implementación y responsables..."></textarea>
+                            </div>
                         </div>
 
-                        <div class="form-group full-width">
-                            <label for="aspectosPositivos" class="required">✅ Aspectos Positivos Observados</label>
-                            <textarea id="aspectosPositivos" name="aspectosPositivos" rows="3" required
-                                placeholder="Destaca los aspectos positivos identificados durante la visita..."></textarea>
-                        </div>
+                        <div class="form-section">
+                            <h3>📊 Evaluación y Seguimiento</h3>
+                            
+                            <div class="form-group">
+                                <label for="aspectosPositivos" class="required">✅ Aspectos Positivos Observados</label>
+                                <textarea id="aspectosPositivos" name="aspectosPositivos" required rows="3" placeholder="Fortalezas y aspectos positivos identificados..."></textarea>
+                            </div>
 
-                        <div class="form-group full-width">
-                            <label for="areasMejora" class="required">📈 Áreas de Mejora Identificadas</label>
-                            <textarea id="areasMejora" name="areasMejora" rows="3" required
-                                placeholder="Identifica las principales áreas que requieren mejora..."></textarea>
+                            <div class="form-group">
+                                <label for="areasMejora" class="required">📈 Áreas de Mejora Identificadas</label>
+                                <textarea id="areasMejora" name="areasMejora" required rows="3" placeholder="Áreas que requieren mejora o fortalecimiento..."></textarea>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Navegación entre sub-pestañas -->
+                    <!-- Botones de navegación -->
                     <div class="form-navigation">
-                        <button type="button" id="prevTab" class="nav-btn" style="display: none;">
-                            ← Anterior
-                        </button>
-                        <div style="flex: 1;"></div>
-                        <button type="button" id="nextTab" class="nav-btn">
-                            Siguiente →
-                        </button>
-                        <button type="submit" id="submitBtn" style="display: none;">
-                            💾 Guardar Documento
-                        </button>
+                        <button type="submit" id="submitBtn" class="nav-btn primary">💾 Guardar Documento</button>
                     </div>
                 </form>
             </div>
         </div>
 
-
-
-    <!-- Pestaña Principal: Documentos Guardados -->
-    <div class="main-tab-content" data-maintab="documentos-guardados">
-        <div class="documents-section">
-            <div style="margin-bottom: 1.5rem;">
-                <h3>📁 Documentos de Acompañamiento Guardados</h3>
-                <p style="color: #666; font-size: 0.9rem;">Gestiona y visualiza todos tus documentos de acompañamiento pedagógico</p>
-            </div>
-
-            <!-- Buscador por ACTA -->
-            <div style="margin-bottom: 1.5rem;">
-                <div style="max-width: 400px; position: relative;">
-                    <input type="text" id="searchActa" placeholder="🔍 Buscar por N° ACTA o Folio..." style="
-                            width: 100%;
-                            padding: 1rem 1rem 1rem 3rem;
-                            border: 2px solid #667eea;
-                            border-radius: 25px;
-                            font-size: 1rem;
-                            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
-                            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
-                        ">
-                    <div style="
-                            position: absolute;
-                            left: 1rem;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            color: #667eea;
-                            font-size: 1.2rem;
-                        ">🔍</div>
+        <!-- Sección: Documentos Guardados -->
+        <div id="documentos-guardados" class="main-content-section">
+            <div class="search-section">
+                <h3>🔍 Buscar Documentos</h3>
+                <div class="search-controls">
+                    <input type="text" id="searchActa" placeholder="Buscar por N° ACTA..." onkeyup="searchDocuments()">>
                 </div>
-                <small style="color: #666; margin-top: 0.5rem; display: block;">
-                    Ejemplo: ACTA-001-2025 o simplemente 001
-                </small>
             </div>
 
-            <div class="documents-grid" id="documentsGrid">
+            <div id="documentsGrid" class="documents-grid">
                 <!-- Los documentos se cargarán aquí dinámicamente -->
             </div>
         </div>
     </div>
-    </div>
 
+    <!-- Sistema de JavaScript LIMPIO - Solo clase externa -->
     <script src="../js/login.js"></script>
     <script src="../js/documentos-html.js"></script>
     <script>
-        console.log('🚀 Iniciando sistema de documentos...');
-
-        // Variables globales para el estado de las pestañas
-        let currentMainTab = 'nuevo-documento';
-        let currentFormTab = 0;
-        const formTabs = ['datos-basicos', 'desarrollo-visita'];
-
-        // Función para cambiar pestañas principales - SIMPLIFICADA
-        function switchMainTab(tabName, buttonElement) {
+        console.log('🚀 Iniciando sistema de documentos SLEP IQUIQUE (SOLO CLASE EXTERNA)...');
+        
+        // Instanciar la clase DocumentManagerHTML (SISTEMA ÚNICO)
+        window.documentManagerHTML = new DocumentManagerHTML();
+        console.log('✅ DocumentManagerHTML instanciado correctamente');
+        
+        // Actualizar información del usuario en la barra de navegación
+        function updateNavUserInfo() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const userInfo = document.getElementById('userInfo');
+            
+            if (currentUser.username) {
+                const userDisplay = `👤 ${currentUser.username}`;
+                if (userInfo) userInfo.textContent = userDisplay;
+            }
+        }
+        
+        // Configurar eventos de logout
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (documentManagerHTML && documentManagerHTML.logout) {
+                    documentManagerHTML.logout();
+                } else {
+                    if (confirm('¿Está seguro de que desea cerrar sesión?')) {
+                        localStorage.removeItem('currentUser');
+                        window.location.href = '../index.html';
+                    }
+                }
+            });
+        }
+        
+        // Función para cambiar pestañas principales
+        function switchMainTab(tabName) {
             console.log('🔄 Cambiando a pestaña principal:', tabName);
             
-            try {
-                // Actualizar variable global
-                currentMainTab = tabName;
-                
-                // Remover active de TODOS los botones principales
-                document.querySelectorAll('.main-tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Remover active de TODOS los contenidos principales
-                document.querySelectorAll('.main-tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Activar botón clickeado
-                if (buttonElement) {
-                    buttonElement.classList.add('active');
-                }
-                
-                // Activar contenido correspondiente
-                const targetContent = document.querySelector(`[data-maintab="${tabName}"]`);
-                if (targetContent) {
-                    targetContent.classList.add('active');
-                    console.log('✅ Pestaña principal activada:', tabName);
-                    
-                    // Si es la pestaña de documentos guardados, cargar documentos
-                    if (tabName === 'documentos-guardados') {
-                        setTimeout(() => {
-                            loadSavedDocuments();
-                        }, 100);
-                    }
-                } else {
-                    console.error('❌ No se encontró contenido para:', tabName);
-                }
-                
-            } catch (error) {
-                console.error('❌ Error cambiando pestaña:', error);
-            }
-        }
-
-        // Función para cargar documentos guardados
-        function loadSavedDocuments() {
-            console.log('📂 Cargando documentos guardados...');
-            
-            const savedDocuments = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
-            const documentsGrid = document.getElementById('documentsGrid');
-            
-            if (!documentsGrid) {
-                console.error('❌ No se encontró documentsGrid');
-                return;
-            }
-            
-            if (savedDocuments.length === 0) {
-                documentsGrid.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; color: #666; grid-column: 1 / -1;">
-                        <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
-                        <h3>No hay documentos guardados</h3>
-                        <p>Crea tu primer documento usando la pestaña "Nuevo Documento"</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Generar HTML para cada documento
-            const documentsHTML = savedDocuments.map(doc => `
-                <div class="document-card" style="
-                    border: 1px solid #e0e0e0;
-                    border-radius: 8px;
-                    padding: 1.5rem;
-                    background: white;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    transition: all 0.3s ease;
-                ">
-                    <div style="display: flex; justify-content: between; align-items: flex-start; margin-bottom: 1rem;">
-                        <div style="flex: 1;">
-                            <h4 style="margin: 0 0 0.5rem 0; color: #2c5aa0; font-size: 1.1rem;">
-                                📋 ${doc.acta || 'Sin N° ACTA'}
-                            </h4>
-                            <p style="margin: 0; color: #666; font-size: 0.9rem;">
-                                ${doc.establecimiento || 'Sin establecimiento'}
-                            </p>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 0.8rem; color: #999;">
-                                ${doc.fecha ? new Date(doc.fecha).toLocaleDateString('es-CL') : 'Sin fecha'}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-bottom: 1rem;">
-                        <div style="font-size: 0.85rem; color: #555; margin-bottom: 0.5rem;">
-                            <strong>Asesor:</strong> ${doc.asesor1 || 'No especificado'}
-                        </div>
-                        <div style="font-size: 0.85rem; color: #555;">
-                            <strong>Modalidad:</strong> ${doc.modalidad || 'No especificada'}
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button onclick="exportToPDF('${doc.id}')" style="
-                            background: #007bff;
-                            color: white;
-                            border: none;
-                            padding: 0.5rem 1rem;
-                            border-radius: 4px;
-                            cursor: pointer;
-                            font-size: 0.85rem;
-                        ">👁️ Ver PDF</button>
-                        
-                        <button onclick="editDocument('${doc.id}')" style="
-                            background: #28a745;
-                            color: white;
-                            border: none;
-                            padding: 0.5rem 1rem;
-                            border-radius: 4px;
-                            cursor: pointer;
-                            font-size: 0.85rem;
-                        ">✏️ Editar</button>
-                        
-                        <button onclick="deleteDocument('${doc.id}')" style="
-                            background: #dc3545;
-                            color: white;
-                            border: none;
-                            padding: 0.5rem 1rem;
-                            border-radius: 4px;
-                            cursor: pointer;
-                            font-size: 0.85rem;
-                        ">🗑️ Eliminar</button>
-                    </div>
-                </div>
-            `).join('');
-            
-            documentsGrid.innerHTML = documentsHTML;
-            console.log(`✅ ${savedDocuments.length} documentos cargados`);
-        }
-
-        // Función para eliminar documento
-        function deleteDocument(documentId) {
-            if (confirm('⚠️ ¿Estás seguro de eliminar este documento?\n\nEsta acción no se puede deshacer.')) {
-                const savedDocuments = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
-                const filteredDocuments = savedDocuments.filter(doc => doc.id !== documentId);
-                
-                localStorage.setItem('savedDocuments', JSON.stringify(filteredDocuments));
-                
-                // Recargar documentos
-                loadSavedDocuments();
-                
-                alert('✅ Documento eliminado correctamente');
-            }
-        }
-
-        // Función para editar documento (simplificada)
-        function editDocument(documentId) {
-            alert('✏️ Función de edición\n\nEsta funcionalidad estará disponible próximamente.\nPor ahora puedes ver el documento en PDF.');
-        }
-
-        // JavaScript para autocompletar RBD cuando se selecciona establecimiento
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('✅ DOM cargado, iniciando sistema...');
-            
-            // Configurar autocompletado RBD
-            const establecimientoSelect = document.getElementById('establecimiento');
-            const rbdInput = document.getElementById('rbd');
-            
-            if (establecimientoSelect && rbdInput) {
-                establecimientoSelect.addEventListener('change', function() {
-                    const selectedOption = this.options[this.selectedIndex];
-                    const rbd = selectedOption.getAttribute('data-rbd');
-                    
-                    if (rbd) {
-                        rbdInput.value = rbd;
-                        rbdInput.style.backgroundColor = '#e8f5e8';
-                        rbdInput.style.fontWeight = 'bold';
-                    } else {
-                        rbdInput.value = '';
-                        rbdInput.style.backgroundColor = '';
-                        rbdInput.style.fontWeight = '';
-                    }
-                });
-                
-                rbdInput.addEventListener('focus', function() {
-                    if (rbdInput.value === '') {
-                        alert('💡 El RBD se completa automáticamente al seleccionar un establecimiento');
-                    }
-                });
-            }
-            
-            // Inicializar sistema de pestañas del formulario
-            initFormTabs();
-            
-            // Asegurar que la pestaña inicial esté activa
-            setTimeout(() => {
-                console.log('🔄 Activando pestaña inicial...');
-                const initialBtn = document.querySelector('.main-tab-btn.active');
-                if (initialBtn) {
-                    switchMainTab('nuevo-documento', initialBtn);
-                }
-            }, 200);
-        });
-
-        function initFormTabs() {
-            console.log('🔧 Inicializando pestañas del formulario...');
-            
-            // Configurar botones de pestañas del formulario
-            document.querySelectorAll('.form-tab-btn').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const targetTab = this.dataset.formtab;
-                    currentFormTab = formTabs.indexOf(targetTab);
-                    showFormTab(currentFormTab);
-                });
+            // Ocultar todas las secciones principales
+            const sections = document.querySelectorAll('.main-content-section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
             });
-
-            // Configurar botones de navegación
-            const prevBtn = document.getElementById('prevTab');
-            const nextBtn = document.getElementById('nextTab');
-            const submitBtn = document.getElementById('submitBtn');
-
-            if (prevBtn) {
-                prevBtn.addEventListener('click', function () {
-                    if (currentFormTab > 0) {
-                        currentFormTab--;
-                        showFormTab(currentFormTab);
-                    }
-                });
+            
+            // Mostrar la sección activa
+            const activeSection = document.getElementById(tabName);
+            if (activeSection) {
+                activeSection.style.display = 'block';
+                activeSection.classList.add('active');
             }
-
-            if (nextBtn) {
-                nextBtn.addEventListener('click', function () {
-                    if (currentFormTab < formTabs.length - 1) {
-                        currentFormTab++;
-                        showFormTab(currentFormTab);
-                    }
-                });
+            
+            // Actualizar botones de pestañas
+            const buttons = document.querySelectorAll('.main-tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-maintab') === tabName) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Cargar datos según la pestaña
+            if (tabName === 'documentos-guardados' && documentManagerHTML) {
+                setTimeout(() => {
+                    documentManagerHTML.loadDocuments();
+                    documentManagerHTML.loadStatistics();
+                }, 100);
             }
-
-            function showFormTab(index) {
-                console.log('🔄 Mostrando sub-pestaña:', index, 'de', formTabs[index]);
-                
-                // Ocultar todas las pestañas del formulario
-                document.querySelectorAll('.form-tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-
-                // Remover active de todos los botones del formulario
-                document.querySelectorAll('.form-tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-
-                // Mostrar la pestaña actual
-                const currentTabName = formTabs[index];
-                const tabContent = document.querySelector(`[data-formtab="${currentTabName}"].form-tab-content`);
-                const tabButton = document.querySelector(`[data-formtab="${currentTabName}"].form-tab-btn`);
-                
-                if (tabContent) {
-                    tabContent.classList.add('active');
-                    console.log('✅ Contenido de formulario activado para:', currentTabName);
-                }
-                
-                if (tabButton) {
-                    tabButton.classList.add('active');
-                    console.log('✅ Botón de formulario activado para:', currentTabName);
-                }
-
-                // Manejar visibilidad de botones de navegación
-                if (prevBtn) {
-                    prevBtn.style.display = index === 0 ? 'none' : 'flex';
-                }
-
-                if (nextBtn && submitBtn) {
-                    if (index === formTabs.length - 1) {
-                        nextBtn.style.display = 'none';
-                        submitBtn.style.display = 'flex';
-                    } else {
-                        nextBtn.style.display = 'flex';
-                        submitBtn.style.display = 'none';
-                    }
-                }
-            }
-
-            // Inicializar la primera pestaña del formulario
-            showFormTab(0);
+            
+            console.log('✅ Pestaña cambiada a:', tabName);
         }
-
-        // Función para generar PDF profesional del documento
-        function exportToPDF(documentId) {
-            const savedDocuments = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
-            const document = savedDocuments.find(doc => doc.id === documentId);
-            
-            if (!document) {
-                alert('❌ Documento no encontrado');
-                return;
-            }
-            
-            // Crear contenido HTML profesional para PDF
-            const pdfContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Documento de Acompañamiento - ${document.acta}</title>
-                    <style>
-                        body {
-                            font-family: 'Arial', sans-serif;
-                            line-height: 1.4;
-                            margin: 0;
-                            padding: 20px;
-                            color: #333;
-                            background: white;
-                        }
-                        .header {
-                            text-align: center;
-                            border-bottom: 3px solid #2c5aa0;
-                            padding-bottom: 20px;
-                            margin-bottom: 25px;
-                        }
-                        .header h1 {
-                            color: #2c5aa0;
-                            font-size: 24px;
-                            margin: 0;
-                            font-weight: bold;
-                        }
-                        .header h2 {
-                            color: #666;
-                            font-size: 18px;
-                            margin: 5px 0 0 0;
-                            font-weight: normal;
-                        }
-                        .section {
-                            margin-bottom: 20px;
-                            page-break-inside: avoid;
-                        }
-                        .section-title {
-                            background: #f8f9fa;
-                            color: #2c5aa0;
-                            padding: 10px 15px;
-                            font-weight: bold;
-                            font-size: 16px;
-                            border-left: 4px solid #2c5aa0;
-                            margin-bottom: 15px;
-                        }
-                        .info-grid {
-                            display: grid;
-                            grid-template-columns: 1fr 1fr;
-                            gap: 15px;
-                            margin-bottom: 20px;
-                        }
-                        .info-item {
-                            border: 1px solid #e0e0e0;
-                            padding: 12px;
-                            border-radius: 5px;
-                            background: #fafafa;
-                        }
-                        .info-item.full-width {
-                            grid-column: 1 / -1;
-                        }
-                        .info-label {
-                            font-weight: bold;
-                            color: #555;
-                            font-size: 14px;
-                            margin-bottom: 5px;
-                            display: block;
-                        }
-                        .info-value {
-                            color: #333;
-                            font-size: 14px;
-                            line-height: 1.5;
-                        }
-                        .text-content {
-                            background: white;
-                            padding: 15px;
-                            border: 1px solid #ddd;
-                            border-radius: 5px;
-                            white-space: pre-wrap;
-                            line-height: 1.6;
-                        }
-                        .footer {
-                            margin-top: 30px;
-                            padding-top: 20px;
-                            border-top: 2px solid #e0e0e0;
-                            text-align: center;
-                            color: #666;
-                            font-size: 12px;
-                        }
-                        @media print {
-                            body { margin: 0; padding: 15px; }
-                            .section { page-break-inside: avoid; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h1>SLEP IQUIQUE</h1>
-                        <h2>Documento de Acompañamiento Pedagógico</h2>
-                    </div>
-
-                    <div class="section">
-                        <div class="section-title">📋 INFORMACIÓN GENERAL</div>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">N° ACTA:</span>
-                                <span class="info-value">${document.acta || 'No especificado'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Fecha de Visita:</span>
-                                <span class="info-value">${document.fecha ? new Date(document.fecha).toLocaleDateString('es-CL') : 'No especificada'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Establecimiento:</span>
-                                <span class="info-value">${document.establecimiento || 'No especificado'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">RBD:</span>
-                                <span class="info-value">${document.rbd || 'No especificado'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Modalidad:</span>
-                                <span class="info-value">${document.modalidad || 'No especificada'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Horario:</span>
-                                <span class="info-value">${document.hora || 'No especificada'} - ${document.horaTermino || 'No especificada'}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section">
-                        <div class="section-title">👥 RESPONSABLES</div>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">Asesor Principal:</span>
-                                <span class="info-value">${document.asesor1 || 'No especificado'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Asesor Secundario:</span>
-                                <span class="info-value">${document.asesor2 || 'No asignado'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Rol Profesional:</span>
-                                <span class="info-value">${document.rolProfesional || 'No especificado'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Ciclo de Apoyo:</span>
-                                <span class="info-value">${document.cicloApoyo || 'No especificado'}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section">
-                        <div class="section-title">🎯 OBJETIVOS Y CAPACIDADES</div>
-                        <div class="info-grid">
-                            <div class="info-item full-width">
-                                <span class="info-label">Objetivo Estratégico:</span>
-                                <div class="text-content">${document.objetivo || 'No especificado'}</div>
-                            </div>
-                            <div class="info-item full-width">
-                                <span class="info-label">Objetivo de la Visita:</span>
-                                <div class="text-content">${document.objetivoVisita || 'No especificado'}</div>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Capacidad Basal Focalizada:</span>
-                                <span class="info-value">${document.capacidadBasal || 'No especificada'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Nivel de Implementación:</span>
-                                <span class="info-value">${document.nivelImplementacion || 'No especificado'}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section">
-                        <div class="section-title">📝 DESARROLLO DE LA VISITA</div>
-                        <div class="info-grid">
-                            <div class="info-item full-width">
-                                <span class="info-label">Antecedentes:</span>
-                                <div class="text-content">${document.antecedentes || 'No especificados'}</div>
-                            </div>
-                            <div class="info-item full-width">
-                                <span class="info-label">Instrumentos/Insumos Utilizados:</span>
-                                <div class="text-content">${document.instrumentos || 'No especificados'}</div>
-                            </div>
-                            <div class="info-item full-width">
-                                <span class="info-label">Actividades Realizadas:</span>
-                                <div class="text-content">${document.actividades || 'No especificadas'}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section">
-                        <div class="section-title">⚠️ OBSERVACIONES Y ANÁLISIS</div>
-                        <div class="info-grid">
-                            <div class="info-item full-width">
-                                <span class="info-label">Práctica Problemática:</span>
-                                <div class="text-content">${document.practica || 'No identificada'}</div>
-                            </div>
-                            <div class="info-item full-width">
-                                <span class="info-label">Aspectos Positivos Observados:</span>
-                                <div class="text-content">${document.aspectosPositivos || 'No especificados'}</div>
-                            </div>
-                            <div class="info-item full-width">
-                                <span class="info-label">Áreas de Mejora Identificadas:</span>
-                                <div class="text-content">${document.areasMejora || 'No especificadas'}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section">
-                        <div class="section-title">📋 ACUERDOS Y COMPROMISOS</div>
-                        <div class="info-grid">
-                            <div class="info-item full-width">
-                                <span class="info-label">Acuerdos/Fecha de Implementación/Responsables:</span>
-                                <div class="text-content">${document.acuerdos || 'No especificados'}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="footer">
-                        <p><strong>Documento generado por SLEP IQUIQUE</strong></p>
-                        <p>Fecha de generación: ${new Date().toLocaleDateString('es-CL')} a las ${new Date().toLocaleTimeString('es-CL')}</p>
-                        <p>Sistema de Gestión de Documentos de Acompañamiento Pedagógico</p>
-                    </div>
-                </body>
-                </html>
-            `;
-            
-            // Abrir nueva ventana para mostrar y permitir imprimir/guardar como PDF
-            const newWindow = window.open('', '_blank', 'width=800,height=900,scrollbars=yes');
-            newWindow.document.write(pdfContent);
-            newWindow.document.close();
-            
-            // Agregar botones de acción en la nueva ventana
-            newWindow.onload = function() {
-                const actionButtons = newWindow.document.createElement('div');
-                actionButtons.style.cssText = `
-                    position: fixed;
-                    top: 10px;
-                    right: 10px;
-                    z-index: 1000;
-                    background: white;
-                    padding: 10px;
-                    border-radius: 5px;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                    border: 1px solid #ddd;
-                `;
-                
-                actionButtons.innerHTML = `
-                    <button onclick="window.print()" style="
-                        background: #007bff;
-                        color: white;
-                        border: none;
-                        padding: 8px 15px;
-                        margin: 0 5px;
-                        border-radius: 3px;
-                        cursor: pointer;
-                        font-size: 12px;
-                    ">🖨️ Imprimir/PDF</button>
-                    <button onclick="window.close()" style="
-                        background: #6c757d;
-                        color: white;
-                        border: none;
-                        padding: 8px 15px;
-                        margin: 0 5px;
-                        border-radius: 3px;
-                        cursor: pointer;
-                        font-size: 12px;
-                    ">✖️ Cerrar</button>
-                `;
-                
-                newWindow.document.body.appendChild(actionButtons);
-                
-                // Ocultar botones al imprimir
-                newWindow.addEventListener('beforeprint', function() {
-                    actionButtons.style.display = 'none';
-                });
-                
-                newWindow.addEventListener('afterprint', function() {
-                    actionButtons.style.display = 'block';
-                });
-            };
-            
-            console.log('✅ PDF generado para documento:', document.acta);
-        }
-
-        // Función simplificada para exportar documentos a PDF
-        function exportAllDocumentsToPDF() {
-            const savedDocuments = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
-            
-            if (savedDocuments.length === 0) {
-                alert('📋 No hay documentos guardados para exportar');
-                return;
-            }
-            
-            alert(`📋 Se encontraron ${savedDocuments.length} documentos\n\n💡 Usa el botón "👁️ Ver PDF" en cada documento individual para generar PDFs profesionales`);
-        }
-
-        // Asegurar que las funciones estén disponibles globalmente
-        window.switchMainTab = switchMainTab;
-        window.exportToPDF = exportToPDF;
-        window.deleteDocument = deleteDocument;
-        window.editDocument = editDocument;
         
-        console.log('✅ Sistema de documentos inicializado');
+        // Función para cambiar pestañas del formulario
+        function switchFormTab(tabName) {
+            console.log('📝 Cambiando pestaña del formulario a:', tabName);
+            
+            // Ocultar todas las pestañas del formulario
+            const formTabs = document.querySelectorAll('.form-tab-content');
+            formTabs.forEach(tab => {
+                tab.style.display = 'none';
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar pestaña activa
+            const activeTab = document.getElementById(tabName);
+            if (activeTab) {
+                activeTab.style.display = 'block';
+                activeTab.classList.add('active');
+            }
+            
+            // Actualizar botones de pestañas del formulario
+            const tabButtons = document.querySelectorAll('.form-tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-tab') === tabName) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            console.log('✅ Pestaña del formulario cambiada a:', tabName);
+        }
+        
+        // Función para manejar cambio de establecimiento
+        function handleEstablecimientoChange(value) {
+            if (documentManagerHTML && documentManagerHTML.handleEstablecimientoChange) {
+                documentManagerHTML.handleEstablecimientoChange(value);
+            }
+        }
+        
+        // Función para buscar documentos
+        function searchDocuments() {
+            if (documentManagerHTML && documentManagerHTML.searchDocuments) {
+                documentManagerHTML.searchDocuments();
+            }
+        }
+        
+        // Ejecutar cuando se carga la página
+        setTimeout(updateNavUserInfo, 100);
+        
+        console.log('🎉 SISTEMA LISTO - USANDO SOLO CLASE EXTERNA');
     </script>
 </body>
 </html>

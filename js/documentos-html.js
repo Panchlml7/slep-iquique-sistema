@@ -8,6 +8,7 @@ class DocumentManagerHTML {
         this.currentEditingDocId = null; // Para controlar el modo de edición
         this.originalTabText = null; // Para guardar el texto original de la pestaña
         this.init();
+        this.createSampleDocumentIfEmpty();
     }
 
     init() {
@@ -17,6 +18,45 @@ class DocumentManagerHTML {
         this.updateUserInfo();
         this.setupAutoActaNumber();
         this.initializeRBDField();
+    }
+
+    // Crear documento de prueba si no hay documentos
+    createSampleDocumentIfEmpty() {
+        const documents = this.getDocuments();
+        if (documents.length === 0) {
+            const sampleDoc = {
+                id: 'sample_doc_' + Date.now(),
+                acta: 'ACTA-001-2025',
+                objetivo: 'Fortalecer las capacidades de liderazgo pedagógico en el establecimiento',
+                asesor1: 'María González Pérez',
+                asesor2: 'Carlos Rodríguez Silva',
+                establecimiento: 'Escuela Gabriela Mistral',
+                rbd: '111',
+                fecha: '2025-08-05',
+                hora: '09:00',
+                horaTermino: '11:30',
+                modalidad: 'Presencial',
+                cicloApoyo: 'Ciclo 1',
+                capacidadBasal: 'Liderazgo Pedagógico',
+                nivelImplementacion: 'Inicial',
+                rolProfesional: 'Director/a',
+                objetivoVisita: 'Acompañar al equipo directivo en la implementación de estrategias de liderazgo pedagógico para mejorar los aprendizajes.',
+                antecedentes: 'El establecimiento ha mostrado interés en fortalecer las prácticas de liderazgo pedagógico.',
+                instrumentos: 'Pauta de observación, entrevistas semi-estructuradas, análisis documental.',
+                practica: '',
+                actividades: 'Reunión con equipo directivo, observación de clases, revisión de planificaciones pedagógicas.',
+                acuerdos: 'Implementar reuniones semanales de coordinación pedagógica. Establecer protocolo de observación de clases. Responsable: Director/a. Fecha: 15 de agosto de 2025.',
+                aspectosPositivos: 'Compromiso del equipo directivo con el mejoramiento. Disposición a implementar nuevas estrategias.',
+                areasMejora: 'Mejorar la comunicación interna entre docentes. Establecer sistemas de seguimiento más efectivos.',
+                createdAt: new Date().toISOString(),
+                createdBy: this.currentUser?.username || 'Usuario Demo',
+                updatedAt: null,
+                updatedBy: null
+            };
+            
+            this.saveDocument(sampleDoc);
+            this.showMessage('✅ Documento de ejemplo creado para demostración', 'success');
+        }
     }
 
     setupEventListeners() {
@@ -1231,8 +1271,8 @@ class DocumentManagerHTML {
             }
         }
         
-        // Auto-completar RBD para algunos establecimientos conocidos
-        this.autoCompleteRBD(value);
+        // RBD automático DESHABILITADO para mejor rendimiento
+        // this.autoCompleteRBD(value); // COMENTADO PERMANENTEMENTE
     }
     
     // Auto-completar RBD para establecimientos conocidos
@@ -1276,71 +1316,39 @@ class DocumentManagerHTML {
             'Liceo Técnico Profesional de Adultos': '40429',            
             'Oasis del Saber': '33019',            
             'Intina Wawapa': '33020',            
-            'Tortuguita': '33022',            
-            'Arumanti': '33024',            
-            'Lucerito Dorado': '33025',            
-            'Aventuras de Aprender': '33026',            
-            'Arcoiris del Desierto': '33027',            
-            'Magia de Aprender': '33028',            
+            'Tortuguita': '33022'            
         };
-        
-        if (rbdDatabase[establecimiento]) {
-            rbdField.value = rbdDatabase[establecimiento];
-            rbdField.style.cssText = `
-                background: linear-gradient(135deg, #f0fff4 0%, #e6ffed 100%);
-                border-color: #10b981;
-                color: #065f46;
-                font-weight: bold;
-                text-align: center;
-                box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-            `;
-            
-            // Mostrar mensaje de confirmación
-            this.showMessage(`✅ RBD completado automáticamente: ${rbdDatabase[establecimiento]}`, 'success');
-        } else if (establecimiento === 'Otro establecimiento') {
-            rbdField.value = '';
-            rbdField.style.cssText = `
-                background: #fef2f2;
-                border-color: #f59e0b;
-                color: #92400e;
-                font-weight: bold;
-                text-align: center;
-            `;
-            rbdField.placeholder = 'RBD se debe especificar manualmente';
-            rbdField.readOnly = false; // Permitir edición para "Otro establecimiento"
-            
-            this.showMessage('⚠️ Para "Otro establecimiento" debe ingresar el RBD manualmente', 'info');
-        } else {
-            rbdField.value = '';
-            rbdField.style.cssText = `
-                background: #f8fafc;
-                border-color: #e2e8f0;
-                color: #64748b;
-                text-align: center;
-            `;
-            rbdField.placeholder = 'Seleccione un establecimiento primero';
-        }
+
+        // RBD SIMPLIFICADO - Campo manual solamente
+        rbdField.readOnly = false;
+        rbdField.value = '';
+        rbdField.placeholder = 'Ingrese RBD manualmente';
+        rbdField.style.cssText = `
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #333;
+            text-align: center;
+        `;
     }
 
-    // Inicializar campo RBD
+    // Inicializar campo RBD - SIMPLIFICADO SIN AUTOMATIZACIÓN
     initializeRBDField() {
         const rbdField = document.getElementById('rbd');
         if (rbdField) {
-            rbdField.readOnly = true;
-            rbdField.placeholder = 'Seleccione un establecimiento primero';
+            rbdField.readOnly = false; // SIEMPRE EDITABLE
+            rbdField.placeholder = 'Ingrese RBD manualmente';
             rbdField.style.cssText = `
-                background: #f8fafc;
-                border-color: #e2e8f0;
-                color: #64748b;
+                background: white;
+                border: 2px solid #e2e8f0;
+                color: #333;
                 text-align: center;
-                cursor: not-allowed;
             `;
             
-            // Actualizar el label del RBD para indicar que es automático
+            // Actualizar el label del RBD
             const rbdLabel = rbdField.previousElementSibling;
             if (rbdLabel && rbdLabel.tagName === 'LABEL') {
-                rbdLabel.innerHTML = '🏢 RBD (Automático) <span style="color: #10b981; font-size: 0.8em;">✓</span>';
-                rbdLabel.style.color = '#475569';
+                rbdLabel.innerHTML = '🏢 RBD *';
+                rbdLabel.style.color = '#333';
             }
         }
     }
