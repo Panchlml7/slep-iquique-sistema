@@ -179,11 +179,150 @@ function exportUsers() {
     }
 }
 
+// Función para obtener usuario actual y evitar errores
+function getCurrentUser() {
+    try {
+        const currentUser = localStorage.getItem('currentUser');
+        if (!currentUser || currentUser === 'null' || currentUser === 'undefined') {
+            return {};
+        }
+        return JSON.parse(currentUser);
+    } catch (error) {
+        console.error('❌ Error obteniendo usuario actual:', error);
+        return {};
+    }
+}
+
+// Función para cambiar pestañas (compatible con sistemas de tabs)
+function switchTab(tabName, buttonElement) {
+    try {
+        console.log(`🔄 Cambiando a pestaña: ${tabName}`);
+        
+        // Remover active de todos los botones
+        document.querySelectorAll('.tab-btn, .main-tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Remover active de todos los contenidos
+        document.querySelectorAll('.tab-content, .main-tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Activar botón clickeado
+        if (buttonElement) {
+            buttonElement.classList.add('active');
+        }
+        
+        // Activar contenido correspondiente
+        const targetContent = document.querySelector(`[data-tab="${tabName}"], [data-maintab="${tabName}"]`);
+        if (targetContent) {
+            targetContent.classList.add('active');
+            console.log(`✅ Pestaña activada: ${tabName}`);
+        } else {
+            console.warn(`⚠️ No se encontró contenido para: ${tabName}`);
+        }
+        
+    } catch (error) {
+        console.error('❌ Error cambiando pestaña:', error);
+    }
+}
+
+// Función de debugging para sistema de pestañas
+function debugTabs() {
+    try {
+        const buttons = document.querySelectorAll('.tab-btn, .main-tab-btn, .form-tab-btn');
+        const contents = document.querySelectorAll('.tab-content, .main-tab-content, .form-tab-content');
+        
+        console.log('🔍 DEBUGGING SISTEMA DE PESTAÑAS');
+        console.log('─'.repeat(40));
+        console.log(`📋 Botones encontrados: ${buttons.length}`);
+        console.log(`📄 Contenidos encontrados: ${contents.length}`);
+        
+        // Mostrar detalles de botones
+        buttons.forEach((btn, index) => {
+            const tabTarget = btn.dataset.tab || btn.dataset.maintab || btn.dataset.formtab || 'sin-target';
+            const isActive = btn.classList.contains('active');
+            console.log(`  ${index + 1}. ${tabTarget} ${isActive ? '✅' : '⭕'}`);
+        });
+        
+        console.log('─'.repeat(40));
+        
+    } catch (error) {
+        console.error('❌ Error en debugging de pestañas:', error);
+    }
+}
+
+// Función para verificar integridad del sistema
+function systemHealthCheck() {
+    try {
+        console.log('🏥 VERIFICACIÓN DE SALUD DEL SISTEMA');
+        console.log('═'.repeat(45));
+        
+        // Verificar localStorage
+        const localStorageWorking = (() => {
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                return true;
+            } catch (e) {
+                return false;
+            }
+        })();
+        
+        console.log(`💾 localStorage: ${localStorageWorking ? '✅ OK' : '❌ FALLO'}`);
+        
+        // Verificar datos de usuarios
+        const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+        const activeUsers = JSON.parse(localStorage.getItem('users') || '[]');
+        const currentUser = getCurrentUser();
+        
+        console.log(`👥 Usuarios registrados: ${users.length}`);
+        console.log(`🟢 Usuarios activos: ${activeUsers.length}`);
+        console.log(`👤 Usuario actual: ${currentUser.username || 'ninguno'}`);
+        
+        // Verificar capacidad
+        const capacity = canAcceptMoreUsers();
+        if (capacity) {
+            console.log(`📊 Capacidad: ${capacity.usagePercentage}% usado`);
+            console.log(`🚦 Estado: ${capacity.canAccept ? '🟢 DISPONIBLE' : '🔴 LLENO'}`);
+        }
+        
+        // Verificar elementos DOM críticos
+        const criticalElements = [
+            'registerForm',
+            'loginForm', 
+            'uploadForm'
+        ];
+        
+        console.log('🔍 Elementos DOM críticos:');
+        criticalElements.forEach(id => {
+            const element = document.getElementById(id);
+            console.log(`  ${id}: ${element ? '✅' : '❌'}`);
+        });
+        
+        console.log('═'.repeat(45));
+        return {
+            localStorage: localStorageWorking,
+            usersCount: users.length,
+            activeUsersCount: activeUsers.length,
+            currentUser: currentUser.username || null,
+            capacity: capacity
+        };
+        
+    } catch (error) {
+        console.error('❌ Error en verificación de salud:', error);
+        return null;
+    }
+}
+
 // Inicialización automática cuando se carga el script
 if (typeof window !== 'undefined') {
     // Mostrar estadísticas automáticamente en desarrollo
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        setTimeout(showUserStats, 1000);
+        setTimeout(() => {
+            showUserStats();
+            systemHealthCheck();
+        }, 1000);
     }
     
     // Hacer funciones disponibles globalmente
@@ -192,6 +331,21 @@ if (typeof window !== 'undefined') {
     window.canAcceptMoreUsers = canAcceptMoreUsers;
     window.cleanupUsers = cleanupUsers;
     window.exportUsers = exportUsers;
+    window.getCurrentUser = getCurrentUser;
+    window.switchTab = switchTab;
+    window.debugTabs = debugTabs;
+    window.systemHealthCheck = systemHealthCheck;
+    
+    // Ejecutar debugging de pestañas cuando la página esté lista
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(debugTabs, 500);
+        });
+    } else {
+        setTimeout(debugTabs, 100);
+    }
+    
+    console.log('✅ Sistema de monitoreo y pestañas listo');
 }
 
 // Exportar para Node.js si está disponible
@@ -201,6 +355,10 @@ if (typeof module !== 'undefined' && module.exports) {
         showUserStats,
         canAcceptMoreUsers,
         cleanupUsers,
-        exportUsers
+        exportUsers,
+        getCurrentUser,
+        switchTab,
+        debugTabs,
+        systemHealthCheck
     };
 }
