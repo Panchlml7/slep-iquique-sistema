@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test del Sistema - SLEP Iquique</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .status-card {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .status-ok { border-left: 5px solid #28a745; background: #d4edda; }
+        .status-warning { border-left: 5px solid #ffc107; background: #fff3cd; }
+        .status-error { border-left: 5px solid #dc3545; background: #f8d7da; }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .btn-danger { background: #dc3545; }
+        .console-output {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test del Sistema SLEP Iquique</h1>
+        <p>Esta página verifica que todos los componentes del sistema funcionen correctamente.</p>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="btn btn-success" onclick="runFullTest()">🚀 Ejecutar Test Completo</button>
+            <button class="btn" onclick="testAdminPage()">👨‍💼 Test Admin-Usuarios</button>
+            <button class="btn" onclick="testDocumentosPage()">📁 Test Documentos</button>
+            <button class="btn btn-warning" onclick="initializeSystem()">🔧 Inicializar Sistema</button>
+            <button class="btn btn-danger" onclick="resetSystemData()">🗑️ Reset Sistema</button>
+        </div>
+        
+        <div id="testResults">
+            <!-- Los resultados aparecerán aquí -->
+        </div>
+        
+        <div class="test-grid">
+            <div>
+                <h3>📊 Estado Actual del Sistema</h3>
+                <div id="systemStatus">Verificando...</div>
+            </div>
+            <div>
+                <h3>👥 Usuarios en el Sistema</h3>
+                <div id="usersList">Cargando...</div>
+            </div>
+        </div>
+        
+        <h3>📋 Consola de Debug</h3>
+        <div id="consoleOutput" class="console-output">
+            Sistema iniciando...\n
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <h3>🔗 Enlaces de Test</h3>
+            <p>
+                <a href="index.html" target="_blank">🏠 Página Principal</a> |
+                <a href="admin-usuarios.html" target="_blank">👨‍💼 Admin Usuarios</a> |
+                <a href="documentos/documentos.html" target="_blank">📁 Documentos</a> |
+                <a href="diagnostico-usuarios.html" target="_blank">🔍 Diagnóstico Usuarios</a> |
+                <a href="diagnostico-conexion.html" target="_blank">🌐 Diagnóstico Conexión</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Cargar scripts del sistema -->
+    <script src="js/security.js"></script>
+    <script src="js/system-init.js"></script>
+    <script src="js/user-monitor.js"></script>
+
+    <script>
+        // Función para mostrar mensajes en la consola personalizada
+        function logToConsole(message, type = 'info') {
+            const console_div = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const emoji = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : type === 'success' ? '✅' : 'ℹ️';
+            console_div.innerHTML += `[${timestamp}] ${emoji} ${message}\n`;
+            console_div.scrollTop = console_div.scrollHeight;
+        }
+
+        // Función para actualizar estado del sistema
+        function updateSystemStatus() {
+            try {
+                const integrity = checkSystemIntegrity();
+                const statusDiv = document.getElementById('systemStatus');
+                
+                let html = '';
+                if (integrity.localStorage) {
+                    html += '<div class="status-card status-ok">✅ LocalStorage: Funcionando</div>';
+                } else {
+                    html += '<div class="status-card status-error">❌ LocalStorage: Error</div>';
+                }
+                
+                if (integrity.adminExists) {
+                    html += '<div class="status-card status-ok">✅ Usuario Admin: Existe</div>';
+                } else {
+                    html += '<div class="status-card status-warning">⚠️ Usuario Admin: No encontrado</div>';
+                }
+                
+                html += `<div class="status-card">📊 Total Usuarios: ${integrity.totalUsers}</div>`;
+                html += `<div class="status-card">⏳ Pendientes: ${integrity.pendingUsers}</div>`;
+                html += `<div class="status-card">✅ Aprobados: ${integrity.approvedUsers}</div>`;
+                html += `<div class="status-card">❌ Rechazados: ${integrity.rejectedUsers}</div>`;
+                
+                statusDiv.innerHTML = html;
+                logToConsole(`Sistema verificado: ${integrity.totalUsers} usuarios, Admin: ${integrity.adminExists ? 'OK' : 'NO'}`, 'info');
+                
+            } catch (error) {
+                document.getElementById('systemStatus').innerHTML = '<div class="status-card status-error">❌ Error verificando sistema</div>';
+                logToConsole(`Error verificando sistema: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para mostrar lista de usuarios
+        function updateUsersList() {
+            try {
+                const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                const usersDiv = document.getElementById('usersList');
+                
+                if (users.length === 0) {
+                    usersDiv.innerHTML = '<div class="status-card status-warning">⚠️ No hay usuarios en el sistema</div>';
+                    return;
+                }
+                
+                let html = '';
+                users.forEach((user, index) => {
+                    const statusClass = user.status === 'admin' ? 'status-ok' : 
+                                       user.status === 'aprobada' ? 'status-ok' : 
+                                       user.status === 'pendiente' ? 'status-warning' : 'status-error';
+                    
+                    html += `<div class="status-card ${statusClass}">
+                        <strong>${user.username}</strong> (${user.status})<br>
+                        <small>${user.email}</small>
+                    </div>`;
+                });
+                
+                usersDiv.innerHTML = html;
+                logToConsole(`Lista de usuarios actualizada: ${users.length} usuarios`, 'info');
+                
+            } catch (error) {
+                document.getElementById('usersList').innerHTML = '<div class="status-card status-error">❌ Error cargando usuarios</div>';
+                logToConsole(`Error cargando usuarios: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para ejecutar test completo
+        function runFullTest() {
+            logToConsole('🚀 Iniciando test completo del sistema...', 'info');
+            
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<div class="status-card">🔄 Ejecutando tests...</div>';
+            
+            let results = '';
+            let errors = 0;
+            
+            // Test 1: LocalStorage
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                results += '<div class="status-card status-ok">✅ Test LocalStorage: OK</div>';
+                logToConsole('LocalStorage test: PASÓ', 'success');
+            } catch (error) {
+                results += '<div class="status-card status-error">❌ Test LocalStorage: FALLO</div>';
+                logToConsole(`LocalStorage test: FALLÓ - ${error.message}`, 'error');
+                errors++;
+            }
+            
+            // Test 2: Funciones del sistema
+            const functions = ['initializeSystem', 'checkSystemIntegrity', 'getUserStats', 'showUserStats'];
+            functions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    results += `<div class="status-card status-ok">✅ Función ${func}: Disponible</div>`;
+                    logToConsole(`Función ${func}: DISPONIBLE`, 'success');
+                } else {
+                    results += `<div class="status-card status-error">❌ Función ${func}: No encontrada</div>`;
+                    logToConsole(`Función ${func}: NO ENCONTRADA`, 'error');
+                    errors++;
+                }
+            });
+            
+            // Test 3: Inicialización del sistema
+            try {
+                initializeSystem();
+                results += '<div class="status-card status-ok">✅ Inicialización del sistema: OK</div>';
+                logToConsole('Inicialización del sistema: COMPLETADA', 'success');
+            } catch (error) {
+                results += '<div class="status-card status-error">❌ Inicialización del sistema: FALLO</div>';
+                logToConsole(`Inicialización: FALLÓ - ${error.message}`, 'error');
+                errors++;
+            }
+            
+            // Test 4: Verificar usuarios
+            try {
+                const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                const hasAdmin = users.some(u => u.status === 'admin');
+                
+                if (hasAdmin && users.length > 0) {
+                    results += '<div class="status-card status-ok">✅ Usuarios del sistema: OK</div>';
+                    logToConsole(`Usuarios: ${users.length} encontrados, Admin: OK`, 'success');
+                } else {
+                    results += '<div class="status-card status-warning">⚠️ Usuarios del sistema: Incompleto</div>';
+                    logToConsole(`Usuarios: ${users.length} encontrados, Admin: ${hasAdmin ? 'OK' : 'NO'}`, 'warning');
+                }
+            } catch (error) {
+                results += '<div class="status-card status-error">❌ Usuarios del sistema: ERROR</div>';
+                logToConsole(`Error verificando usuarios: ${error.message}`, 'error');
+                errors++;
+            }
+            
+            // Resultado final
+            if (errors === 0) {
+                results += '<div class="status-card status-ok"><h3>🎉 TODOS LOS TESTS PASARON</h3>El sistema está funcionando correctamente.</div>';
+                logToConsole('🎉 TODOS LOS TESTS COMPLETADOS EXITOSAMENTE', 'success');
+            } else {
+                results += `<div class="status-card status-error"><h3>❌ ${errors} TESTS FALLARON</h3>Revisa los errores arriba.</div>`;
+                logToConsole(`❌ ${errors} tests fallaron. Revisa los errores.`, 'error');
+            }
+            
+            resultsDiv.innerHTML = results;
+            
+            // Actualizar displays
+            updateSystemStatus();
+            updateUsersList();
+        }
+
+        // Test específico para admin-usuarios
+        function testAdminPage() {
+            logToConsole('👨‍💼 Testing página admin-usuarios...', 'info');
+            
+            try {
+                // Verificar que exista al menos un admin
+                ensureAdminUser();
+                
+                // Crear usuarios de ejemplo si no existen
+                createSampleUsersIfNeeded();
+                
+                // Abrir página en nueva ventana
+                window.open('admin-usuarios.html', '_blank');
+                
+                logToConsole('Admin page test: página abierta, datos verificados', 'success');
+                alert('✅ Página admin-usuarios abierta en nueva ventana.\n\nCredenciales:\nUsuario: admin\nContraseña: admin123');
+                
+            } catch (error) {
+                logToConsole(`Error en test admin page: ${error.message}`, 'error');
+                alert('❌ Error testing admin page: ' + error.message);
+            }
+        }
+
+        // Test específico para documentos
+        function testDocumentosPage() {
+            logToConsole('📁 Testing página documentos...', 'info');
+            
+            try {
+                // Verificar inicialización
+                initializeSystem();
+                
+                // Abrir página en nueva ventana
+                window.open('documentos/documentos.html', '_blank');
+                
+                logToConsole('Documentos page test: página abierta', 'success');
+                alert('✅ Página documentos abierta en nueva ventana.');
+                
+            } catch (error) {
+                logToConsole(`Error en test documentos page: ${error.message}`, 'error');
+                alert('❌ Error testing documentos page: ' + error.message);
+            }
+        }
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            logToConsole('Página de test cargada', 'info');
+            
+            setTimeout(() => {
+                updateSystemStatus();
+                updateUsersList();
+            }, 500);
+            
+            // Auto-ejecutar test básico
+            setTimeout(() => {
+                runFullTest();
+            }, 1000);
+        });
+
+        // Interceptar console.log para mostrar en nuestra consola
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToConsole(args.join(' '), 'info');
+        };
+
+        const originalError = console.error;
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToConsole(args.join(' '), 'error');
+        };
+    </script>
+</body>
+</html>
