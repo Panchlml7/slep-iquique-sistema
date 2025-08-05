@@ -1290,6 +1290,10 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
             }
         }
 
+        // Agregar función getCurrentUser para evitar errores
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('currentUser') || '{}');
+        }
     </script>
 
     <!-- Cargar sistema de monitoreo de usuarios -->
