@@ -365,36 +365,176 @@
     <script src="../js/login.js"></script>
     <script src="../js/documentos-html.js"></script>
     <script>
-        // Función simple para cambiar pestañas principales
+        console.log('🚀 Iniciando sistema de documentos...');
+
+        // Variables globales para el estado de las pestañas
+        let currentMainTab = 'nuevo-documento';
+        let currentFormTab = 0;
+        const formTabs = ['datos-basicos', 'desarrollo-visita'];
+
+        // Función para cambiar pestañas principales - SIMPLIFICADA
         function switchMainTab(tabName, buttonElement) {
-            console.log('Cambiando a pestaña:', tabName);
+            console.log('🔄 Cambiando a pestaña principal:', tabName);
             
-            // Remover active de todos los botones
-            document.querySelectorAll('.main-tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Remover active de todos los contenidos
-            document.querySelectorAll('.main-tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Activar botón clickeado
-            buttonElement.classList.add('active');
-            
-            // Activar contenido correspondiente
-            const targetContent = document.querySelector(`[data-maintab="${tabName}"].main-tab-content`);
-            if (targetContent) {
-                targetContent.classList.add('active');
-                console.log('Contenido activado:', tabName);
-            } else {
-                console.error('No se encontró contenido para:', tabName);
+            try {
+                // Actualizar variable global
+                currentMainTab = tabName;
+                
+                // Remover active de TODOS los botones principales
+                document.querySelectorAll('.main-tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Remover active de TODOS los contenidos principales
+                document.querySelectorAll('.main-tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Activar botón clickeado
+                if (buttonElement) {
+                    buttonElement.classList.add('active');
+                }
+                
+                // Activar contenido correspondiente
+                const targetContent = document.querySelector(`[data-maintab="${tabName}"]`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                    console.log('✅ Pestaña principal activada:', tabName);
+                    
+                    // Si es la pestaña de documentos guardados, cargar documentos
+                    if (tabName === 'documentos-guardados') {
+                        setTimeout(() => {
+                            loadSavedDocuments();
+                        }, 100);
+                    }
+                } else {
+                    console.error('❌ No se encontró contenido para:', tabName);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error cambiando pestaña:', error);
             }
+        }
+
+        // Función para cargar documentos guardados
+        function loadSavedDocuments() {
+            console.log('📂 Cargando documentos guardados...');
+            
+            const savedDocuments = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
+            const documentsGrid = document.getElementById('documentsGrid');
+            
+            if (!documentsGrid) {
+                console.error('❌ No se encontró documentsGrid');
+                return;
+            }
+            
+            if (savedDocuments.length === 0) {
+                documentsGrid.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: #666; grid-column: 1 / -1;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
+                        <h3>No hay documentos guardados</h3>
+                        <p>Crea tu primer documento usando la pestaña "Nuevo Documento"</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Generar HTML para cada documento
+            const documentsHTML = savedDocuments.map(doc => `
+                <div class="document-card" style="
+                    border: 1px solid #e0e0e0;
+                    border-radius: 8px;
+                    padding: 1.5rem;
+                    background: white;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    transition: all 0.3s ease;
+                ">
+                    <div style="display: flex; justify-content: between; align-items: flex-start; margin-bottom: 1rem;">
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #2c5aa0; font-size: 1.1rem;">
+                                📋 ${doc.acta || 'Sin N° ACTA'}
+                            </h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">
+                                ${doc.establecimiento || 'Sin establecimiento'}
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.8rem; color: #999;">
+                                ${doc.fecha ? new Date(doc.fecha).toLocaleDateString('es-CL') : 'Sin fecha'}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-size: 0.85rem; color: #555; margin-bottom: 0.5rem;">
+                            <strong>Asesor:</strong> ${doc.asesor1 || 'No especificado'}
+                        </div>
+                        <div style="font-size: 0.85rem; color: #555;">
+                            <strong>Modalidad:</strong> ${doc.modalidad || 'No especificada'}
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button onclick="exportToPDF('${doc.id}')" style="
+                            background: #007bff;
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1rem;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 0.85rem;
+                        ">👁️ Ver PDF</button>
+                        
+                        <button onclick="editDocument('${doc.id}')" style="
+                            background: #28a745;
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1rem;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 0.85rem;
+                        ">✏️ Editar</button>
+                        
+                        <button onclick="deleteDocument('${doc.id}')" style="
+                            background: #dc3545;
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1rem;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 0.85rem;
+                        ">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            documentsGrid.innerHTML = documentsHTML;
+            console.log(`✅ ${savedDocuments.length} documentos cargados`);
+        }
+
+        // Función para eliminar documento
+        function deleteDocument(documentId) {
+            if (confirm('⚠️ ¿Estás seguro de eliminar este documento?\n\nEsta acción no se puede deshacer.')) {
+                const savedDocuments = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
+                const filteredDocuments = savedDocuments.filter(doc => doc.id !== documentId);
+                
+                localStorage.setItem('savedDocuments', JSON.stringify(filteredDocuments));
+                
+                // Recargar documentos
+                loadSavedDocuments();
+                
+                alert('✅ Documento eliminado correctamente');
+            }
+        }
+
+        // Función para editar documento (simplificada)
+        function editDocument(documentId) {
+            alert('✏️ Función de edición\n\nEsta funcionalidad estará disponible próximamente.\nPor ahora puedes ver el documento en PDF.');
         }
 
         // JavaScript para autocompletar RBD cuando se selecciona establecimiento
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('DOM loaded, iniciando sistema...');
+            console.log('✅ DOM cargado, iniciando sistema...');
             
             // Configurar autocompletado RBD
             const establecimientoSelect = document.getElementById('establecimiento');
@@ -426,20 +566,19 @@
             // Inicializar sistema de pestañas del formulario
             initFormTabs();
             
-            // Inicializar documentos guardados
+            // Asegurar que la pestaña inicial esté activa
             setTimeout(() => {
-                if (typeof documentManagerHTML !== 'undefined') {
-                    documentManagerHTML.loadDocuments();
+                console.log('🔄 Activando pestaña inicial...');
+                const initialBtn = document.querySelector('.main-tab-btn.active');
+                if (initialBtn) {
+                    switchMainTab('nuevo-documento', initialBtn);
                 }
-            }, 500);
+            }, 200);
         });
 
         function initFormTabs() {
-            console.log('Inicializando pestañas del formulario...');
+            console.log('🔧 Inicializando pestañas del formulario...');
             
-            let currentFormTab = 0;
-            const formTabs = ['datos-basicos', 'desarrollo-visita'];
-
             // Configurar botones de pestañas del formulario
             document.querySelectorAll('.form-tab-btn').forEach(btn => {
                 btn.addEventListener('click', function () {
@@ -473,7 +612,7 @@
             }
 
             function showFormTab(index) {
-                console.log('Mostrando sub-pestaña:', index, 'de', formTabs[index]);
+                console.log('🔄 Mostrando sub-pestaña:', index, 'de', formTabs[index]);
                 
                 // Ocultar todas las pestañas del formulario
                 document.querySelectorAll('.form-tab-content').forEach(content => {
@@ -492,16 +631,12 @@
                 
                 if (tabContent) {
                     tabContent.classList.add('active');
-                    console.log('✅ Contenido activado para:', currentTabName);
-                } else {
-                    console.error('❌ No se encontró contenido para:', currentTabName);
+                    console.log('✅ Contenido de formulario activado para:', currentTabName);
                 }
                 
                 if (tabButton) {
                     tabButton.classList.add('active');
-                    console.log('✅ Botón activado para:', currentTabName);
-                } else {
-                    console.error('❌ No se encontró botón para:', currentTabName);
+                    console.log('✅ Botón de formulario activado para:', currentTabName);
                 }
 
                 // Manejar visibilidad de botones de navegación
@@ -524,10 +659,324 @@
             showFormTab(0);
         }
 
+        // Función para generar PDF profesional del documento
+        function exportToPDF(documentId) {
+            const savedDocuments = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
+            const document = savedDocuments.find(doc => doc.id === documentId);
+            
+            if (!document) {
+                alert('❌ Documento no encontrado');
+                return;
+            }
+            
+            // Crear contenido HTML profesional para PDF
+            const pdfContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Documento de Acompañamiento - ${document.acta}</title>
+                    <style>
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            line-height: 1.4;
+                            margin: 0;
+                            padding: 20px;
+                            color: #333;
+                            background: white;
+                        }
+                        .header {
+                            text-align: center;
+                            border-bottom: 3px solid #2c5aa0;
+                            padding-bottom: 20px;
+                            margin-bottom: 25px;
+                        }
+                        .header h1 {
+                            color: #2c5aa0;
+                            font-size: 24px;
+                            margin: 0;
+                            font-weight: bold;
+                        }
+                        .header h2 {
+                            color: #666;
+                            font-size: 18px;
+                            margin: 5px 0 0 0;
+                            font-weight: normal;
+                        }
+                        .section {
+                            margin-bottom: 20px;
+                            page-break-inside: avoid;
+                        }
+                        .section-title {
+                            background: #f8f9fa;
+                            color: #2c5aa0;
+                            padding: 10px 15px;
+                            font-weight: bold;
+                            font-size: 16px;
+                            border-left: 4px solid #2c5aa0;
+                            margin-bottom: 15px;
+                        }
+                        .info-grid {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 15px;
+                            margin-bottom: 20px;
+                        }
+                        .info-item {
+                            border: 1px solid #e0e0e0;
+                            padding: 12px;
+                            border-radius: 5px;
+                            background: #fafafa;
+                        }
+                        .info-item.full-width {
+                            grid-column: 1 / -1;
+                        }
+                        .info-label {
+                            font-weight: bold;
+                            color: #555;
+                            font-size: 14px;
+                            margin-bottom: 5px;
+                            display: block;
+                        }
+                        .info-value {
+                            color: #333;
+                            font-size: 14px;
+                            line-height: 1.5;
+                        }
+                        .text-content {
+                            background: white;
+                            padding: 15px;
+                            border: 1px solid #ddd;
+                            border-radius: 5px;
+                            white-space: pre-wrap;
+                            line-height: 1.6;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            padding-top: 20px;
+                            border-top: 2px solid #e0e0e0;
+                            text-align: center;
+                            color: #666;
+                            font-size: 12px;
+                        }
+                        @media print {
+                            body { margin: 0; padding: 15px; }
+                            .section { page-break-inside: avoid; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>SLEP IQUIQUE</h1>
+                        <h2>Documento de Acompañamiento Pedagógico</h2>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📋 INFORMACIÓN GENERAL</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">N° ACTA:</span>
+                                <span class="info-value">${document.acta || 'No especificado'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Fecha de Visita:</span>
+                                <span class="info-value">${document.fecha ? new Date(document.fecha).toLocaleDateString('es-CL') : 'No especificada'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Establecimiento:</span>
+                                <span class="info-value">${document.establecimiento || 'No especificado'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">RBD:</span>
+                                <span class="info-value">${document.rbd || 'No especificado'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Modalidad:</span>
+                                <span class="info-value">${document.modalidad || 'No especificada'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Horario:</span>
+                                <span class="info-value">${document.hora || 'No especificada'} - ${document.horaTermino || 'No especificada'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">👥 RESPONSABLES</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Asesor Principal:</span>
+                                <span class="info-value">${document.asesor1 || 'No especificado'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Asesor Secundario:</span>
+                                <span class="info-value">${document.asesor2 || 'No asignado'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rol Profesional:</span>
+                                <span class="info-value">${document.rolProfesional || 'No especificado'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Ciclo de Apoyo:</span>
+                                <span class="info-value">${document.cicloApoyo || 'No especificado'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🎯 OBJETIVOS Y CAPACIDADES</div>
+                        <div class="info-grid">
+                            <div class="info-item full-width">
+                                <span class="info-label">Objetivo Estratégico:</span>
+                                <div class="text-content">${document.objetivo || 'No especificado'}</div>
+                            </div>
+                            <div class="info-item full-width">
+                                <span class="info-label">Objetivo de la Visita:</span>
+                                <div class="text-content">${document.objetivoVisita || 'No especificado'}</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Capacidad Basal Focalizada:</span>
+                                <span class="info-value">${document.capacidadBasal || 'No especificada'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Nivel de Implementación:</span>
+                                <span class="info-value">${document.nivelImplementacion || 'No especificado'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📝 DESARROLLO DE LA VISITA</div>
+                        <div class="info-grid">
+                            <div class="info-item full-width">
+                                <span class="info-label">Antecedentes:</span>
+                                <div class="text-content">${document.antecedentes || 'No especificados'}</div>
+                            </div>
+                            <div class="info-item full-width">
+                                <span class="info-label">Instrumentos/Insumos Utilizados:</span>
+                                <div class="text-content">${document.instrumentos || 'No especificados'}</div>
+                            </div>
+                            <div class="info-item full-width">
+                                <span class="info-label">Actividades Realizadas:</span>
+                                <div class="text-content">${document.actividades || 'No especificadas'}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">⚠️ OBSERVACIONES Y ANÁLISIS</div>
+                        <div class="info-grid">
+                            <div class="info-item full-width">
+                                <span class="info-label">Práctica Problemática:</span>
+                                <div class="text-content">${document.practica || 'No identificada'}</div>
+                            </div>
+                            <div class="info-item full-width">
+                                <span class="info-label">Aspectos Positivos Observados:</span>
+                                <div class="text-content">${document.aspectosPositivos || 'No especificados'}</div>
+                            </div>
+                            <div class="info-item full-width">
+                                <span class="info-label">Áreas de Mejora Identificadas:</span>
+                                <div class="text-content">${document.areasMejora || 'No especificadas'}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📋 ACUERDOS Y COMPROMISOS</div>
+                        <div class="info-grid">
+                            <div class="info-item full-width">
+                                <span class="info-label">Acuerdos/Fecha de Implementación/Responsables:</span>
+                                <div class="text-content">${document.acuerdos || 'No especificados'}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer">
+                        <p><strong>Documento generado por SLEP IQUIQUE</strong></p>
+                        <p>Fecha de generación: ${new Date().toLocaleDateString('es-CL')} a las ${new Date().toLocaleTimeString('es-CL')}</p>
+                        <p>Sistema de Gestión de Documentos de Acompañamiento Pedagógico</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Abrir nueva ventana para mostrar y permitir imprimir/guardar como PDF
+            const newWindow = window.open('', '_blank', 'width=800,height=900,scrollbars=yes');
+            newWindow.document.write(pdfContent);
+            newWindow.document.close();
+            
+            // Agregar botones de acción en la nueva ventana
+            newWindow.onload = function() {
+                const actionButtons = newWindow.document.createElement('div');
+                actionButtons.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    z-index: 1000;
+                    background: white;
+                    padding: 10px;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    border: 1px solid #ddd;
+                `;
+                
+                actionButtons.innerHTML = `
+                    <button onclick="window.print()" style="
+                        background: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 8px 15px;
+                        margin: 0 5px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        font-size: 12px;
+                    ">🖨️ Imprimir/PDF</button>
+                    <button onclick="window.close()" style="
+                        background: #6c757d;
+                        color: white;
+                        border: none;
+                        padding: 8px 15px;
+                        margin: 0 5px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        font-size: 12px;
+                    ">✖️ Cerrar</button>
+                `;
+                
+                newWindow.document.body.appendChild(actionButtons);
+                
+                // Ocultar botones al imprimir
+                newWindow.addEventListener('beforeprint', function() {
+                    actionButtons.style.display = 'none';
+                });
+                
+                newWindow.addEventListener('afterprint', function() {
+                    actionButtons.style.display = 'block';
+                });
+            };
+            
+            console.log('✅ PDF generado para documento:', document.acta);
+        }
+
         // Función simplificada para exportar documentos a PDF
         function exportAllDocumentsToPDF() {
-            alert('📋 Funcionalidad PDF simplificada\n\nPuedes ver y gestionar tus documentos desde esta pestaña "Documentos Guardados"');
+            const savedDocuments = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
+            
+            if (savedDocuments.length === 0) {
+                alert('📋 No hay documentos guardados para exportar');
+                return;
+            }
+            
+            alert(`📋 Se encontraron ${savedDocuments.length} documentos\n\n💡 Usa el botón "👁️ Ver PDF" en cada documento individual para generar PDFs profesionales`);
         }
+
+        // Asegurar que las funciones estén disponibles globalmente
+        window.switchMainTab = switchMainTab;
+        window.exportToPDF = exportToPDF;
+        window.deleteDocument = deleteDocument;
+        window.editDocument = editDocument;
+        
+        console.log('✅ Sistema de documentos inicializado');
     </script>
 </body>
 
