@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Usuarios - SLEP Iquique</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .user-card {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .status-pendiente { border-left: 5px solid #ffc107; }
+        .status-aprobada { border-left: 5px solid #28a745; }
+        .status-rechazada { border-left: 5px solid #dc3545; }
+        .status-admin { border-left: 5px solid #007bff; }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number { font-size: 2em; font-weight: bold; }
+        .stat-label { font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Diagnóstico del Sistema de Usuarios</h1>
+        
+        <div class="stats" id="userStats">
+            <!-- Estadísticas se cargarán aquí -->
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <button class="btn" onclick="refreshUsers()">🔄 Actualizar</button>
+            <button class="btn" onclick="createTestUsers()">👥 Crear Usuarios de Prueba</button>
+            <button class="btn btn-danger" onclick="clearAllUsers()">🗑️ Limpiar Todo</button>
+            <button class="btn" onclick="exportUsers()">📥 Exportar</button>
+        </div>
+        
+        <div id="usersList">
+            <!-- Lista de usuarios se cargará aquí -->
+        </div>
+    </div>
+
+    <script>
+        function loadUserStats() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            const stats = {
+                total: users.length,
+                pendiente: users.filter(u => u.status === 'pendiente').length,
+                aprobada: users.filter(u => u.status === 'aprobada').length,
+                rechazada: users.filter(u => u.status === 'rechazada').length,
+                admin: users.filter(u => u.status === 'admin').length
+            };
+            
+            document.getElementById('userStats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${stats.total}</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.pendiente}</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.aprobada}</div>
+                    <div class="stat-label">Aprobados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.rechazada}</div>
+                    <div class="stat-label">Rechazados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.admin}</div>
+                    <div class="stat-label">Admins</div>
+                </div>
+            `;
+            
+            return stats;
+        }
+        
+        function loadUsersList() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <h3>📭 No hay usuarios registrados</h3>
+                        <p>Haz clic en "Crear Usuarios de Prueba" para agregar algunos usuarios de ejemplo.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            usersList.innerHTML = users.map((user, index) => `
+                <div class="user-card status-${user.status}">
+                    <h3>${user.username} (${user.status})</h3>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Nombre:</strong> ${user.nombre || 'No disponible'} ${user.apellidoPaterno || ''} ${user.apellidoMaterno || ''}</p>
+                    <p><strong>Establecimiento:</strong> ${user.establecimiento || 'No especificado'}</p>
+                    <p><strong>Cargo:</strong> ${user.cargo || 'No especificado'}</p>
+                    <p><strong>Registrado:</strong> ${user.registrationDate ? new Date(user.registrationDate).toLocaleDateString('es-CL') : 'No disponible'}</p>
+                    <button class="btn btn-danger" onclick="deleteUser('${user.username}')">🗑️ Eliminar</button>
+                </div>
+            `).join('');
+        }
+        
+        function refreshUsers() {
+            console.log('🔄 Actualizando lista de usuarios...');
+            loadUserStats();
+            loadUsersList();
+            console.log('✅ Lista actualizada');
+        }
+        
+        function createTestUsers() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            // Verificar si ya existe un admin
+            const hasAdmin = users.some(u => u.status === 'admin');
+            
+            const testUsers = [
+                {
+                    username: 'admin',
+                    password: 'admin123',
+                    email: 'admin@slep-iquique.cl',
+                    nombre: 'Administrador',
+                    apellidoPaterno: 'Sistema',
+                    apellidoMaterno: 'SLEP',
+                    establecimiento: 'SLEP Iquique',
+                    cargo: 'Administrador del Sistema',
+                    status: 'admin',
+                    registrationDate: new Date().toISOString()
+                },
+                {
+                    username: 'pedro.gonzalez',
+                    password: 'temp123',
+                    email: 'pedro.gonzalez@slep-iquique.cl',
+                    nombre: 'Pedro',
+                    apellidoPaterno: 'González',
+                    apellidoMaterno: 'Morales',
+                    fechaNacimiento: '1985-05-20',
+                    establecimiento: 'Liceo A-1',
+                    cargo: 'Profesor de Matemáticas',
+                    status: 'pendiente',
+                    registrationDate: new Date().toISOString()
+                },
+                {
+                    username: 'ana.silva',
+                    password: 'temp456',
+                    email: 'ana.silva@slep-iquique.cl',
+                    nombre: 'Ana',
+                    apellidoPaterno: 'Silva',
+                    apellidoMaterno: 'Rojas',
+                    fechaNacimiento: '1990-08-15',
+                    establecimiento: 'Escuela Básica B-2',
+                    cargo: 'Directora',
+                    status: 'aprobada',
+                    registrationDate: new Date().toISOString(),
+                    approvedAt: new Date().toISOString(),
+                    approvedBy: 'admin'
+                },
+                {
+                    username: 'luis.martinez',
+                    password: 'temp789',
+                    email: 'luis.martinez@slep-iquique.cl',
+                    nombre: 'Luis',
+                    apellidoPaterno: 'Martínez',
+                    apellidoMaterno: 'López',
+                    fechaNacimiento: '1982-12-03',
+                    establecimiento: 'Colegio Técnico C-3',
+                    cargo: 'Inspector General',
+                    status: 'rechazada',
+                    registrationDate: new Date().toISOString(),
+                    rejectedAt: new Date().toISOString(),
+                    rejectedBy: 'admin',
+                    rejectionReason: 'Documentación incompleta'
+                }
+            ];
+            
+            // Solo agregar usuarios que no existan
+            testUsers.forEach(newUser => {
+                const exists = users.some(u => u.username === newUser.username);
+                if (!exists) {
+                    users.push(newUser);
+                    console.log(`✅ Usuario creado: ${newUser.username} (${newUser.status})`);
+                }
+            });
+            
+            localStorage.setItem('appUsers', JSON.stringify(users));
+            alert(`✅ Usuarios de prueba creados exitosamente!\n\nTotal usuarios: ${users.length}`);
+            refreshUsers();
+        }
+        
+        function deleteUser(username) {
+            if (confirm(`¿Eliminar usuario "${username}"?`)) {
+                const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                const filteredUsers = users.filter(u => u.username !== username);
+                localStorage.setItem('appUsers', JSON.stringify(filteredUsers));
+                console.log(`🗑️ Usuario eliminado: ${username}`);
+                refreshUsers();
+            }
+        }
+        
+        function clearAllUsers() {
+            if (confirm('⚠️ ¿Eliminar TODOS los usuarios?\n\nEsta acción no se puede deshacer.')) {
+                localStorage.setItem('appUsers', '[]');
+                alert('🗑️ Todos los usuarios eliminados');
+                refreshUsers();
+            }
+        }
+        
+        function exportUsers() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const dataStr = JSON.stringify(users, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `usuarios_slep_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            alert(`📥 ${users.length} usuarios exportados`);
+        }
+        
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Iniciando diagnóstico de usuarios...');
+            refreshUsers();
+        });
+    </script>
+</body>
+</html>

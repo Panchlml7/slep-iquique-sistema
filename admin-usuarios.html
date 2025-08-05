@@ -1296,53 +1296,41 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
         }
     </script>
 
-    <!-- Eliminar script duplicado y usar solo uno -->
+    <!-- Cargar sistema de monitoreo de usuarios -->
+    <script src="js/user-monitor.js"></script>
+    
+    <!-- Inicialización final del sistema -->
     <script>
         // Asegurar que las funciones estén disponibles globalmente
         window.switchTab = switchTab;
         window.loadUsers = loadUsers;
         window.updateStats = updateStats;
         
-        console.log('✅ Sistema de pestañas y usuarios inicializado');
-    </script>
-</body>
-</html>
-            }
-        }
-
-        // Agregar función getCurrentUser para evitar errores
-        function getCurrentUser() {
-            return JSON.parse(localStorage.getItem('currentUser') || '{}');
-        }
-    </script>
-
-    <!-- Eliminar script duplicado y usar solo uno -->
-    <script>
-        // Asegurar que las funciones estén disponibles globalmente
-        window.switchTab = switchTab;
-        window.loadUsers = loadUsers;
-        window.updateStats = updateStats;
-        
-        console.log('✅ Sistema de pestañas y usuarios inicializado');
-    </script>
-</body>
-</html>
-        window.switchTab = switchTab;
-        
-        // Función de debugging (modo silencioso)
-        function debugTabs() {
-            const buttons = document.querySelectorAll('.tab-btn');
-            console.log('🔍 Sistema de pestañas:', buttons.length, 'botones encontrados');
+        // Función de debugging para verificar usuarios
+        function debugUserSystem() {
+            console.log('🔍 DEBUGGING SISTEMA DE USUARIOS ADMIN');
+            console.log('=' .repeat(50));
+            
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            console.log(`📊 Total usuarios en localStorage: ${users.length}`);
+            
+            users.forEach((user, index) => {
+                console.log(`${index + 1}. ${user.username} (${user.status}) - ${user.email}`);
+            });
+            
+            console.log('=' .repeat(50));
+            return users;
         }
         
-        // Ejecutar debugging cuando la página esté lista
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', debugTabs);
-        } else {
-            debugTabs();
-        }
+        // Ejecutar debugging cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                debugUserSystem();
+                console.log('✅ Sistema de administración de usuarios listo');
+            }, 500);
+        });
         
-        console.log('✅ Sistema de pestañas listo');
+        console.log('✅ Admin usuarios inicializado');
     </script>
 </body>
 </html>
