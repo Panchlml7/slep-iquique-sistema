@@ -421,3 +421,334 @@
     font-size: 0.85rem;
     margin: 0.5rem 0;
 }
+
+/* Controles de administración */
+.admin-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.btn-toggle, .btn-export {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-toggle {
+    background: #28a745;
+    color: white;
+}
+
+.btn-toggle:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.btn-export {
+    background: #007bff;
+    color: white;
+}
+
+.btn-export:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* Campos sensibles */
+.sensitive-col {
+    background: rgba(220, 53, 69, 0.05);
+    border-left: 3px solid #dc3545;
+}
+
+.password-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.password-field code {
+    background: #fff5f5 !important;
+    border: 1px solid #fed7d7;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #e53e3e;
+    font-weight: bold;
+}
+
+.btn-copy {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 2px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.2s ease;
+}
+
+.btn-copy:hover {
+    background: #5a6268;
+    transform: scale(1.1);
+}
+
+.birth-date {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #138496;
+}
+
+/* Estilos para el modal */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 2% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close-modal {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #fed7d7;
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 2rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    background: #f8fafc;
+    padding: 1rem 2rem;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Secciones de información del usuario */
+.user-details-section {
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.user-details-section.confidential {
+    border-color: #fed7d7;
+    background: #fff5f5;
+}
+
+.section-header {
+    background: #f8fafc;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.user-details-section.confidential .section-header {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item span {
+    color: #2d3748;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+}
+
+.password-item {
+    grid-column: 1 / -1;
+}
+
+.password-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.password-code {
+    background: #fff5f5 !important;
+    border: 1px solid #fed7d7;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    color: #e53e3e;
+    font-weight: bold;
+    flex: 1;
+}
+
+.btn-copy-small {
+    background: #4a5568;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.btn-copy-small:hover {
+    background: #2d3748;
+    transform: scale(1.05);
+}
+
+.confidential-warning {
+    background: #fed7d7;
+    color: #c53030;
+    padding: 1rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    border: 2px solid #f56565;
+}
+
+/* Botones del modal */
+.btn-close, .btn-copy-all {
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-close {
+    background: #a0aec0;
+    color: white;
+}
+
+.btn-close:hover {
+    background: #718096;
+    transform: translateY(-1px);
+}
+
+.btn-copy-all {
+    background: #3182ce;
+    color: white;
+}
+
+.btn-copy-all:hover {
+    background: #2c5aa0;
+    transform: translateY(-1px);
+}
+
+/* Responsive para el modal */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+    
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-header {
+        padding: 1rem;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem;
+        flex-direction: column;
+    }
+}

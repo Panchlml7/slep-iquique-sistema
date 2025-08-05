@@ -1,10 +1,10 @@
 // Sistema de autenticación con admin y usuarios pendientes
 
-// Usuario administrador autorizado - Las credenciales se inicializan de forma segura
+// Usuario administrador autorizado
 const adminUser = {
-    username: 'francisco.ramos',
-    email: 'francisco.ramos@slepiquique.cl',
-    password: '13Jul1993', // Contraseña del administrador
+    username: 'admin',
+    email: 'admin@slepiquique.cl',
+    password: 'admin123',
     status: 'admin'
 };
 
@@ -13,25 +13,11 @@ function initializeUsers() {
     const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
     
     // Verificar si el admin ya existe
-    const adminExists = users.find(u => u.email === adminUser.email);
+    const adminExists = users.find(u => u.username === 'admin' || u.email === 'admin@slepiquique.cl');
     if (!adminExists) {
-        // Crear admin con contraseña establecida
-        const adminWithPassword = {
-            ...adminUser,
-            password: '13Jul1993' // Contraseña del administrador
-        };
-        users.push(adminWithPassword);
+        users.push(adminUser);
         localStorage.setItem('appUsers', JSON.stringify(users));
-        
-        console.log('✅ Usuario admin creado con contraseña establecida.');
-    } else {
-        // Si ya existe, verificar que tenga la contraseña correcta
-        const adminIndex = users.findIndex(u => u.email === adminUser.email);
-        if (adminIndex !== -1) {
-            users[adminIndex].password = '13Jul1993'; // Actualizar contraseña
-            localStorage.setItem('appUsers', JSON.stringify(users));
-            console.log('✅ Contraseña del admin actualizada.');
-        }
+        console.log('✅ Usuario admin creado.');
     }
 }
 
@@ -67,14 +53,14 @@ function login(username, password) {
         if (user.status === 'pendiente') {
             return {
                 success: false,
-                message: '⏳ Cuenta pendiente de aprobación\n\nTu cuenta está siendo revisada por el administrador.\nRecibirás acceso cuando sea aprobada.'
+                message: '⏳ Tu cuenta está pendiente de aprobación'
             };
         }
         
         if (user.status === 'rechazada') {
             return {
                 success: false,
-                message: '❌ Cuenta rechazada\n\nTu solicitud de cuenta no fue aprobada.\nContacta al administrador para más información.'
+                message: '❌ Tu cuenta fue rechazada. Contacta al administrador'
             };
         }
         
@@ -91,19 +77,20 @@ function login(username, password) {
             
             return {
                 success: true,
-                user: userSession
+                user: userSession,
+                message: `✅ Bienvenido ${user.username}!`
             };
         }
     }
     
     return {
         success: false,
-        message: '❌ Credenciales incorrectas\n\nVerifica tu nombre de usuario/email y contraseña.'
+        message: '❌ Usuario o contraseña incorrectos'
     };
 }
 
 // Función para registro de usuarios pendientes de aprobación
-function register(username, email, password, nombreCompleto) {
+function register(nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, username, email, password, establecimiento, cargo) {
     const users = getUsers();
     
     // Verificar si el email ya existe
@@ -126,10 +113,16 @@ function register(username, email, password, nombreCompleto) {
     
     // Crear nuevo usuario pendiente
     const newUser = {
-        username: username,
-        email: email,
+        nombre: nombre.trim(),
+        apellidoPaterno: apellidoPaterno.trim(),
+        apellidoMaterno: apellidoMaterno.trim(),
+        nombreCompleto: `${nombre.trim()} ${apellidoPaterno.trim()} ${apellidoMaterno.trim()}`,
+        fechaNacimiento,
+        username: username.trim(),
+        email: email.toLowerCase().trim(),
         password: password,
-        nombreCompleto: nombreCompleto,
+        establecimiento,
+        cargo,
         status: 'pendiente',
         fechaRegistro: new Date().toISOString(),
         fechaUltimaActividad: new Date().toISOString()
@@ -258,27 +251,48 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             
             const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
+            const password = document.getElementById('password').value.trim();
             
             if (!username || !password) {
-                alert('⚠️ Campos requeridos\n\nPor favor, completa todos los campos.');
+                if (window.showAlert) {
+                    showAlert('❌ Completa todos los campos', 'error');
+                } else {
+                    alert('⚠️ Campos requeridos\n\nPor favor, completa todos los campos.');
+                }
                 return;
             }
             
-            const result = login(username, password);
+            // Botón de carga
+            const loginBtn = document.getElementById('loginBtn');
+            const originalText = loginBtn.textContent;
+            loginBtn.textContent = '⏳ Verificando...';
+            loginBtn.disabled = true;
             
-            if (result.success) {
-                // Verificar también la autenticación de seguridad del proyecto
-                if (window.projectSecurity && !window.projectSecurity.checkAuthentication()) {
-                    // Si necesita autenticación adicional, mostrar prompt
-                    window.projectSecurity.showMasterPasswordPrompt();
+            // Simular delay para mejor UX
+            setTimeout(() => {
+                const result = login(username, password);
+                
+                if (result.success) {
+                    if (window.showAlert) {
+                        showAlert(result.message, 'success');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    } else {
+                        window.location.href = 'index.html';
+                    }
                 } else {
-                    // Redirigir al dashboard principal
-                    window.location.href = 'index.html';
+                    if (window.showAlert) {
+                        showAlert(result.message, 'error');
+                    } else {
+                        alert(result.message);
+                    }
+                    
+                    // Restaurar botón
+                    loginBtn.textContent = originalText;
+                    loginBtn.disabled = false;
                 }
-            } else {
-                alert(result.message);
-            }
+            }, 500);
         });
     }
     
@@ -288,15 +302,55 @@ document.addEventListener('DOMContentLoaded', function() {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const nombre = document.getElementById('nombre').value.trim();
+            const apellidoPaterno = document.getElementById('apellidoPaterno').value.trim();
+            const apellidoMaterno = document.getElementById('apellidoMaterno').value.trim();
+            const fechaNacimiento = document.getElementById('fechaNacimiento').value;
             const username = document.getElementById('regUsername').value.trim();
             const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
             const confirmPassword = document.getElementById('regConfirmPassword').value;
-            const nombreCompleto = document.getElementById('regNombreCompleto').value.trim();
             
-            // Validaciones
-            if (!username || !email || !password || !confirmPassword || !nombreCompleto) {
+            // Validaciones básicas
+            if (!nombre || !apellidoPaterno || !apellidoMaterno || !fechaNacimiento || !username || !email || !password || !confirmPassword) {
                 alert('⚠️ Campos requeridos\n\nPor favor, completa todos los campos.');
+                return;
+            }
+            
+            // Validar nombres (solo letras y espacios)
+            const nameRegex = /^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/;
+            if (!nameRegex.test(nombre)) {
+                alert('⚠️ Nombre inválido\n\nEl nombre solo puede contener letras.');
+                return;
+            }
+            
+            if (!nameRegex.test(apellidoPaterno)) {
+                alert('⚠️ Apellido paterno inválido\n\nEl apellido paterno solo puede contener letras.');
+                return;
+            }
+            
+            if (!nameRegex.test(apellidoMaterno)) {
+                alert('⚠️ Apellido materno inválido\n\nEl apellido materno solo puede contener letras.');
+                return;
+            }
+            
+            // Validar fecha de nacimiento
+            const birthDate = new Date(fechaNacimiento);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            if (age < 18) {
+                alert('⚠️ Edad insuficiente\n\nDebes ser mayor de 18 años para registrarte.');
+                return;
+            }
+            
+            if (birthDate > today) {
+                alert('⚠️ Fecha inválida\n\nLa fecha de nacimiento no puede ser futura.');
                 return;
             }
             
@@ -310,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const result = register(username, email, password, nombreCompleto);
+            const result = register(nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, username, email, password, '', '');
             alert(result.message);
             
             if (result.success) {

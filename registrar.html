@@ -36,6 +36,26 @@
             
             <form id="registerForm">
                 <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre">
+                </div>
+                
+                <div class="form-group">
+                    <label for="apellidoPaterno">Apellido Paterno:</label>
+                    <input type="text" id="apellidoPaterno" name="apellidoPaterno" required placeholder="Tu apellido paterno">
+                </div>
+                
+                <div class="form-group">
+                    <label for="apellidoMaterno">Apellido Materno:</label>
+                    <input type="text" id="apellidoMaterno" name="apellidoMaterno" required placeholder="Tu apellido materno">
+                </div>
+                
+                <div class="form-group">
+                    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+                    <input type="date" id="fechaNacimiento" name="fechaNacimiento" required>
+                </div>
+                
+                <div class="form-group">
                     <label for="newUsername">Usuario:</label>
                     <input type="text" id="newUsername" name="newUsername" required placeholder="Elige un nombre de usuario">
                 </div>
@@ -243,6 +263,10 @@
                 }
                 
                 setTimeout(() => {
+                    const nombre = document.getElementById('nombre').value.trim();
+                    const apellidoPaterno = document.getElementById('apellidoPaterno').value.trim();
+                    const apellidoMaterno = document.getElementById('apellidoMaterno').value.trim();
+                    const fechaNacimiento = document.getElementById('fechaNacimiento').value;
                     const username = document.getElementById('newUsername').value.trim();
                     const email = document.getElementById('newEmail').value.trim();
                     const password = document.getElementById('newPassword').value;
@@ -250,9 +274,51 @@
                     const cargo = document.getElementById('cargo').value;
                     const otroCargo = document.getElementById('otroCargo').value.trim();
                     
-                    // Validaciones
-                    if (!username || !email || !password || !establecimiento || !cargo) {
+                    // Validaciones básicas
+                    if (!nombre || !apellidoPaterno || !apellidoMaterno || !fechaNacimiento || !username || !email || !password || !establecimiento || !cargo) {
                         showAlert('ERROR: Completa todos los campos obligatorios', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Validar nombres (solo letras y espacios)
+                    const nameRegex = /^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/;
+                    if (!nameRegex.test(nombre)) {
+                        showAlert('ERROR: El nombre solo puede contener letras', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (!nameRegex.test(apellidoPaterno)) {
+                        showAlert('ERROR: El apellido paterno solo puede contener letras', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (!nameRegex.test(apellidoMaterno)) {
+                        showAlert('ERROR: El apellido materno solo puede contener letras', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    // Validar fecha de nacimiento (debe ser mayor de 18 años)
+                    const birthDate = new Date(fechaNacimiento);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDiff = today.getMonth() - birthDate.getMonth();
+                    
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                        age--;
+                    }
+                    
+                    if (age < 18) {
+                        showAlert('ERROR: Debes ser mayor de 18 años para registrarte', 'error');
+                        restoreButton();
+                        return;
+                    }
+                    
+                    if (birthDate > today) {
+                        showAlert('ERROR: La fecha de nacimiento no puede ser futura', 'error');
                         restoreButton();
                         return;
                     }
@@ -295,7 +361,7 @@
                     
                     // Registrar usuario con estado pendiente
                     const finalCargo = cargo === 'Otro' ? otroCargo : cargo;
-                    const result = registerWithApproval(username, email, password, establecimiento, finalCargo);
+                    const result = registerWithApproval(nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, username, email, password, establecimiento, finalCargo);
                     
                     if (result.success) {
                         showAlert('✅ ÉXITO: Cuenta creada exitosamente\n\n⏳ Tu cuenta está pendiente de aprobación por el administrador.\nRecibirás acceso una vez que sea revisada.', 'success');
@@ -312,7 +378,7 @@
         });
         
         // Función para registrar usuario con estado pendiente
-        function registerWithApproval(username, email, password, establecimiento, cargo) {
+        function registerWithApproval(nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, username, email, password, establecimiento, cargo) {
             const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
             
             // Verificar si el usuario ya existe
@@ -326,11 +392,16 @@
             
             // Agregar nuevo usuario con estado pendiente
             const newUser = { 
+                nombre,
+                apellidoPaterno,
+                apellidoMaterno,
+                fechaNacimiento,
                 username, 
                 email, 
                 password, 
                 establecimiento,
                 cargo,
+                nombreCompleto: `${nombre} ${apellidoPaterno} ${apellidoMaterno}`,
                 status: 'pendiente',
                 registrationDate: new Date().toISOString()
             };

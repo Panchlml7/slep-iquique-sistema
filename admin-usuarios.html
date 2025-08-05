@@ -57,17 +57,27 @@
 
         <!-- Pestañas de estado -->
         <div class="status-tabs">
-            <button class="tab-btn active" onclick="showTab('pendiente')">⏳ Pendientes</button>
-            <button class="tab-btn" onclick="showTab('aprobada')">✅ Aprobados</button>
-            <button class="tab-btn" onclick="showTab('rechazada')">❌ Rechazados</button>
-            <button class="tab-btn" onclick="showTab('todos')">👥 Todos</button>
+            <button class="tab-btn active" onclick="switchTab('pendiente', this)" id="btn-pendiente">⏳ Pendientes</button>
+            <button class="tab-btn" onclick="switchTab('aprobada', this)" id="btn-aprobada">✅ Aprobados</button>
+            <button class="tab-btn" onclick="switchTab('rechazada', this)" id="btn-rechazada">❌ Rechazados</button>
+            <button class="tab-btn" onclick="switchTab('todos', this)" id="btn-todos">👥 Todos</button>
         </div>
 
         <!-- Tabla de usuarios -->
         <div class="table-container">
+            <div class="admin-controls">
+                <button class="btn-export" onclick="exportUserData()">
+                    � Exportar Datos
+                </button>
+                <p style="color: #666; margin: 0; font-size: 0.9rem;">
+                    � Haz clic en "👁️ Ver Detalles" para acceder a la información confidencial
+                </p>
+            </div>
+            
             <table class="users-table">
                 <thead>
                     <tr>
+                        <th>Nombre Completo</th>
                         <th>Usuario</th>
                         <th>Email</th>
                         <th>Establecimiento</th>
@@ -108,6 +118,23 @@
                         📊 Procesar y Guardar Datos
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para información confidencial -->
+    <div id="userDetailsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔐 Información Confidencial del Usuario</h2>
+                <span class="close-modal" onclick="closeUserModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalUserInfo">
+                <!-- La información se cargará aquí dinámicamente -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-close" onclick="closeUserModal()">Cerrar</button>
+                <button class="btn-copy-all" onclick="copyAllUserInfo()">📋 Copiar Todo</button>
             </div>
         </div>
     </div>
@@ -487,7 +514,15 @@
             }
             
             console.log('✅ Acceso admin concedido');
-            loadUsers();
+            
+            // Crear datos de ejemplo si no existen
+            createSampleUsers();
+            
+            // Inicializar con la pestaña de pendientes activa
+            currentTab = 'pendiente';
+            
+            // Cargar usuarios y estadísticas
+            loadUsers('pendiente');
             updateStats();
             
             // Configurar upload de archivos
@@ -510,9 +545,18 @@
         });
 
         function loadUsers(filterStatus = 'pendiente') {
+            console.log(`🔍 Cargando usuarios con filtro: ${filterStatus}`);
+            
             const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
             const tableBody = document.getElementById('usersTableBody');
+            
+            if (!tableBody) {
+                console.error('❌ No se encontró el elemento usersTableBody');
+                return;
+            }
+            
             tableBody.innerHTML = '';
+            console.log(`📊 Total de usuarios en localStorage: ${users.length}`);
 
             let filteredUsers = users;
             if (filterStatus !== 'todos') {
@@ -521,11 +565,13 @@
 
             // Excluir admin de la lista (por status, no por username)
             filteredUsers = filteredUsers.filter(user => user.status !== 'admin');
+            
+            console.log(`📋 Usuarios filtrados para "${filterStatus}": ${filteredUsers.length}`);
 
             if (filteredUsers.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 2rem; color: #666;">
+                        <td colspan="8" style="text-align: center; padding: 2rem; color: #666;">
                             ${filterStatus === 'pendiente' ? '📭 No hay solicitudes pendientes' : 
                               filterStatus === 'aprobada' ? '👤 No hay usuarios aprobados' :
                               filterStatus === 'rechazada' ? '🚫 No hay solicitudes rechazadas' : 
@@ -538,9 +584,29 @@
 
             filteredUsers.forEach((user, index) => {
                 const row = document.createElement('tr');
-                const registeredDate = new Date(user.registeredAt).toLocaleDateString('es-CL');
+                const registeredDate = user.registrationDate ? 
+                    new Date(user.registrationDate).toLocaleDateString('es-CL') : 
+                    'No disponible';
+                
+                const birthDate = user.fechaNacimiento ? 
+                    new Date(user.fechaNacimiento).toLocaleDateString('es-CL') : 
+                    'No disponible';
+                
+                const nombreCompleto = user.nombreCompleto || 
+                    `${user.nombre || ''} ${user.apellidoPaterno || ''} ${user.apellidoMaterno || ''}`.trim() ||
+                    user.username;
                 
                 row.innerHTML = `
+                    <td>
+                        <div class="user-info">
+                            <strong>${nombreCompleto}</strong>
+                            <small style="display: block; color: #666;">
+                                ${user.nombre ? `Nombre: ${user.nombre}` : ''}
+                                ${user.apellidoPaterno ? `<br>Ap. Paterno: ${user.apellidoPaterno}` : ''}
+                                ${user.apellidoMaterno ? `<br>Ap. Materno: ${user.apellidoMaterno}` : ''}
+                            </small>
+                        </div>
+                    </td>
                     <td>
                         <div class="user-info">
                             <strong>${user.username}</strong>
@@ -577,6 +643,9 @@
                                     ✅ Aprobar
                                 </button>
                             ` : ''}
+                            <button class="btn-action btn-info" onclick="showUserDetailsModal('${user.username}')">
+                                👁️ Ver Detalles
+                            </button>
                             <button class="btn-action btn-delete" onclick="deleteUser('${user.username}')">
                                 🗑️ Eliminar
                             </button>
@@ -597,12 +666,105 @@
             document.getElementById('rejectedUsers').textContent = nonAdminUsers.filter(u => u.status === 'rechazada').length;
         }
 
+        // Variable global para el tab actual
+        let currentTab = 'pendiente';
+        
+        // Función simple para cambiar pestañas
+        function switchTab(status, buttonElement) {
+            alert('🔄 Ejecutando switchTab: ' + status);
+            console.log('🔄 Cambiando a pestaña:', status);
+            
+            // Actualizar variable global
+            currentTab = status;
+            
+            // Remover clase active de todos los botones
+            const allButtons = document.querySelectorAll('.tab-btn');
+            allButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Agregar clase active al botón clickeado
+            buttonElement.classList.add('active');
+            
+            // Cargar usuarios filtrados
+            loadUsers(status);
+            
+            console.log('✅ Pestaña cambiada a:', status);
+        }
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            // Solo crear usuarios de ejemplo si no hay usuarios (excepto admin)
+            const nonAdminUsers = users.filter(u => u.status !== 'admin');
+            if (nonAdminUsers.length === 0) {
+                console.log('🧪 Creando usuarios de ejemplo para testing...');
+                
+                const sampleUsers = [
+                    {
+                        username: 'juan.perez',
+                        password: 'temp123',
+                        email: 'juan.perez@slep-iquique.cl',
+                        nombre: 'Juan',
+                        apellidoPaterno: 'Pérez',
+                        apellidoMaterno: 'González',
+                        fechaNacimiento: '1985-03-15',
+                        establecimiento: 'Escuela Básica Los Aromos',
+                        status: 'pendiente',
+                        registrationDate: new Date().toISOString()
+                    },
+                    {
+                        username: 'maria.lopez',
+                        password: 'temp456',
+                        email: 'maria.lopez@slep-iquique.cl',
+                        nombre: 'María',
+                        apellidoPaterno: 'López',
+                        apellidoMaterno: 'Silva',
+                        fechaNacimiento: '1992-07-22',
+                        establecimiento: 'Liceo Técnico Industrial',
+                        status: 'aprobada',
+                        registrationDate: new Date().toISOString(),
+                        approvedAt: new Date().toISOString(),
+                        approvedBy: 'admin'
+                    },
+                    {
+                        username: 'carlos.ruiz',
+                        password: 'temp789',
+                        email: 'carlos.ruiz@slep-iquique.cl',
+                        nombre: 'Carlos',
+                        apellidoPaterno: 'Ruiz',
+                        apellidoMaterno: 'Morales',
+                        fechaNacimiento: '1988-11-10',
+                        establecimiento: 'Colegio San Patricio',
+                        status: 'rechazada',
+                        registrationDate: new Date().toISOString(),
+                        rejectedAt: new Date().toISOString(),
+                        rejectedBy: 'admin',
+                        rejectionReason: 'Documentación incompleta'
+                    }
+                ];
+                
+                // Agregar usuarios de ejemplo
+                users.push(...sampleUsers);
+                localStorage.setItem('appUsers', JSON.stringify(users));
+                
+                console.log('✅ Usuarios de ejemplo creados');
+            }
+        }
+
         function showTab(status) {
             currentTab = status;
             
             // Actualizar pestañas activas
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            
+            // Encontrar y activar el botón correcto
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                const btnText = btn.textContent.toLowerCase();
+                if ((status === 'pendiente' && btnText.includes('pendientes')) ||
+                    (status === 'aprobada' && btnText.includes('aprobados')) ||
+                    (status === 'rechazada' && btnText.includes('rechazados')) ||
+                    (status === 'todos' && btnText.includes('todos'))) {
+                    btn.classList.add('active');
+                }
+            });
             
             loadUsers(status);
         }
@@ -660,6 +822,525 @@
                 alert(`🗑️ Usuario "${username}" eliminado permanentemente`);
             }
         }
+
+        // Funciones para el modal de información confidencial
+        let currentUserData = null;
+
+        function showUserDetailsModal(username) {
+            // Confirmar acceso a información confidencial
+            const confirmed = confirm(`⚠️ INFORMACIÓN CONFIDENCIAL ⚠️
+
+¿Estás seguro de que quieres ver la información sensible del usuario "${username}"?
+
+Esta información incluye:
+• Contraseña de acceso
+• Fecha de nacimiento
+• Datos personales completos
+
+❗ ADVERTENCIA: Esta información es CONFIDENCIAL y solo debe ser vista por administradores autorizados.
+
+¿Continuar?`);
+            
+            if (!confirmed) {
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const user = users.find(u => u.username === username);
+            
+            if (!user) {
+                alert('❌ Usuario no encontrado');
+                return;
+            }
+
+            currentUserData = user;
+            
+            // Registro de acceso a información sensible
+            console.warn('🔐 ACCESO A INFORMACIÓN SENSIBLE - Admin:', getCurrentUser()?.username, 'Usuario consultado:', username, 'Tiempo:', new Date().toISOString());
+
+            const nombreCompleto = user.nombreCompleto || 
+                `${user.nombre || ''} ${user.apellidoPaterno || ''} ${user.apellidoMaterno || ''}`.trim() ||
+                'No disponible';
+
+            const birthDate = user.fechaNacimiento ? 
+                new Date(user.fechaNacimiento).toLocaleDateString('es-CL') : 
+                'No disponible';
+
+            const registrationDate = user.registrationDate ? 
+                new Date(user.registrationDate).toLocaleDateString('es-CL') : 
+                'No disponible';
+
+            const age = user.fechaNacimiento ? calculateAge(user.fechaNacimiento) : 'No disponible';
+
+            const approvedDate = user.approvedAt ? 
+                new Date(user.approvedAt).toLocaleDateString('es-CL') : 
+                'No aprobado';
+
+            const rejectedDate = user.rejectedAt ? 
+                new Date(user.rejectedAt).toLocaleDateString('es-CL') : 
+                'No rechazado';
+
+            // Generar HTML del modal
+            const modalContent = `
+                <div class="user-details-section">
+                    <div class="section-header">
+                        <h3>👤 DATOS PERSONALES</h3>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <label>Nombre Completo:</label>
+                            <span>${nombreCompleto}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Nombre:</label>
+                            <span>${user.nombre || 'No disponible'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Apellido Paterno:</label>
+                            <span>${user.apellidoPaterno || 'No disponible'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Apellido Materno:</label>
+                            <span>${user.apellidoMaterno || 'No disponible'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Fecha de Nacimiento:</label>
+                            <span>${birthDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Edad:</label>
+                            <span>${age} años</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-details-section confidential">
+                    <div class="section-header">
+                        <h3>🔐 CREDENCIALES DE ACCESO</h3>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <label>Usuario:</label>
+                            <span>${user.username}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Email:</label>
+                            <span>${user.email}</span>
+                        </div>
+                        <div class="detail-item password-item">
+                            <label>Contraseña:</label>
+                            <div class="password-display">
+                                <code class="password-code">${user.password || 'No disponible'}</code>
+                                <button class="btn-copy-small" onclick="copyToClipboard('${user.password}')" title="Copiar contraseña">
+                                    📋
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-details-section">
+                    <div class="section-header">
+                        <h3>🏢 INFORMACIÓN LABORAL</h3>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <label>Establecimiento:</label>
+                            <span>${user.establecimiento || 'No especificado'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Cargo/Función:</label>
+                            <span>${user.cargo || 'No especificado'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-details-section">
+                    <div class="section-header">
+                        <h3>📊 ESTADO DE CUENTA</h3>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <label>Estado:</label>
+                            <span class="status-badge status-${user.status}">${user.status}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Fecha de Registro:</label>
+                            <span>${registrationDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Fecha de Aprobación:</label>
+                            <span>${approvedDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Fecha de Rechazo:</label>
+                            <span>${rejectedDate}</span>
+                        </div>
+                        ${user.rejectionReason ? `
+                        <div class="detail-item">
+                            <label>Motivo de Rechazo:</label>
+                            <span>${user.rejectionReason}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <div class="confidential-warning">
+                    ⚠️ ESTA INFORMACIÓN ES CONFIDENCIAL - SOLO PARA ADMINISTRADORES
+                </div>
+            `;
+
+            document.getElementById('modalUserInfo').innerHTML = modalContent;
+            document.getElementById('userDetailsModal').style.display = 'block';
+            
+            // Agregar efecto de entrada
+            setTimeout(() => {
+                document.querySelector('.modal-content').style.transform = 'scale(1)';
+                document.querySelector('.modal-content').style.opacity = '1';
+            }, 10);
+        }
+
+        function closeUserModal() {
+            const modal = document.getElementById('userDetailsModal');
+            const modalContent = document.querySelector('.modal-content');
+            
+            // Efecto de salida
+            modalContent.style.transform = 'scale(0.8)';
+            modalContent.style.opacity = '0';
+            
+            setTimeout(() => {
+                modal.style.display = 'none';
+                currentUserData = null;
+            }, 200);
+        }
+
+        function copyAllUserInfo() {
+            if (!currentUserData) {
+                alert('❌ No hay información de usuario para copiar');
+                return;
+            }
+
+            const user = currentUserData;
+            const nombreCompleto = user.nombreCompleto || 
+                `${user.nombre || ''} ${user.apellidoPaterno || ''} ${user.apellidoMaterno || ''}`.trim();
+
+            const userInfo = `INFORMACIÓN COMPLETA DEL USUARIO - ${nombreCompleto}
+
+👤 DATOS PERSONALES:
+• Nombre Completo: ${nombreCompleto}
+• Nombre: ${user.nombre || 'No disponible'}
+• Apellido Paterno: ${user.apellidoPaterno || 'No disponible'}
+• Apellido Materno: ${user.apellidoMaterno || 'No disponible'}
+• Fecha de Nacimiento: ${user.fechaNacimiento ? new Date(user.fechaNacimiento).toLocaleDateString('es-CL') : 'No disponible'}
+• Edad: ${user.fechaNacimiento ? calculateAge(user.fechaNacimiento) : 'No disponible'} años
+
+🔐 CREDENCIALES:
+• Usuario: ${user.username}
+• Email: ${user.email}
+• Contraseña: ${user.password || 'No disponible'}
+
+🏢 INFORMACIÓN LABORAL:
+• Establecimiento: ${user.establecimiento || 'No especificado'}
+• Cargo: ${user.cargo || 'No especificado'}
+
+📊 ESTADO DE CUENTA:
+• Estado: ${user.status}
+• Fecha de Registro: ${user.registrationDate ? new Date(user.registrationDate).toLocaleDateString('es-CL') : 'No disponible'}
+${user.approvedAt ? `• Fecha de Aprobación: ${new Date(user.approvedAt).toLocaleDateString('es-CL')}` : ''}
+${user.rejectedAt ? `• Fecha de Rechazo: ${new Date(user.rejectedAt).toLocaleDateString('es-CL')}` : ''}
+${user.rejectionReason ? `• Motivo de Rechazo: ${user.rejectionReason}` : ''}
+
+⚠️ INFORMACIÓN CONFIDENCIAL - SOLO PARA ADMINISTRADORES
+Consultado por: ${getCurrentUser()?.username || 'admin'}
+Fecha de consulta: ${new Date().toLocaleString('es-CL')}`;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(userInfo).then(() => {
+                    showTempAlert('📋 Información completa copiada al portapapeles');
+                });
+            } else {
+                // Fallback para navegadores antiguos
+                const textArea = document.createElement('textarea');
+                textArea.value = userInfo;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showTempAlert('� Información completa copiada al portapapeles');
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('userDetailsModal');
+            if (event.target === modal) {
+                closeUserModal();
+            }
+        }
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeUserModal();
+            }
+        });
+
+        function calculateAge(birthDate) {
+            const birth = new Date(birthDate);
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showTempAlert('📋 Contraseña copiada al portapapeles');
+                });
+            } else {
+                // Fallback para navegadores antiguos
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showTempAlert('📋 Contraseña copiada al portapapeles');
+            }
+        }
+
+        function showTempAlert(message) {
+            const alert = document.createElement('div');
+            alert.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 1000;
+                font-weight: bold;
+            `;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                document.body.removeChild(alert);
+            }, 2000);
+        }
+
+        function showUserDetails(username) {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const user = users.find(u => u.username === username);
+            
+            if (!user) {
+                alert('❌ Usuario no encontrado');
+                return;
+            }
+
+            const nombreCompleto = user.nombreCompleto || 
+                `${user.nombre || ''} ${user.apellidoPaterno || ''} ${user.apellidoMaterno || ''}`.trim() ||
+                'No disponible';
+
+            const birthDate = user.fechaNacimiento ? 
+                new Date(user.fechaNacimiento).toLocaleDateString('es-CL') : 
+                'No disponible';
+
+            const registrationDate = user.registrationDate ? 
+                new Date(user.registrationDate).toLocaleDateString('es-CL') : 
+                'No disponible';
+
+            const age = user.fechaNacimiento ? calculateAge(user.fechaNacimiento) : 'No disponible';
+
+            const userInfo = `
+🔍 INFORMACIÓN COMPLETA DEL USUARIO
+
+👤 DATOS PERSONALES:
+• Nombre Completo: ${nombreCompleto}
+• Nombre: ${user.nombre || 'No disponible'}
+• Apellido Paterno: ${user.apellidoPaterno || 'No disponible'}
+• Apellido Materno: ${user.apellidoMaterno || 'No disponible'}
+• Fecha de Nacimiento: ${birthDate}
+• Edad: ${age} años
+
+🔐 CREDENCIALES:
+• Usuario: ${user.username}
+• Email: ${user.email}
+• Contraseña: ${user.password || 'No disponible'}
+
+🏢 INFORMACIÓN LABORAL:
+• Establecimiento: ${user.establecimiento || 'No especificado'}
+• Cargo: ${user.cargo || 'No especificado'}
+
+📊 ESTADO DE CUENTA:
+• Estado: ${user.status}
+• Fecha de Registro: ${registrationDate}
+${user.approvedAt ? `• Fecha de Aprobación: ${new Date(user.approvedAt).toLocaleDateString('es-CL')}` : ''}
+${user.rejectedAt ? `• Fecha de Rechazo: ${new Date(user.rejectedAt).toLocaleDateString('es-CL')}` : ''}
+${user.rejectionReason ? `• Motivo de Rechazo: ${user.rejectionReason}` : ''}
+
+        }
+
+        function exportUserData() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const nonAdminUsers = users.filter(user => user.status !== 'admin');
+            
+            if (nonAdminUsers.length === 0) {
+                alert('❌ No hay usuarios para exportar');
+                return;
+            }
+
+            // Confirmar exportación y tipo de datos
+            const includePasswords = confirm(`📊 EXPORTAR DATOS DE USUARIOS
+
+Se exportarán ${nonAdminUsers.length} usuarios.
+
+⚠️ ¿Incluir contraseñas en la exportación?
+
+• SÍ = Exportar CON contraseñas (CONFIDENCIAL)
+• NO = Exportar SIN contraseñas (Recomendado)
+
+ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuidado.`);
+
+            // Crear datos para exportar
+            const exportData = nonAdminUsers.map(user => {
+                const baseData = {
+                    'Nombre Completo': user.nombreCompleto || `${user.nombre || ''} ${user.apellidoPaterno || ''} ${user.apellidoMaterno || ''}`.trim(),
+                    'Nombre': user.nombre || '',
+                    'Apellido Paterno': user.apellidoPaterno || '',
+                    'Apellido Materno': user.apellidoMaterno || '',
+                    'Usuario': user.username,
+                    'Email': user.email,
+                    'Fecha de Nacimiento': user.fechaNacimiento || '',
+                    'Establecimiento': user.establecimiento || '',
+                    'Cargo': user.cargo || '',
+                    'Estado': user.status,
+                    'Fecha de Registro': user.registrationDate ? new Date(user.registrationDate).toLocaleDateString('es-CL') : '',
+                    'Fecha de Aprobación': user.approvedAt ? new Date(user.approvedAt).toLocaleDateString('es-CL') : ''
+                };
+
+                // Solo incluir contraseña si se confirmó
+                if (includePasswords) {
+                    baseData['Contraseña'] = user.password || '';
+                }
+
+                return baseData;
+            });
+
+            // Convertir a CSV
+            const csvContent = convertToCSV(exportData);
+            
+            // Nombre de archivo con indicador de seguridad
+            const securitySuffix = includePasswords ? '_CONFIDENCIAL' : '';
+            const filename = `usuarios_slep_${new Date().toISOString().split('T')[0]}${securitySuffix}.csv`;
+            
+            // Descargar archivo
+            downloadCSV(csvContent, filename);
+            
+            // Mensaje de confirmación
+            const passwordInfo = includePasswords ? ' (INCLUYE CONTRASEÑAS - CONFIDENCIAL)' : ' (sin contraseñas)';
+            alert(`✅ Datos de ${nonAdminUsers.length} usuarios exportados exitosamente${passwordInfo}`);
+            
+            // Registro de exportación
+            console.warn('📊 EXPORTACIÓN DE DATOS - Admin:', getCurrentUser()?.username, 'Con contraseñas:', includePasswords, 'Archivo:', filename);
+        }
+
+        function convertToCSV(data) {
+            if (data.length === 0) return '';
+            
+            const headers = Object.keys(data[0]);
+            const csvRows = [];
+            
+            // Agregar encabezados
+            csvRows.push(headers.join(','));
+            
+            // Agregar filas
+            data.forEach(row => {
+                const values = headers.map(header => {
+                    const value = row[header] || '';
+                    // Escapar comillas y agregar comillas si contiene comas
+                    return `"${value.toString().replace(/"/g, '""')}"`;
+                });
+                csvRows.push(values.join(','));
+            });
+            
+            return csvRows.join('\n');
+        }
+
+        function downloadCSV(csvContent, filename) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    </script>
+
+    <!-- SCRIPT DE PESTAÑAS FUNCIONAL -->
+    <script>
+        // Sobrescribir la función switchTab para que funcione
+        function switchTab(status, buttonElement) {
+            try {
+                console.log('🔄 switchTab ejecutándose:', status);
+                
+                // Actualizar variable global
+                window.currentTab = status;
+                
+                // Remover clase active de todos los botones
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Agregar clase active al botón clickeado
+                if (buttonElement) {
+                    buttonElement.classList.add('active');
+                }
+                
+                // Llamar a loadUsers si existe
+                if (typeof loadUsers === 'function') {
+                    loadUsers(status);
+                } else {
+                    console.warn('loadUsers no disponible');
+                }
+                
+                console.log('✅ switchTab completado');
+                
+            } catch (error) {
+                console.error('❌ Error en switchTab:', error);
+            }
+        }
+        
+        // Asegurar que la función esté disponible globalmente
+        window.switchTab = switchTab;
+        
+        // Función de debugging (modo silencioso)
+        function debugTabs() {
+            const buttons = document.querySelectorAll('.tab-btn');
+            console.log('🔍 Sistema de pestañas:', buttons.length, 'botones encontrados');
+        }
+        
+        // Ejecutar debugging cuando la página esté lista
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', debugTabs);
+        } else {
+            debugTabs();
+        }
+        
+        console.log('✅ Sistema de pestañas listo');
     </script>
 </body>
 </html>

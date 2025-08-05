@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Test - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        .tab-container {
+            background: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            padding: 12px 24px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .tab-btn:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+        }
+        .tab-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .content-area {
+            min-height: 300px;
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        .test-buttons {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+        }
+        .test-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Admin Test</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="login.html" class="nav-link">Salir</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="tab-container">
+        <h1>🧪 Test de Pestañas - Admin Panel</h1>
+        
+        <div class="test-buttons">
+            <h3>Botones de Prueba:</h3>
+            <button class="test-btn" onclick="alert('Click simple funciona!')">🟢 Test Click Simple</button>
+            <button class="test-btn" onclick="testTabFunction()">🧪 Test Función JS</button>
+            <button class="test-btn" onclick="console.log('Console.log funciona')">📝 Test Console</button>
+        </div>
+        
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('pendiente', this)">⏳ Pendientes</button>
+            <button class="tab-btn" onclick="switchTab('aprobada', this)">✅ Aprobados</button>
+            <button class="tab-btn" onclick="switchTab('rechazada', this)">❌ Rechazados</button>
+            <button class="tab-btn" onclick="switchTab('todos', this)">👥 Todos</button>
+        </div>
+        
+        <div class="content-area">
+            <h3>Área de Contenido</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #007bff; color: white;">
+                        <th style="padding: 10px; border: 1px solid #ddd;">Nombre</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Usuario</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Estado</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td style="padding: 20px; text-align: center;" colspan="5">
+                            🔍 Selecciona una pestaña para ver los usuarios
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px;">
+            <h4>📋 Instrucciones de Test:</h4>
+            <ol>
+                <li>🟢 Primero prueba los botones de arriba para verificar que JavaScript funciona</li>
+                <li>⏳ Luego haz clic en las pestañas (Pendientes, Aprobados, etc.)</li>
+                <li>👀 Deberías ver un alert confirmando que la función se ejecuta</li>
+                <li>🎨 La pestaña clickeada debe cambiar de color (volverse azul)</li>
+                <li>📊 El contenido de la tabla debe actualizarse</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/admin-tabs.js"></script>
+    
+    <script>
+        // Script adicional inline para debugging
+        console.log('🚀 Página cargada - verificando funciones...');
+        
+        // Verificar que las funciones están disponibles
+        window.addEventListener('load', function() {
+            console.log('✅ Window load event disparado');
+            
+            if (typeof switchTab === 'function') {
+                console.log('✅ Función switchTab está disponible');
+            } else {
+                console.error('❌ Función switchTab NO está disponible');
+            }
+            
+            if (typeof testTabFunction === 'function') {
+                console.log('✅ Función testTabFunction está disponible');
+            } else {
+                console.error('❌ Función testTabFunction NO está disponible');
+            }
+            
+            // Contar botones
+            const buttons = document.querySelectorAll('.tab-btn');
+            console.log('🔍 Botones .tab-btn encontrados:', buttons.length);
+        });
+    </script>
+</body>
+</html>

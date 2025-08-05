@@ -6,6 +6,7 @@
     <title>Iniciar Sesión - SLEP Iquique</title>
     <link rel="stylesheet" href="css/estilo.css">
     <link rel="stylesheet" href="css/auth.css">
+    <script src="js/login.js"></script>
 </head>
 <body>
     <!-- B    <!-- Barra de navegación -->
@@ -28,9 +29,10 @@
         <div class="login-container">
             <div class="login-header">
                 <h1>Iniciar Sesión</h1>
-                <p>Sistema de acceso restringido - Solo usuarios autorizados</p>
+                <p>Sistema de gestión SLEP IQUIQUE</p>
+                
                 <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 10px; margin: 10px 0; color: #856404;">
-                    <strong>⚠️ Aviso:</strong> Este sistema solo permite acceso a usuarios autorizados previamente.
+                    <strong>⚠️ Aviso:</strong> Este sistema solo permite acceso a usuarios autorizados.
                 </div>
             </div>
             
@@ -64,13 +66,6 @@
               <div class="register-link">
                 ¿No tienes cuenta? <a href="registrar.html">Crear una cuenta</a>
             </div>
-            
-            <!-- TEMPORAL: Botón de debug -->
-            <div style="margin-top: 20px; text-align: center;">
-                <button type="button" onclick="clearStorage()" style="background: #ff4757; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
-                    🗑️ Limpiar Datos (Debug)
-                </button>
-            </div>
 
             <!-- Contenedor de alertas AQUÍ -->
             <div id="alertContainer"></div>
@@ -78,220 +73,48 @@
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Login page loaded');
-            
-            // Inicializar sistema con admin
-            const adminUser = {
-                username: 'francisco.ramos',
-                email: 'francisco.ramos@slepiquique.cl',
-                password: '', // Por seguridad, se configura dinámicamente
-                status: 'admin'
-            };
-            
-            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
-            const adminExists = users.find(u => u.email === adminUser.email);
-            if (!adminExists) {
-                // Crear admin con contraseña segura inicial
-                const secureAdmin = {
-                    ...adminUser,
-                    password: prompt('🔐 Configuración inicial: Establece la contraseña del administrador:') || 'temporal123'
-                };
-                users.push(secureAdmin);
-                localStorage.setItem('appUsers', JSON.stringify(users));
-                console.log('✅ Admin user created with secure password');
-            } else {
-                console.log('✅ Admin user already exists');
-            }
-            
-            // Verificar si ya está logueado
-            if (localStorage.getItem('currentUser')) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            // Verificar que el formulario existe
-            const loginForm = document.getElementById('loginForm');
-            const loginBtn = document.getElementById('loginBtn');
-            console.log('📋 Form element:', loginForm);
-            console.log('🔘 Button element:', loginBtn);
-            
-            // Manejar el formulario de login
-            if (loginForm) {
-                console.log('✅ Adding event listener to form');
-                loginForm.addEventListener('submit', function(e) {
-                    console.log('🔥 Form submitted!');
-                    e.preventDefault();
-                
-                // Mostrar indicador de carga
-                const loginBtn = document.getElementById('loginBtn');
-                const originalText = loginBtn.textContent;
-                loginBtn.textContent = '⏳ Verificando...';
-                loginBtn.disabled = true;
-                
-                // Simular un pequeño delay para mejor UX
-                setTimeout(() => {
-                    const username = document.getElementById('username').value;
-                    const password = document.getElementById('password').value;
-                    
-                    console.log('🔍 Datos ingresados:');
-                    console.log('  Username:', username);
-                    console.log('  Password:', password);
-                    
-                    // Función para restaurar el botón
-                    function restoreButton() {
-                        loginBtn.textContent = originalText;
-                        loginBtn.disabled = false;
-                    }
-                    
-                    if (!username || !password) {
-                        alert('ERROR: Completa todos los campos');
-                        showAlert('ERROR: Completa todos los campos', 'error');
-                        restoreButton();
-                        return;
-                    }
-                    
-                    // Sistema de login con validación de estados
-                    const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
-                    console.log('📊 Usuarios registrados:', users.length);
-                    console.log('👥 Lista completa de usuarios:', users);
-                    console.log('🔍 Buscando usuario:', username);
-                    
-                    const user = users.find(u => (u.username === username || u.email === username) && u.password === password);
-                    console.log('👤 Usuario encontrado:', user);
-                    
-                    // Debug: Ver si el usuario existe pero con contraseña incorrecta
-                    const userByUsernameOnly = users.find(u => u.username === username || u.email === username);
-                    console.log('🔓 Usuario por nombre/email (sin verificar contraseña):', userByUsernameOnly);
-                    
-                    if (user) {
-                        // Verificar estado del usuario
-                        if (user.status === 'pendiente') {
-                            alert('⏳ Cuenta pendiente de aprobación\n\nTu cuenta está siendo revisada por el administrador.');
-                            showAlert('⏳ Cuenta pendiente de aprobación\n\nTu cuenta está siendo revisada por el administrador.', 'error');
-                            restoreButton();
-                            return;
-                        }
-                        
-                        if (user.status === 'rechazada') {
-                            alert('❌ Cuenta rechazada\n\nTu solicitud no fue aprobada. Contacta al administrador.');
-                            showAlert('❌ Cuenta rechazada\n\nTu solicitud no fue aprobada. Contacta al administrador.', 'error');
-                            restoreButton();
-                            return;
-                        }
-                        
-                        // Login exitoso para admin o usuarios aprobados
-                        if (user.status === 'admin' || user.status === 'aprobada') {
-                            const userSession = {
-                                username: user.username,
-                                email: user.email,
-                                status: user.status,
-                                loginTime: new Date().toISOString()
-                            };
-                            localStorage.setItem('currentUser', JSON.stringify(userSession));
-                            
-                            showAlert(`EXITO: Bienvenido ${user.username}!`, 'success');
-                            
-                            setTimeout(() => {
-                                window.location.href = 'index.html';
-                            }, 2000);
-                        } else {
-                            alert('🚫 Acceso denegado. Contacta al administrador.');
-                            showAlert('🚫 Acceso denegado. Contacta al administrador.', 'error');
-                            restoreButton();
-                        }
-                    } else {
-                        alert('ERROR: Usuario o contraseña incorrectos');
-                        showAlert('ERROR: Usuario o contraseña incorrectos', 'error');
-                        restoreButton();
-                    }
-                }, 500); // Delay de 500ms para mostrar el indicador de carga
-                });
-            } else {
-                console.log('❌ Login form not found!');
-            }
-        });
-        
-        // Función temporal para limpiar localStorage
-        function clearStorage() {
-            localStorage.removeItem('appUsers');
-            localStorage.removeItem('currentUser');
-            console.log('🗑️ LocalStorage limpiado');
-            location.reload();
-        }
-        
+        // Función para mostrar alertas
         function showAlert(message, type = 'success') {
-            console.log('showAlert llamada con:', message, type);
-            
             const alertContainer = document.getElementById('alertContainer');
-            console.log('alertContainer encontrado:', alertContainer);
+            if (!alertContainer) return;
             
-            if (!alertContainer) {
-                console.error('No se encontró alertContainer');
-                return;
-            }
-            
-            // Limpiar completamente
+            // Limpiar alertas anteriores
             alertContainer.innerHTML = '';
-            console.log('Container limpiado');
             
-            // Crear alerta SIMPLE
+            // Crear nueva alerta
             const alertDiv = document.createElement('div');
-            console.log('Div creado');
+            alertDiv.textContent = message;
             
-            // Estilo directo y simple
             if (type === 'error') {
                 alertDiv.style.cssText = `
-                    background: #ff4444 !important;
-                    color: white !important;
-                    padding: 20px !important;
-                    margin: 15px 0 !important;
-                    border-radius: 8px !important;
-                    text-align: center !important;
-                    font-size: 16px !important;
-                    font-weight: bold !important;
-                    border: 3px solid #cc0000 !important;
-                    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
-                    display: block !important;
-                    width: 100% !important;
-                    box-sizing: border-box !important;
+                    background: #dc3545;
+                    color: white;
+                    padding: 15px;
+                    margin: 15px 0;
+                    border-radius: 8px;
+                    text-align: center;
+                    font-weight: bold;
+                    border: 2px solid #c82333;
                 `;
-                console.log('Estilo error aplicado');
             } else {
                 alertDiv.style.cssText = `
-                    background: #44aa44 !important;
-                    color: white !important;
-                    padding: 20px !important;
-                    margin: 15px 0 !important;
-                    border-radius: 8px !important;
-                    text-align: center !important;
-                    font-size: 16px !important;
-                    font-weight: bold !important;
-                    border: 3px solid #006600 !important;
-                    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
-                    display: block !important;
-                    width: 100% !important;
-                    box-sizing: border-box !important;
+                    background: #28a745;
+                    color: white;
+                    padding: 15px;
+                    margin: 15px 0;
+                    border-radius: 8px;
+                    text-align: center;
+                    font-weight: bold;
+                    border: 2px solid #1e7e34;
                 `;
-                console.log('Estilo success aplicado');
             }
             
-            // Agregar el texto sin formato especial
-            alertDiv.textContent = message;
-            console.log('Texto agregado:', message);
-            
-            // Mostrar inmediatamente
             alertContainer.appendChild(alertDiv);
-            console.log('Div agregado al container');
             
-            // Verificar que se agregó
-            console.log('Children del container:', alertContainer.children.length);
-            
-            // Auto-remover después de 5 segundos
+            // Remover después de 5 segundos
             setTimeout(() => {
-                if (alertDiv && alertDiv.parentNode) {
+                if (alertDiv.parentNode) {
                     alertDiv.remove();
-                    console.log('Alerta removida después de 5 segundos');
                 }
             }, 5000);
         }
@@ -303,29 +126,29 @@
             const eyeOpen = toggle.querySelector('.eye-open');
             const eyeClosed = toggle.querySelector('.eye-closed');
             
-            console.log('togglePassword called for:', inputId);
-            console.log('Current input type:', input.type);
-            
             if (input.type === 'password') {
                 input.type = 'text';
                 eyeOpen.style.display = 'none';
                 eyeClosed.style.display = 'block';
                 toggle.setAttribute('aria-label', 'Ocultar contraseña');
-                console.log('Changed to text type');
-                
-                // Forzar estilos para visibilidad
-                input.style.color = '#1a202c !important';
-                input.style.backgroundColor = '#f7fafc !important';
-                input.style.fontWeight = '600';
             } else {
                 input.type = 'password';
                 eyeOpen.style.display = 'block';
                 eyeClosed.style.display = 'none';
                 toggle.setAttribute('aria-label', 'Mostrar contraseña');
-                console.log('Changed to password type');
-                
-                // Restaurar estilos de contraseña
-                input.style.backgroundColor = '#ffffff';
-                input.style.fontWeight = '500';
             }
         }
+        
+        // Verificar si ya está logueado cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isUserLoggedIn()) {
+                const currentUser = getCurrentUser();
+                if (currentUser && currentUser.status === 'admin') {
+                    // Mensaje especial para admin
+                    console.log('🔐 Administrador detectado - Acceso completo al sistema');
+                }
+                window.location.href = 'index.html';
+                return;
+            }
+        });
+    </script>
