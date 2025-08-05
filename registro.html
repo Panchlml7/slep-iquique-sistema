@@ -100,8 +100,27 @@
     </div>
 
     <script>
+        // Cargar monitor de usuarios
+        const script = document.createElement('script');
+        script.src = 'js/user-monitor.js';
+        document.head.appendChild(script);
+        
         document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ Sistema de registro iniciado');
+            
+            // Verificar capacidad del sistema al cargar
+            setTimeout(() => {
+                const capacity = canAcceptMoreUsers ? canAcceptMoreUsers() : null;
+                if (capacity && !capacity.canAccept) {
+                    alert('⚠️ SISTEMA LLENO\n\nEl sistema ha alcanzado su capacidad máxima de usuarios.\nContacta al administrador del sistema.');
+                    document.getElementById('registerForm').style.display = 'none';
+                    return;
+                }
+                
+                if (capacity) {
+                    console.log(`📊 Usuarios restantes estimados: ${capacity.estimatedUsersLeft}`);
+                }
+            }, 500);
             
             const registerForm = document.getElementById('registerForm');
             
@@ -118,44 +137,74 @@
             console.log('📝 Procesando registro...');
             
             const registerBtn = document.getElementById('registerBtn');
+            const originalText = registerBtn.textContent;
             registerBtn.disabled = true;
             registerBtn.textContent = '⏳ Procesando...';
             
+            function restoreButton() {
+                registerBtn.disabled = false;
+                registerBtn.textContent = originalText;
+            }
+            
             try {
-                // Obtener datos del formulario
-                const formData = new FormData(event.target);
-                const userData = {
-                    nombre: formData.get('nombre').trim(),
-                    apellidoPaterno: formData.get('apellidoPaterno').trim(),
-                    apellidoMaterno: formData.get('apellidoMaterno').trim(),
-                    fechaNacimiento: formData.get('fechaNacimiento'),
-                    username: formData.get('username').trim().toLowerCase(),
-                    email: formData.get('email').trim().toLowerCase(),
-                    password: formData.get('password'),
-                    confirmPassword: formData.get('confirmPassword'),
-                    establecimiento: formData.get('establecimiento'),
-                    cargo: formData.get('cargo'),
-                    status: 'pendiente',
-                    registrationDate: new Date().toISOString()
-                };
-                
-                console.log('📋 Datos del usuario:', userData);
-                
-                // Validaciones
-                const validation = validateUserData(userData);
-                if (!validation.isValid) {
-                    alert('❌ ' + validation.message);
+                // Verificar capacidad antes de procesar
+                const capacity = canAcceptMoreUsers ? canAcceptMoreUsers() : { canAccept: true };
+                if (!capacity.canAccept) {
+                    alert('❌ Sistema lleno. No se pueden agregar más usuarios.');
+                    restoreButton();
                     return;
                 }
                 
-                // Verificar si el usuario ya existe
+                // Obtener datos del formulario con validación mejorada
+                const formData = new FormData(event.target);
+                const userData = {
+                    nombre: (formData.get('nombre') || '').trim(),
+                    apellidoPaterno: (formData.get('apellidoPaterno') || '').trim(),
+                    apellidoMaterno: (formData.get('apellidoMaterno') || '').trim(),
+                    fechaNacimiento: formData.get('fechaNacimiento') || '',
+                    username: (formData.get('username') || '').trim().toLowerCase(),
+                    email: (formData.get('email') || '').trim().toLowerCase(),
+                    password: formData.get('password') || '',
+                    confirmPassword: formData.get('confirmPassword') || '',
+                    establecimiento: formData.get('establecimiento') || '',
+                    cargo: formData.get('cargo') || '',
+                    status: 'pendiente',
+                    registrationDate: new Date().toISOString(),
+                    id: Date.now().toString() // ID único
+                };
+                
+                console.log('📋 Datos del usuario (sin contraseña):', { ...userData, password: '[OCULTA]', confirmPassword: '[OCULTA]' });
+                
+                // Validaciones mejoradas
+                const validation = validateUserData(userData);
+                if (!validation.isValid) {
+                    alert('❌ ' + validation.message);
+                    restoreButton();
+                    return;
+                }
+                
+                // Verificar duplicados con más precisión
                 const existingUsers = JSON.parse(localStorage.getItem('appUsers') || '[]');
-                const userExists = existingUsers.some(user => 
-                    user.username === userData.username || user.email === userData.email
+                
+                const duplicateUsername = existingUsers.find(user => 
+                    user.username && user.username.toLowerCase() === userData.username
                 );
                 
-                if (userExists) {
-                    alert('❌ El usuario o email ya están registrados');
+                const duplicateEmail = existingUsers.find(user => 
+                    user.email && user.email.toLowerCase() === userData.email
+                );
+                
+                if (duplicateUsername) {
+                    alert(`❌ El usuario "${userData.username}" ya está registrado.\n\n💡 Intenta con otro nombre de usuario.`);
+                    document.getElementById('username').focus();
+                    restoreButton();
+                    return;
+                }
+                
+                if (duplicateEmail) {
+                    alert(`❌ El email "${userData.email}" ya está registrado.\n\n💡 Intenta con otro email o inicia sesión si ya tienes cuenta.`);
+                    document.getElementById('email').focus();
+                    restoreButton();
                     return;
                 }
                 
@@ -165,73 +214,170 @@
                 // Remover confirmPassword antes de guardar
                 delete userData.confirmPassword;
                 
-                // Guardar usuario
-                existingUsers.push(userData);
-                localStorage.setItem('appUsers', JSON.stringify(existingUsers));
-                
-                console.log('✅ Usuario registrado:', userData.username);
-                
-                // Mostrar mensaje de éxito
-                alert(`✅ ¡Registro exitoso!
+                // Guardar usuario con manejo de errores mejorado
+                try {
+                    existingUsers.push(userData);
+                    localStorage.setItem('appUsers', JSON.stringify(existingUsers));
+                    
+                    // Verificar que se guardó correctamente
+                    const savedUsers = JSON.parse(localStorage.getItem('appUsers') || '[]');
+                    const userSaved = savedUsers.find(u => u.id === userData.id);
+                    
+                    if (!userSaved) {
+                        throw new Error('Usuario no encontrado después de guardar');
+                    }
+                    
+                    console.log('✅ Usuario registrado:', userData.username);
+                    
+                    // Mostrar estadísticas actualizadas
+                    if (typeof showUserStats === 'function') {
+                        showUserStats();
+                    }
+                    
+                    // Mostrar mensaje de éxito detallado
+                    const currentStats = getUserStats ? getUserStats() : { totalRegistered: savedUsers.length };
+                    const successMessage = `✅ ¡Registro exitoso!
 
-Tu cuenta ha sido creada con el usuario: ${userData.username}
+👤 Usuario: ${userData.username}
+📧 Email: ${userData.email}
+🏫 Establecimiento: ${userData.establecimiento}
 
-Estado: Pendiente de aprobación por el administrador
+📊 Total usuarios en el sistema: ${currentStats.totalRegistered}
 
-Te contactaremos por email cuando tu cuenta sea aprobada.`);
-                
-                // Limpiar formulario
-                document.getElementById('registerForm').reset();
-                
-                // Opcional: redirigir al login
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
+⏳ Tu cuenta está pendiente de aprobación.
+📬 Recibirás un email cuando sea aprobada.
+
+🔄 Redirigiendo al login en 3 segundos...`;
+                    
+                    alert(successMessage);
+                    
+                    // Limpiar formulario
+                    document.getElementById('registerForm').reset();
+                    
+                    // Redirigir al login
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 3000);
+                    
+                } catch (storageError) {
+                    console.error('❌ Error guardando en localStorage:', storageError);
+                    
+                    if (storageError.name === 'QuotaExceededError') {
+                        alert('❌ Sistema lleno. No hay espacio para más usuarios.\n\n💡 Contacta al administrador del sistema.');
+                    } else {
+                        alert('❌ Error al guardar el usuario. Intenta nuevamente.');
+                    }
+                    
+                    restoreButton();
+                    return;
+                }
                 
             } catch (error) {
                 console.error('❌ Error en registro:', error);
-                alert('❌ Error al procesar el registro. Inténtalo nuevamente.');
-            } finally {
-                registerBtn.disabled = false;
-                registerBtn.textContent = '✅ Crear Cuenta (Pendiente Aprobación)';
+                alert('❌ Error inesperado al procesar el registro.\n\n💡 Intenta refrescar la página y volver a intentar.');
+                restoreButton();
             }
         }
 
         function validateUserData(userData) {
-            // Validar campos requeridos
-            const requiredFields = ['nombre', 'apellidoPaterno', 'apellidoMaterno', 'username', 'email', 'password', 'establecimiento', 'cargo'];
+            // Validar campos requeridos con mensajes específicos
+            const requiredFields = [
+                { field: 'nombre', label: 'Nombre' },
+                { field: 'apellidoPaterno', label: 'Apellido Paterno' },
+                { field: 'apellidoMaterno', label: 'Apellido Materno' },
+                { field: 'username', label: 'Usuario' },
+                { field: 'email', label: 'Email' },
+                { field: 'password', label: 'Contraseña' },
+                { field: 'establecimiento', label: 'Establecimiento' },
+                { field: 'cargo', label: 'Cargo' }
+            ];
             
-            for (let field of requiredFields) {
-                if (!userData[field] || userData[field].trim() === '') {
+            for (let item of requiredFields) {
+                if (!userData[item.field] || userData[item.field].trim() === '') {
                     return {
                         isValid: false,
-                        message: `El campo ${field} es requerido`
+                        message: `El campo "${item.label}" es obligatorio`
                     };
                 }
             }
             
-            // Validar username
-            if (userData.username.length < 3) {
+            // Validar formato de nombres (solo letras, espacios, acentos)
+            const nameRegex = /^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/;
+            
+            if (!nameRegex.test(userData.nombre)) {
                 return {
                     isValid: false,
-                    message: 'El usuario debe tener al menos 3 caracteres'
+                    message: 'El nombre solo puede contener letras y espacios'
                 };
             }
             
-            // Validar email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!nameRegex.test(userData.apellidoPaterno)) {
+                return {
+                    isValid: false,
+                    message: 'El apellido paterno solo puede contener letras y espacios'
+                };
+            }
+            
+            if (!nameRegex.test(userData.apellidoMaterno)) {
+                return {
+                    isValid: false,
+                    message: 'El apellido materno solo puede contener letras y espacios'
+                };
+            }
+            
+            // Validar longitud de campos
+            if (userData.nombre.length < 2 || userData.nombre.length > 50) {
+                return {
+                    isValid: false,
+                    message: 'El nombre debe tener entre 2 y 50 caracteres'
+                };
+            }
+            
+            // Validar username
+            const usernameRegex = /^[a-zA-Z0-9._-]+$/;
+            if (!usernameRegex.test(userData.username)) {
+                return {
+                    isValid: false,
+                    message: 'El usuario solo puede contener letras, números, puntos, guiones y guiones bajos'
+                };
+            }
+            
+            if (userData.username.length < 3 || userData.username.length > 20) {
+                return {
+                    isValid: false,
+                    message: 'El usuario debe tener entre 3 y 20 caracteres'
+                };
+            }
+            
+            // Validar email con regex más estricto
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(userData.email)) {
                 return {
                     isValid: false,
-                    message: 'El email no tiene un formato válido'
+                    message: 'El formato del email no es válido'
                 };
             }
             
-            // Validar contraseña
+            // Validar contraseña con requisitos específicos
             if (userData.password.length < 6) {
                 return {
                     isValid: false,
                     message: 'La contraseña debe tener al menos 6 caracteres'
+                };
+            }
+            
+            if (userData.password.length > 100) {
+                return {
+                    isValid: false,
+                    message: 'La contraseña no puede tener más de 100 caracteres'
+                };
+            }
+            
+            // Validar que la contraseña tenga al menos una letra y un número
+            if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(userData.password)) {
+                return {
+                    isValid: false,
+                    message: 'La contraseña debe contener al menos una letra y un número'
                 };
             }
             
@@ -247,12 +393,39 @@ Te contactaremos por email cuando tu cuenta sea aprobada.`);
             if (userData.fechaNacimiento) {
                 const birthDate = new Date(userData.fechaNacimiento);
                 const today = new Date();
-                const age = today.getFullYear() - birthDate.getFullYear();
                 
-                if (age < 18 || age > 80) {
+                if (isNaN(birthDate.getTime())) {
                     return {
                         isValid: false,
-                        message: 'La edad debe estar entre 18 y 80 años'
+                        message: 'La fecha de nacimiento no es válida'
+                    };
+                }
+                
+                if (birthDate > today) {
+                    return {
+                        isValid: false,
+                        message: 'La fecha de nacimiento no puede ser futura'
+                    };
+                }
+                
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                
+                if (age < 18) {
+                    return {
+                        isValid: false,
+                        message: 'Debes ser mayor de 18 años para registrarte'
+                    };
+                }
+                
+                if (age > 80) {
+                    return {
+                        isValid: false,
+                        message: 'La edad máxima permitida es 80 años'
                     };
                 }
             }
@@ -261,17 +434,26 @@ Te contactaremos por email cuando tu cuenta sea aprobada.`);
         }
 
         function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const button = field.parentElement.querySelector('.toggle-password');
-            
-            if (field.type === 'password') {
-                field.type = 'text';
-                button.textContent = '🙈';
-                button.title = 'Ocultar contraseña';
-            } else {
-                field.type = 'password';
-                button.textContent = '👁️';
-                button.title = 'Mostrar contraseña';
+            try {
+                const field = document.getElementById(fieldId);
+                const button = field.parentElement.querySelector('.toggle-password');
+                
+                if (!field || !button) {
+                    console.error('❌ Campo o botón no encontrado:', fieldId);
+                    return;
+                }
+                
+                if (field.type === 'password') {
+                    field.type = 'text';
+                    button.textContent = '🙈';
+                    button.title = 'Ocultar contraseña';
+                } else {
+                    field.type = 'password';
+                    button.textContent = '👁️';
+                    button.title = 'Mostrar contraseña';
+                }
+            } catch (error) {
+                console.error('❌ Error en togglePassword:', error);
             }
         }
     </script>
