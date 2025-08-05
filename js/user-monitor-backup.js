@@ -1,12 +1,7 @@
 /**
- * SLEP IQUIQUE - Monitor de Usuarios v2.0
- * Sistema optimizado para monitorear cantidad y estado de usuarios registrados
- * Incluye debugging avanzado y gestión de pestañas
+ * SLEP IQUIQUE - Monitor de Usuarios
+ * Sistema para monitorear cantidad y estado de usuarios registrados
  */
-
-// =============================================================================
-// FUNCIONES PRINCIPALES DE MONITOREO
-// =============================================================================
 
 // Función para obtener estadísticas de usuarios
 function getUserStats() {
@@ -69,10 +64,6 @@ function canAcceptMoreUsers() {
     };
 }
 
-// =============================================================================
-// FUNCIONES DE VISUALIZACIÓN Y REPORTES
-// =============================================================================
-
 // Función para mostrar estadísticas en consola
 function showUserStats() {
     console.log('👥 ESTADÍSTICAS DE USUARIOS SLEP IQUIQUE');
@@ -99,10 +90,6 @@ function showUserStats() {
     
     console.log('=' .repeat(50));
 }
-
-// =============================================================================
-// FUNCIONES DE MANTENIMIENTO Y LIMPIEZA
-// =============================================================================
 
 // Función para limpiar usuarios duplicados o corruptos
 function cleanupUsers() {
@@ -192,11 +179,7 @@ function exportUsers() {
     }
 }
 
-// =============================================================================
-// FUNCIONES DE GESTIÓN DE USUARIO ACTUAL
-// =============================================================================
-
-// Función para obtener usuario actual (segura contra errores)
+// Función para obtener usuario actual y evitar errores
 function getCurrentUser() {
     try {
         const currentUser = localStorage.getItem('currentUser');
@@ -210,22 +193,18 @@ function getCurrentUser() {
     }
 }
 
-// =============================================================================
-// SISTEMA DE PESTAÑAS Y NAVEGACIÓN
-// =============================================================================
-
-// Función para cambiar pestañas (compatible con múltiples sistemas)
+// Función para cambiar pestañas (compatible con sistemas de tabs)
 function switchTab(tabName, buttonElement) {
     try {
         console.log(`🔄 Cambiando a pestaña: ${tabName}`);
         
         // Remover active de todos los botones
-        document.querySelectorAll('.tab-btn, .main-tab-btn, .form-tab-btn').forEach(btn => {
+        document.querySelectorAll('.tab-btn, .main-tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         
         // Remover active de todos los contenidos
-        document.querySelectorAll('.tab-content, .main-tab-content, .form-tab-content').forEach(content => {
+        document.querySelectorAll('.tab-content, .main-tab-content').forEach(content => {
             content.classList.remove('active');
         });
         
@@ -235,7 +214,7 @@ function switchTab(tabName, buttonElement) {
         }
         
         // Activar contenido correspondiente
-        const targetContent = document.querySelector(`[data-tab="${tabName}"], [data-maintab="${tabName}"], [data-formtab="${tabName}"]`);
+        const targetContent = document.querySelector(`[data-tab="${tabName}"], [data-maintab="${tabName}"]`);
         if (targetContent) {
             targetContent.classList.add('active');
             console.log(`✅ Pestaña activada: ${tabName}`);
@@ -272,10 +251,6 @@ function debugTabs() {
         console.error('❌ Error en debugging de pestañas:', error);
     }
 }
-
-// =============================================================================
-// DIAGNÓSTICO DEL SISTEMA
-// =============================================================================
 
 // Función para verificar integridad del sistema
 function systemHealthCheck() {
@@ -340,12 +315,16 @@ function systemHealthCheck() {
     }
 }
 
-// =============================================================================
-// INICIALIZACIÓN Y CONFIGURACIÓN GLOBAL
-// =============================================================================
-
 // Inicialización automática cuando se carga el script
 if (typeof window !== 'undefined') {
+    // Mostrar estadísticas automáticamente en desarrollo
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        setTimeout(() => {
+            showUserStats();
+            systemHealthCheck();
+        }, 1000);
+    }
+    
     // Hacer funciones disponibles globalmente
     window.getUserStats = getUserStats;
     window.showUserStats = showUserStats;
@@ -357,28 +336,16 @@ if (typeof window !== 'undefined') {
     window.debugTabs = debugTabs;
     window.systemHealthCheck = systemHealthCheck;
     
-    // Ejecutar debugging cuando la página esté lista
+    // Ejecutar debugging de pestañas cuando la página esté lista
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                debugTabs();
-                console.log('✅ Sistema de monitoreo y pestañas listo');
-            }, 500);
+            setTimeout(debugTabs, 500);
         });
     } else {
-        setTimeout(() => {
-            debugTabs();
-            console.log('✅ Sistema de monitoreo y pestañas listo');
-        }, 100);
+        setTimeout(debugTabs, 100);
     }
     
-    // Mostrar estadísticas automáticamente en desarrollo
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        setTimeout(() => {
-            showUserStats();
-            systemHealthCheck();
-        }, 1000);
-    }
+    console.log('✅ Sistema de monitoreo y pestañas listo');
 }
 
 // Exportar para Node.js si está disponible
