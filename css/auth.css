@@ -725,3 +725,87 @@
         font-size: 0.7rem;
     }
 }
+
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input input {
+    flex: 1;
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+    z-index: 2;
+}
+
+.toggle-password:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.auth-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.auth-btn:disabled:hover {
+    background-color: #ccc;
+    transform: none;
+}
+
+.password-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.password-code {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid #dee2e6;
+    user-select: all;
+}
+
+.btn-copy-small {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.btn-copy-small:hover {
+    background: #0056b3;
+}

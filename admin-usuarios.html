@@ -604,8 +604,7 @@
                                 ${user.nombre ? `Nombre: ${user.nombre}` : ''}
                                 ${user.apellidoPaterno ? `<br>Ap. Paterno: ${user.apellidoPaterno}` : ''}
                                 ${user.apellidoMaterno ? `<br>Ap. Materno: ${user.apellidoMaterno}` : ''}
-                            </small>
-                        </div>
+                            </div>
                     </td>
                     <td>
                         <div class="user-info">
@@ -666,12 +665,8 @@
             document.getElementById('rejectedUsers').textContent = nonAdminUsers.filter(u => u.status === 'rechazada').length;
         }
 
-        // Variable global para el tab actual
-        let currentTab = 'pendiente';
-        
-        // Función simple para cambiar pestañas
+        // Función única para cambiar pestañas
         function switchTab(status, buttonElement) {
-            alert('🔄 Ejecutando switchTab: ' + status);
             console.log('🔄 Cambiando a pestaña:', status);
             
             // Actualizar variable global
@@ -686,9 +681,13 @@
             
             // Cargar usuarios filtrados
             loadUsers(status);
+            updateStats();
             
             console.log('✅ Pestaña cambiada a:', status);
         }
+
+        // Función para crear usuarios de ejemplo para testing
+        function createSampleUsers() {
             const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
             
             // Solo crear usuarios de ejemplo si no hay usuarios (excepto admin)
@@ -706,6 +705,7 @@
                         apellidoMaterno: 'González',
                         fechaNacimiento: '1985-03-15',
                         establecimiento: 'Escuela Básica Los Aromos',
+                        cargo: 'Profesor',
                         status: 'pendiente',
                         registrationDate: new Date().toISOString()
                     },
@@ -718,6 +718,7 @@
                         apellidoMaterno: 'Silva',
                         fechaNacimiento: '1992-07-22',
                         establecimiento: 'Liceo Técnico Industrial',
+                        cargo: 'Directora',
                         status: 'aprobada',
                         registrationDate: new Date().toISOString(),
                         approvedAt: new Date().toISOString(),
@@ -732,6 +733,7 @@
                         apellidoMaterno: 'Morales',
                         fechaNacimiento: '1988-11-10',
                         establecimiento: 'Colegio San Patricio',
+                        cargo: 'Inspector',
                         status: 'rechazada',
                         registrationDate: new Date().toISOString(),
                         rejectedAt: new Date().toISOString(),
@@ -745,7 +747,9 @@
                 localStorage.setItem('appUsers', JSON.stringify(users));
                 
                 console.log('✅ Usuarios de ejemplo creados');
+                return true;
             }
+            return false;
         }
 
         function showTab(status) {
@@ -827,23 +831,7 @@
         let currentUserData = null;
 
         function showUserDetailsModal(username) {
-            // Confirmar acceso a información confidencial
-            const confirmed = confirm(`⚠️ INFORMACIÓN CONFIDENCIAL ⚠️
-
-¿Estás seguro de que quieres ver la información sensible del usuario "${username}"?
-
-Esta información incluye:
-• Contraseña de acceso
-• Fecha de nacimiento
-• Datos personales completos
-
-❗ ADVERTENCIA: Esta información es CONFIDENCIAL y solo debe ser vista por administradores autorizados.
-
-¿Continuar?`);
-            
-            if (!confirmed) {
-                return;
-            }
+            console.log('👁️ Mostrando detalles del usuario:', username);
 
             const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
             const user = users.find(u => u.username === username);
@@ -855,8 +843,8 @@ Esta información incluye:
 
             currentUserData = user;
             
-            // Registro de acceso a información sensible
-            console.warn('🔐 ACCESO A INFORMACIÓN SENSIBLE - Admin:', getCurrentUser()?.username, 'Usuario consultado:', username, 'Tiempo:', new Date().toISOString());
+            // Registro de acceso simplificado
+            console.log('🔍 Acceso a detalles - Usuario consultado:', username, 'Tiempo:', new Date().toISOString());
 
             const nombreCompleto = user.nombreCompleto || 
                 `${user.nombre || ''} ${user.apellidoPaterno || ''} ${user.apellidoMaterno || ''}`.trim() ||
@@ -880,7 +868,7 @@ Esta información incluye:
                 new Date(user.rejectedAt).toLocaleDateString('es-CL') : 
                 'No rechazado';
 
-            // Generar HTML del modal
+            // Generar HTML del modal (sin advertencias de confidencialidad)
             const modalContent = `
                 <div class="user-details-section">
                     <div class="section-header">
@@ -914,7 +902,7 @@ Esta información incluye:
                     </div>
                 </div>
 
-                <div class="user-details-section confidential">
+                <div class="user-details-section">
                     <div class="section-header">
                         <h3>🔐 CREDENCIALES DE ACCESO</h3>
                     </div>
@@ -984,10 +972,6 @@ Esta información incluye:
                         ` : ''}
                     </div>
                 </div>
-
-                <div class="confidential-warning">
-                    ⚠️ ESTA INFORMACIÓN ES CONFIDENCIAL - SOLO PARA ADMINISTRADORES
-                </div>
             `;
 
             document.getElementById('modalUserInfo').innerHTML = modalContent;
@@ -995,8 +979,11 @@ Esta información incluye:
             
             // Agregar efecto de entrada
             setTimeout(() => {
-                document.querySelector('.modal-content').style.transform = 'scale(1)';
-                document.querySelector('.modal-content').style.opacity = '1';
+                const modalContent = document.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.transform = 'scale(1)';
+                    modalContent.style.opacity = '1';
+                }
             }, 10);
         }
 
@@ -1050,9 +1037,7 @@ ${user.approvedAt ? `• Fecha de Aprobación: ${new Date(user.approvedAt).toLoc
 ${user.rejectedAt ? `• Fecha de Rechazo: ${new Date(user.rejectedAt).toLocaleDateString('es-CL')}` : ''}
 ${user.rejectionReason ? `• Motivo de Rechazo: ${user.rejectionReason}` : ''}
 
-⚠️ INFORMACIÓN CONFIDENCIAL - SOLO PARA ADMINISTRADORES
-Consultado por: ${getCurrentUser()?.username || 'admin'}
-Fecha de consulta: ${new Date().toLocaleString('es-CL')}`;
+Consultado el: ${new Date().toLocaleString('es-CL')}`;
 
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(userInfo).then(() => {
@@ -1066,7 +1051,7 @@ Fecha de consulta: ${new Date().toLocaleString('es-CL')}`;
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                showTempAlert('� Información completa copiada al portapapeles');
+                showTempAlert('📋 Información completa copiada al portapapeles');
             }
         }
 
@@ -1186,6 +1171,22 @@ ${user.approvedAt ? `• Fecha de Aprobación: ${new Date(user.approvedAt).toLoc
 ${user.rejectedAt ? `• Fecha de Rechazo: ${new Date(user.rejectedAt).toLocaleDateString('es-CL')}` : ''}
 ${user.rejectionReason ? `• Motivo de Rechazo: ${user.rejectionReason}` : ''}
 
+        `;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(userInfo).then(() => {
+                    showTempAlert('📋 Información del usuario copiada al portapapeles');
+                });
+            } else {
+                // Fallback para navegadores antiguos
+                const textArea = document.createElement('textarea');
+                textArea.value = userInfo;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showTempAlert('📋 Información del usuario copiada al portapapeles');
+            }
         }
 
         function exportUserData() {
@@ -1288,43 +1289,44 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
                 document.body.removeChild(link);
             }
         }
+
+        // Agregar función getCurrentUser para evitar errores
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('currentUser') || '{}');
+        }
     </script>
 
-    <!-- SCRIPT DE PESTAÑAS FUNCIONAL -->
+    <!-- Eliminar script duplicado y usar solo uno -->
     <script>
-        // Sobrescribir la función switchTab para que funcione
-        function switchTab(status, buttonElement) {
-            try {
-                console.log('🔄 switchTab ejecutándose:', status);
-                
-                // Actualizar variable global
-                window.currentTab = status;
-                
-                // Remover clase active de todos los botones
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Agregar clase active al botón clickeado
-                if (buttonElement) {
-                    buttonElement.classList.add('active');
-                }
-                
-                // Llamar a loadUsers si existe
-                if (typeof loadUsers === 'function') {
-                    loadUsers(status);
-                } else {
-                    console.warn('loadUsers no disponible');
-                }
-                
-                console.log('✅ switchTab completado');
-                
-            } catch (error) {
-                console.error('❌ Error en switchTab:', error);
+        // Asegurar que las funciones estén disponibles globalmente
+        window.switchTab = switchTab;
+        window.loadUsers = loadUsers;
+        window.updateStats = updateStats;
+        
+        console.log('✅ Sistema de pestañas y usuarios inicializado');
+    </script>
+</body>
+</html>
             }
         }
+
+        // Agregar función getCurrentUser para evitar errores
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('currentUser') || '{}');
+        }
+    </script>
+
+    <!-- Eliminar script duplicado y usar solo uno -->
+    <script>
+        // Asegurar que las funciones estén disponibles globalmente
+        window.switchTab = switchTab;
+        window.loadUsers = loadUsers;
+        window.updateStats = updateStats;
         
-        // Asegurar que la función esté disponible globalmente
+        console.log('✅ Sistema de pestañas y usuarios inicializado');
+    </script>
+</body>
+</html>
         window.switchTab = switchTab;
         
         // Función de debugging (modo silencioso)
