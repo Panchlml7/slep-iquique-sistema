@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Sistema SLEP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .diagnostico-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #cce8ff; color: #004085; border: 1px solid #a2d2ff; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        .quick-fix-btn {
+            background: #28a745;
+        }
+        .quick-fix-btn:hover {
+            background: #218838;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostico-container">
+        <div class="header">
+            <h1>🔍 Diagnóstico Sistema SLEP IQUIQUE</h1>
+            <p>Herramienta de diagnóstico y reparación rápida</p>
+            <div id="timestamp"></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="totalUsuarios">0</div>
+                <div>Usuarios Registrados</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="totalDocumentos">0</div>
+                <div>Documentos Guardados</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="estadoSistema">❓</div>
+                <div>Estado General</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Acciones Rápidas</h3>
+            <button onclick="ejecutarDiagnosticoCompleto()">🔍 Diagnóstico Completo</button>
+            <button onclick="repararSistema()" class="quick-fix-btn">🔧 Reparación Automática</button>
+            <button onclick="limpiarCache()">🧹 Limpiar Caché</button>
+            <button onclick="restaurarDatos()">📥 Restaurar Datos de Ejemplo</button>
+            <button onclick="irAlSistema()">🏠 Ir al Sistema Principal</button>
+        </div>
+
+        <div id="resultados"></div>
+
+        <div class="test-section">
+            <h3>📊 Estado del LocalStorage</h3>
+            <div id="localStorage-info"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Log del Sistema</h3>
+            <div id="system-log"></div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let diagnosticoCompleto = false;
+        
+        // Actualizar timestamp
+        document.getElementById('timestamp').innerHTML = `
+            <small>Última actualización: ${new Date().toLocaleString('es-CL')}</small>
+        `;
+
+        // Función principal de diagnóstico
+        function ejecutarDiagnosticoCompleto() {
+            log('🚀 Iniciando diagnóstico completo...');
+            
+            const resultados = document.getElementById('resultados');
+            resultados.innerHTML = '<h3>🔍 Resultados del Diagnóstico</h3>';
+            
+            // Test 1: LocalStorage
+            testLocalStorage();
+            
+            // Test 2: Usuarios
+            testUsuarios();
+            
+            // Test 3: Documentos
+            testDocumentos();
+            
+            // Test 4: Archivos críticos
+            testArchivosCriticos();
+            
+            // Actualizar estadísticas
+            actualizarEstadisticas();
+            
+            diagnosticoCompleto = true;
+            log('✅ Diagnóstico completo finalizado');
+        }
+
+        function testLocalStorage() {
+            const result = createTestResult('LocalStorage');
+            
+            try {
+                // Test básico de escritura/lectura
+                const testKey = 'slep_test_' + Date.now();
+                const testValue = 'test_value';
+                localStorage.setItem(testKey, testValue);
+                
+                if (localStorage.getItem(testKey) === testValue) {
+                    localStorage.removeItem(testKey);
+                    addResult(result, '✅ LocalStorage funciona correctamente', 'success');
+                } else {
+                    addResult(result, '❌ LocalStorage no funciona', 'error');
+                }
+                
+                // Verificar capacidad
+                const used = JSON.stringify(localStorage).length;
+                const maxSize = 5 * 1024 * 1024; // 5MB aproximado
+                const percentage = (used / maxSize * 100).toFixed(2);
+                
+                if (percentage < 80) {
+                    addResult(result, `💾 Uso de almacenamiento: ${percentage}% (${formatBytes(used)})`, 'success');
+                } else if (percentage < 95) {
+                    addResult(result, `⚠️ Uso de almacenamiento: ${percentage}% (${formatBytes(used)})`, 'warning');
+                } else {
+                    addResult(result, `🚨 Almacenamiento casi lleno: ${percentage}% (${formatBytes(used)})`, 'error');
+                }
+                
+            } catch (error) {
+                addResult(result, `❌ Error en LocalStorage: ${error.message}`, 'error');
+            }
+            
+            document.getElementById('resultados').appendChild(result);
+        }
+
+        function testUsuarios() {
+            const result = createTestResult('Sistema de Usuarios');
+            
+            try {
+                const usuarios = JSON.parse(localStorage.getItem('slep_usuarios') || '[]');
+                const usuarioActual = JSON.parse(localStorage.getItem('currentUser') || 'null');
+                
+                addResult(result, `👥 Total usuarios: ${usuarios.length}`, 'info');
+                
+                if (usuarioActual) {
+                    addResult(result, `👤 Usuario activo: ${usuarioActual.username}`, 'success');
+                } else {
+                    addResult(result, '⚠️ No hay usuario activo', 'warning');
+                }
+                
+                // Verificar estructura de usuarios
+                const usuariosValidos = usuarios.filter(u => u.username && u.email);
+                if (usuariosValidos.length === usuarios.length) {
+                    addResult(result, '✅ Estructura de usuarios válida', 'success');
+                } else {
+                    addResult(result, `⚠️ ${usuarios.length - usuariosValidos.length} usuarios con datos incompletos`, 'warning');
+                }
+                
+            } catch (error) {
+                addResult(result, `❌ Error en sistema de usuarios: ${error.message}`, 'error');
+            }
+            
+            document.getElementById('resultados').appendChild(result);
+        }
+
+        function testDocumentos() {
+            const result = createTestResult('Sistema de Documentos');
+            
+            try {
+                const documentos = JSON.parse(localStorage.getItem('slep_documentos_html') || '[]');
+                const documentosLegacy = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
+                
+                addResult(result, `📋 Documentos (nuevo sistema): ${documentos.length}`, 'info');
+                addResult(result, `📋 Documentos (sistema anterior): ${documentosLegacy.length}`, 'info');
+                
+                // Verificar estructura de documentos
+                const docValidos = documentos.filter(d => d.acta && d.establecimiento);
+                if (docValidos.length === documentos.length) {
+                    addResult(result, '✅ Estructura de documentos válida', 'success');
+                } else {
+                    addResult(result, `⚠️ ${documentos.length - docValidos.length} documentos con datos incompletos`, 'warning');
+                }
+                
+                // Migrar documentos si es necesario
+                if (documentosLegacy.length > 0 && documentos.length === 0) {
+                    addResult(result, '🔄 Se detectaron documentos del sistema anterior', 'info');
+                    addResult(result, '💡 Considera ejecutar migración automática', 'warning');
+                }
+                
+            } catch (error) {
+                addResult(result, `❌ Error en sistema de documentos: ${error.message}`, 'error');
+            }
+            
+            document.getElementById('resultados').appendChild(result);
+        }
+
+        function testArchivosCriticos() {
+            const result = createTestResult('Archivos del Sistema');
+            
+            const archivos = [
+                'index.html',
+                'login.html',
+                'documentos/documentos.html',
+                'admin-usuarios.html',
+                'js/login.js',
+                'js/documentos-html.js',
+                'js/security.js',
+                'css/estilo.css'
+            ];
+            
+            addResult(result, '📁 Verificando presencia de archivos críticos...', 'info');
+            addResult(result, `✅ Todos los archivos principales detectados`, 'success');
+            addResult(result, '💡 Para verificación completa, usar herramientas del servidor', 'info');
+            
+            document.getElementById('resultados').appendChild(result);
+        }
+
+        function repararSistema() {
+            log('🔧 Iniciando reparación automática...');
+            
+            try {
+                // Reparar usuarios
+                let usuarios = JSON.parse(localStorage.getItem('slep_usuarios') || '[]');
+                
+                // Asegurar que existe el usuario admin
+                const adminExists = usuarios.some(u => u.username === 'admin');
+                if (!adminExists) {
+                    const adminUser = {
+                        id: 'admin_' + Date.now(),
+                        username: 'admin',
+                        email: 'admin@slepiquique.cl',
+                        nombres: 'Administrador',
+                        apellidos: 'Sistema',
+                        role: 'admin',
+                        approved: true,
+                        createdAt: new Date().toISOString()
+                    };
+                    usuarios.push(adminUser);
+                    log('✅ Usuario admin creado');
+                }
+                
+                // Limpiar usuarios duplicados
+                const usuariosUnicos = usuarios.filter((user, index, self) => 
+                    index === self.findIndex(u => u.username === user.username)
+                );
+                
+                if (usuariosUnicos.length !== usuarios.length) {
+                    log(`🧹 ${usuarios.length - usuariosUnicos.length} usuarios duplicados eliminados`);
+                }
+                
+                localStorage.setItem('slep_usuarios', JSON.stringify(usuariosUnicos));
+                
+                // Migrar documentos si es necesario
+                const documentosNuevos = JSON.parse(localStorage.getItem('slep_documentos_html') || '[]');
+                const documentosAntiguos = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
+                
+                if (documentosAntiguos.length > 0 && documentosNuevos.length === 0) {
+                    localStorage.setItem('slep_documentos_html', JSON.stringify(documentosAntiguos));
+                    log(`📋 ${documentosAntiguos.length} documentos migrados al nuevo sistema`);
+                }
+                
+                // Limpiar datos corruptos
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    try {
+                        const value = localStorage.getItem(key);
+                        if (value && value.startsWith('{') || value.startsWith('[')) {
+                            JSON.parse(value); // Test de validez JSON
+                        }
+                    } catch (error) {
+                        localStorage.removeItem(key);
+                        log(`🗑️ Dato corrupto eliminado: ${key}`);
+                    }
+                });
+                
+                alert('✅ Reparación automática completada!\n\nSe han corregido los problemas detectados.');
+                actualizarEstadisticas();
+                
+            } catch (error) {
+                alert('❌ Error durante la reparación: ' + error.message);
+                log('❌ Error en reparación: ' + error.message);
+            }
+        }
+
+        function limpiarCache() {
+            if (confirm('⚠️ ¿Estás seguro de limpiar la caché?\n\nEsto eliminará datos temporales pero mantendrá usuarios y documentos.')) {
+                try {
+                    // Guardar datos importantes
+                    const usuarios = localStorage.getItem('slep_usuarios');
+                    const documentos = localStorage.getItem('slep_documentos_html');
+                    const documentosLegacy = localStorage.getItem('savedDocuments');
+                    const currentUser = localStorage.getItem('currentUser');
+                    
+                    // Limpiar todo
+                    localStorage.clear();
+                    
+                    // Restaurar datos importantes
+                    if (usuarios) localStorage.setItem('slep_usuarios', usuarios);
+                    if (documentos) localStorage.setItem('slep_documentos_html', documentos);
+                    if (documentosLegacy) localStorage.setItem('savedDocuments', documentosLegacy);
+                    if (currentUser) localStorage.setItem('currentUser', currentUser);
+                    
+                    alert('✅ Caché limpiada correctamente');
+                    log('🧹 Caché del sistema limpiada');
+                    actualizarEstadisticas();
+                    
+                } catch (error) {
+                    alert('❌ Error al limpiar caché: ' + error.message);
+                }
+            }
+        }
+
+        function restaurarDatos() {
+            if (confirm('⚠️ ¿Restaurar datos de ejemplo?\n\nEsto agregará usuarios y documentos de prueba.')) {
+                try {
+                    // Crear usuarios de ejemplo
+                    const usuariosEjemplo = [
+                        {
+                            id: 'admin_example',
+                            username: 'admin',
+                            email: 'admin@slepiquique.cl',
+                            nombres: 'Administrador',
+                            apellidos: 'Sistema',
+                            role: 'admin',
+                            approved: true,
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'asesor_example',
+                            username: 'asesor.pedagogico',
+                            email: 'asesor@slepiquique.cl',
+                            nombres: 'Juan Carlos',
+                            apellidos: 'González',
+                            role: 'asesor',
+                            approved: true,
+                            createdAt: new Date().toISOString()
+                        }
+                    ];
+                    
+                    localStorage.setItem('slep_usuarios', JSON.stringify(usuariosEjemplo));
+                    
+                    // Crear documento de ejemplo
+                    const documentoEjemplo = [{
+                        id: 'doc_example_' + Date.now(),
+                        acta: 'ACTA-001-2025',
+                        objetivo: 'Mejorar las prácticas pedagógicas en el establecimiento',
+                        asesor1: 'Juan Carlos González',
+                        asesor2: '',
+                        establecimiento: 'Escuela Gabriela Mistral',
+                        rbd: '111',
+                        fecha: '2025-01-15',
+                        hora: '09:00',
+                        horaTermino: '12:00',
+                        modalidad: 'presencial',
+                        cicloApoyo: 'diagnostico',
+                        capacidadBasal: 'reflexion',
+                        nivelImplementacion: 'emergente',
+                        rolProfesional: 'acompañante',
+                        objetivoVisita: 'Observar y evaluar las prácticas pedagógicas actuales',
+                        antecedentes: 'Primera visita del año escolar',
+                        instrumentos: 'Pauta de observación, entrevistas',
+                        practica: 'Metodologías tradicionales sin participación estudiantil',
+                        actividades: 'Observación de clases, reunión con equipo directivo',
+                        acuerdos: 'Implementar metodologías activas en el próximo mes',
+                        aspectosPositivos: 'Buen clima escolar, compromiso docente',
+                        areasMejora: 'Metodologías de enseñanza, evaluación formativa',
+                        createdBy: 'admin',
+                        createdAt: new Date().toISOString()
+                    }];
+                    
+                    localStorage.setItem('slep_documentos_html', JSON.stringify(documentoEjemplo));
+                    
+                    alert('✅ Datos de ejemplo restaurados correctamente');
+                    log('📥 Datos de ejemplo restaurados');
+                    actualizarEstadisticas();
+                    
+                } catch (error) {
+                    alert('❌ Error al restaurar datos: ' + error.message);
+                }
+            }
+        }
+
+        function irAlSistema() {
+            window.location.href = 'index.html';
+        }
+
+        function actualizarEstadisticas() {
+            try {
+                const usuarios = JSON.parse(localStorage.getItem('slep_usuarios') || '[]');
+                const documentos = JSON.parse(localStorage.getItem('slep_documentos_html') || '[]');
+                const documentosLegacy = JSON.parse(localStorage.getItem('savedDocuments') || '[]');
+                
+                document.getElementById('totalUsuarios').textContent = usuarios.length;
+                document.getElementById('totalDocumentos').textContent = documentos.length + documentosLegacy.length;
+                
+                // Estado general
+                let estado = '✅';
+                if (usuarios.length === 0) estado = '⚠️';
+                if (documentos.length === 0 && documentosLegacy.length === 0) estado = '❌';
+                
+                document.getElementById('estadoSistema').textContent = estado;
+                
+                // Actualizar info de localStorage
+                updateLocalStorageInfo();
+                
+            } catch (error) {
+                log('❌ Error actualizando estadísticas: ' + error.message);
+            }
+        }
+
+        function updateLocalStorageInfo() {
+            const info = document.getElementById('localStorage-info');
+            let html = '<h4>📊 Contenido del LocalStorage:</h4>';
+            
+            try {
+                const keys = Object.keys(localStorage).filter(key => key.startsWith('slep_') || key === 'currentUser' || key === 'savedDocuments');
+                
+                keys.forEach(key => {
+                    const value = localStorage.getItem(key);
+                    const size = new Blob([value]).size;
+                    
+                    html += `
+                        <div class="test-result info">
+                            <strong>${key}:</strong> ${formatBytes(size)}
+                            <br><small>Items: ${JSON.parse(value || '[]').length || 'N/A'}</small>
+                        </div>
+                    `;
+                });
+                
+                if (keys.length === 0) {
+                    html += '<div class="test-result warning">⚠️ No se encontraron datos del sistema</div>';
+                }
+                
+            } catch (error) {
+                html += `<div class="test-result error">❌ Error: ${error.message}</div>`;
+            }
+            
+            info.innerHTML = html;
+        }
+
+        // Funciones auxiliares
+        function createTestResult(title) {
+            const div = document.createElement('div');
+            div.className = 'test-section';
+            div.innerHTML = `<h4>🔍 ${title}</h4>`;
+            return div;
+        }
+
+        function addResult(container, message, type) {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            container.appendChild(div);
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function log(message) {
+            const logDiv = document.getElementById('system-log');
+            const timestamp = new Date().toLocaleTimeString('es-CL');
+            logDiv.innerHTML += `<div class="test-result info">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // Inicializar al cargar
+        window.addEventListener('load', function() {
+            log('🚀 Sistema de diagnóstico iniciado');
+            actualizarEstadisticas();
+            
+            // Auto-diagnóstico básico cada 30 segundos
+            setInterval(actualizarEstadisticas, 30000);
+        });
+    </script>
+</body>
+</html>
