@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Documentos - SLEP IQUIQUE</title>
+    <title>Acompañamiento de visita - SLEP IQUIQUE</title>
     <link rel="stylesheet" href="../css/estilo.css">
     <link rel="stylesheet" href="../css/documentos.css">
     <link rel="stylesheet" href="../css/iconos-extension.css">
@@ -183,6 +183,216 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
+
+        /* ESTILOS DEL BUSCADOR MEJORADO */
+        .search-container-docs {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .search-container-docs:hover {
+            border-color: #667eea;
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .search-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .search-header h3 {
+            margin: 0;
+            color: #374151;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .search-input-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .search-input-docs {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            color: #374151;
+        }
+
+        .search-input-docs:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .search-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn.clear {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .search-btn.clear:hover {
+            box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);
+        }
+
+        .search-info {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .quick-filters {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px 0;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            color: #374151;
+            margin-right: 10px;
+        }
+
+        .filter-btn {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #e9ecef;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.recent {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fbbf24;
+        }
+
+        .filter-btn.recent:hover {
+            background: #fbbf24;
+            color: white;
+        }
+
+        .filter-btn.clear-all {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+
+        .filter-btn.clear-all:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .search-results-info {
+            background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+            color: #0277bd;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid #29b6f6;
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .search-input-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .quick-filters {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .quick-filters > div:first-child {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .filter-btn {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -207,7 +417,7 @@
         
         
         <div class="header">
-            <h1>📋 Gestión de Documentos</h1>
+            <h1>📋 Acompañamiento de Visita</h1>
             <p>Sistema SLEP IQUIQUE - Acompañamiento Pedagógico</p>
         </div>
 
@@ -488,10 +698,59 @@
 
         <!-- Sección: Documentos Guardados -->
         <div id="documentos-guardados" class="main-content-section">
-            <div class="search-section">
-                <h3>🔍 Buscar Documentos</h3>
-                <div class="search-controls">
-                    <input type="text" id="searchActa" placeholder="Buscar por N° ACTA..." onkeyup="searchDocuments()">>
+            <!-- Buscador mejorado -->
+            <div class="search-container-docs">
+                <div class="search-header">
+                    <div class="search-icon">🔍</div>
+                    <h3>Buscar Documentos</h3>
+                </div>
+                
+                <div class="search-input-container">
+                    <input 
+                        type="text" 
+                        id="searchActa" 
+                        class="search-input-docs"
+                        placeholder="Buscar por N° ACTA, establecimiento, asesor, fecha..." 
+                        onkeyup="handleSearchKeyup(event)"
+                        autocomplete="off"
+                    >
+                    <div class="search-buttons">
+                        <button class="search-btn" onclick="searchDocuments()">
+                            🔍 Buscar
+                        </button>
+                        <button class="search-btn clear" onclick="clearDocumentSearch()">
+                            🔄 Limpiar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-info">
+                    💡 Busca por cualquier campo: N° ACTA, establecimiento, asesor, fecha, modalidad o capacidad
+                </div>
+
+                <!-- Filtros rápidos -->
+                <div class="quick-filters">
+                    <div class="filter-label">⚡ Filtros rápidos:</div>
+                    <button class="filter-btn" onclick="filterByModalidad('Presencial')">
+                        📍 Presencial
+                    </button>
+                    <button class="filter-btn" onclick="filterByModalidad('Virtual')">
+                        💻 Virtual
+                    </button>
+                    <button class="filter-btn" onclick="filterByModalidad('Híbrida')">
+                        🔄 Híbrida
+                    </button>
+                    <button class="filter-btn recent" onclick="filterRecent()">
+                        📅 Recientes
+                    </button>
+                    <button class="filter-btn clear-all" onclick="clearAllFilters()">
+                        🔄 Todos
+                    </button>
+                </div>
+
+                <!-- Información de resultados -->
+                <div id="search-results-info" class="search-results-info" style="display: none;">
+                    <!-- Se mostrará dinámicamente -->
                 </div>
             </div>
 
@@ -617,6 +876,77 @@
         function searchDocuments() {
             if (documentManagerHTML && documentManagerHTML.searchDocuments) {
                 documentManagerHTML.searchDocuments();
+            }
+        }
+
+        // Función para manejar teclas en el buscador
+        function handleSearchKeyup(event) {
+            if (event.key === 'Enter') {
+                searchDocuments();
+            } else if (event.key === 'Escape') {
+                clearDocumentSearch();
+            }
+        }
+
+        // Función para limpiar búsqueda
+        function clearDocumentSearch() {
+            const searchInput = document.getElementById('searchActa');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            hideSearchResults();
+            if (documentManagerHTML && documentManagerHTML.loadDocuments) {
+                documentManagerHTML.loadDocuments();
+            }
+        }
+
+        // Función para filtrar por modalidad
+        function filterByModalidad(modalidad) {
+            const searchInput = document.getElementById('searchActa');
+            if (searchInput) {
+                searchInput.value = modalidad;
+            }
+            showSearchResults(`Mostrando documentos en modalidad "${modalidad}"`);
+            searchDocuments();
+        }
+
+        // Función para filtrar documentos recientes
+        function filterRecent() {
+            const searchInput = document.getElementById('searchActa');
+            if (searchInput) {
+                const today = new Date();
+                const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+                const formattedDate = lastMonth.toISOString().split('T')[0];
+                searchInput.value = 'recientes';
+            }
+            showSearchResults('Mostrando documentos del último mes');
+            // Aquí puedes implementar la lógica específica para filtrar por fechas recientes
+            if (documentManagerHTML && documentManagerHTML.filterRecentDocuments) {
+                documentManagerHTML.filterRecentDocuments();
+            } else {
+                searchDocuments();
+            }
+        }
+
+        // Función para limpiar todos los filtros
+        function clearAllFilters() {
+            clearDocumentSearch();
+        }
+
+        // Función para mostrar información de resultados
+        function showSearchResults(message) {
+            const resultsInfo = document.getElementById('search-results-info');
+            if (resultsInfo) {
+                resultsInfo.textContent = `🎯 ${message}`;
+                resultsInfo.style.display = 'block';
+            }
+        }
+
+        // Función para ocultar información de resultados
+        function hideSearchResults() {
+            const resultsInfo = document.getElementById('search-results-info');
+            if (resultsInfo) {
+                resultsInfo.style.display = 'none';
             }
         }
         

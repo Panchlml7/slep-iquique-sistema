@@ -1189,28 +1189,80 @@ class DocumentManagerHTML {
         return `ACTA-${formattedNumber}-${currentYear}`;
     }
 
-    // Buscar documentos por ACTA
+    // Buscar documentos avanzado (mejorado)
     searchDocuments(searchTerm) {
         const documents = this.getDocuments();
         
-        if (!searchTerm.trim()) {
+        if (!searchTerm || !searchTerm.trim()) {
             // Si no hay término de búsqueda, mostrar todos
             this.displayDocuments(documents);
+            this.hideSearchResults();
             return;
         }
         
-        // Filtrar por número de acta
+        const search = searchTerm.toLowerCase().trim();
+        
+        // Filtrado avanzado por múltiples campos
         const filteredDocs = documents.filter(doc => {
-            const acta = doc.acta.toLowerCase();
-            const search = searchTerm.toLowerCase();
-            
-            // Buscar por ACTA completa o solo por número
-            return acta.includes(search) || 
-                   acta.includes(`acta-${search}`) ||
-                   acta.split('-')[1] === search.padStart(3, '0');
+            return (
+                // ACTA
+                (doc.acta || '').toLowerCase().includes(search) ||
+                // Establecimiento
+                (doc.establecimiento || '').toLowerCase().includes(search) ||
+                // Asesores
+                (doc.asesor1 || '').toLowerCase().includes(search) ||
+                (doc.asesor2 || '').toLowerCase().includes(search) ||
+                // Modalidad
+                (doc.modalidad || '').toLowerCase().includes(search) ||
+                // Capacidad
+                (doc.capacidadBasal || '').toLowerCase().includes(search) ||
+                // Rol profesional
+                (doc.rolProfesional || '').toLowerCase().includes(search) ||
+                // Fecha
+                (doc.fecha || '').includes(search) ||
+                // Objetivo
+                (doc.objetivo || '').toLowerCase().includes(search) ||
+                // RBD
+                (doc.rbd || '').toLowerCase().includes(search) ||
+                // Ciclo de apoyo
+                (doc.cicloApoyo || '').toLowerCase().includes(search)
+            );
         });
         
         this.displayDocuments(filteredDocs, searchTerm);
+        this.showSearchResults(filteredDocs.length, searchTerm);
+    }
+
+    // Filtrar por documentos recientes (nuevo)
+    filterRecentDocuments() {
+        const documents = this.getDocuments();
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        
+        const recentDocs = documents.filter(doc => {
+            const docDate = new Date(doc.fecha || doc.createdAt);
+            return docDate >= oneMonthAgo;
+        });
+        
+        this.displayDocuments(recentDocs);
+        this.showSearchResults(recentDocs.length, 'documentos recientes');
+    }
+
+    // Mostrar información de resultados de búsqueda (nuevo)
+    showSearchResults(count, searchTerm) {
+        const resultsInfo = document.getElementById('search-results-info');
+        if (resultsInfo) {
+            resultsInfo.textContent = `🎯 Se encontraron ${count} resultado${count !== 1 ? 's' : ''} para "${searchTerm}"`;
+            resultsInfo.style.display = 'block';
+        }
+    }
+
+    // Ocultar información de resultados (nuevo)
+    hideSearchResults() {
+        const resultsInfo = document.getElementById('search-results-info');
+        if (resultsInfo) {
+            resultsInfo.style.display = 'none';
+        }
     }
 
     // Mostrar documentos (separado de loadDocuments para reutilizar)
@@ -1220,14 +1272,46 @@ class DocumentManagerHTML {
         if (!grid) return;
 
         if (documents.length === 0) {
-            const message = searchTerm 
-                ? `No se encontraron documentos con ACTA: "${searchTerm}"`
+            const isSearch = searchTerm.trim();
+            const message = isSearch 
+                ? `No se encontraron documentos`
                 : 'No hay documentos guardados';
                 
             grid.innerHTML = `
-                <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #666;">
-                    <h3>${message}</h3>
-                    ${searchTerm ? '<p>Intenta con otro número de ACTA</p>' : '<p>Los documentos aparecerán aquí cuando sean registrados.</p>'}
+                <div style="
+                    grid-column: 1/-1; 
+                    text-align: center; 
+                    padding: 3rem; 
+                    background: white; 
+                    border-radius: 15px; 
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    margin: 2rem 0;
+                ">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.6;">
+                        ${isSearch ? '🔍' : '📄'}
+                    </div>
+                    <h3 style="color: #374151; margin-bottom: 1rem;">${message}</h3>
+                    ${isSearch ? `
+                        <p style="color: #6b7280; margin-bottom: 1.5rem;">
+                            No hay documentos que coincidan con "${searchTerm}"
+                        </p>
+                        <button onclick="clearDocumentSearch()" style="
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            border: none;
+                            padding: 12px 24px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            🔄 Limpiar búsqueda
+                        </button>
+                    ` : `
+                        <p style="color: #6b7280;">
+                            Los documentos aparecerán aquí cuando sean registrados.
+                        </p>
+                    `}
                 </div>
             `;
             return;

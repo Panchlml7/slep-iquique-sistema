@@ -768,3 +768,94 @@
         flex-direction: column;
     }
 }
+
+/* Estilos específicos para la contraseña en el modal */
+.password-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#modalPasswordValue {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    background: #f1f5f9;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    min-width: 120px;
+    transition: all 0.3s ease;
+}
+
+#toggleModalPasswordBtn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#toggleModalPasswordBtn:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-copy-small {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-copy-small:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Estilos para alertas temporales */
+.temp-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 10000;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* Mejoras responsive para la funcionalidad de contraseña */
+@media (max-width: 768px) {
+    .password-display {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    #modalPasswordValue {
+        min-width: auto;
+        text-align: center;
+    }
+    
+    #toggleModalPasswordBtn,
+    .btn-copy-small {
+        width: 100%;
+        justify-content: center;
+    }
+}

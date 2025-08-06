@@ -1,24 +1,72 @@
 // Sistema de autenticación con admin y usuarios pendientes
 
-// Usuario administrador autorizado
-const adminUser = {
-    username: 'admin',
-    email: 'admin@slepiquique.cl',
-    password: 'admin123',
-    status: 'admin'
-};
+// Usuarios administradores autorizados
+const adminUsers = [
+    {
+        username: 'admin',
+        email: 'admin@slepiquique.cl',
+        password: 'admin123',
+        status: 'admin',
+        nombre: 'Administrador',
+        apellidoPaterno: 'Sistema',
+        apellidoMaterno: 'SLEP',
+        nombreCompleto: 'Administrador Sistema SLEP',
+        role: 'admin'
+    },
+    {
+        username: 'francisco.ramos',
+        email: 'francisco.ramos@slepiquique.cl',
+        password: '13Jul1993',
+        status: 'super_admin',
+        nombre: 'Francisco',
+        apellidoPaterno: 'Ramos',
+        apellidoMaterno: '',
+        nombreCompleto: 'Francisco Ramos',
+        cargo: 'Administración',
+        establecimiento: 'SLEP Iquique',
+        role: 'super_admin', // ÚNICO RESPONSABLE DE PERFILES AUTORIZADOS
+        permissions: {
+            canPromoteToAdmin: true, // Solo Francisco puede promover a admin
+            canManageAuthorizedProfiles: true, // Solo Francisco gestiona perfiles autorizados
+            canChangeUserRoles: true, // Solo Francisco cambia roles
+            fullSystemAccess: true
+        }
+    },
+    {
+        username: 'maria.gonzalez',
+        email: 'maria.gonzalez@slepiquique.cl',
+        password: 'admin2024',
+        status: 'admin',
+        nombre: 'María',
+        apellidoPaterno: 'González',
+        apellidoMaterno: 'López',
+        nombreCompleto: 'María González López',
+        cargo: 'Administradora',
+        establecimiento: 'SLEP Iquique',
+        role: 'admin', // ADMINISTRADOR NORMAL
+        permissions: {
+            canPromoteToAdmin: false, // NO puede promover a admin
+            canManageAuthorizedProfiles: false, // NO puede gestionar perfiles autorizados
+            canChangeUserRoles: false, // NO puede cambiar roles
+            fullSystemAccess: false
+        }
+    }
+];
 
-// Inicializar sistema con usuario admin
+// Inicializar sistema con usuarios admin
 function initializeUsers() {
     const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
     
-    // Verificar si el admin ya existe
-    const adminExists = users.find(u => u.username === 'admin' || u.email === 'admin@slepiquique.cl');
-    if (!adminExists) {
-        users.push(adminUser);
-        localStorage.setItem('appUsers', JSON.stringify(users));
-        console.log('✅ Usuario admin creado.');
-    }
+    // Agregar ambos usuarios admin si no existen
+    adminUsers.forEach(adminUser => {
+        const adminExists = users.find(u => u.username === adminUser.username || u.email === adminUser.email);
+        if (!adminExists) {
+            users.push(adminUser);
+            console.log(`✅ Usuario admin creado: ${adminUser.username}`);
+        }
+    });
+    
+    localStorage.setItem('appUsers', JSON.stringify(users));
 }
 
 // Obtener usuarios del localStorage
@@ -64,21 +112,30 @@ function login(username, password) {
             };
         }
         
-        // Permitir login para admin y usuarios aprobados
-        if (user.status === 'admin' || user.status === 'aprobada') {
+        // Permitir login para admin, super_admin y usuarios aprobados
+        if (user.status === 'admin' || user.status === 'super_admin' || user.status === 'aprobada') {
             const userSession = {
                 username: user.username,
                 email: user.email,
                 status: user.status,
+                role: user.role || user.status,
+                permissions: user.permissions || {},
                 loginTime: new Date().toISOString()
             };
             
             localStorage.setItem('currentUser', JSON.stringify(userSession));
             
+            let welcomeMessage = `✅ Bienvenido ${user.username}!`;
+            if (user.status === 'super_admin') {
+                welcomeMessage += ' (Responsable de Perfiles Autorizados)';
+            } else if (user.status === 'admin') {
+                welcomeMessage += ' (Administrador)';
+            }
+            
             return {
                 success: true,
                 user: userSession,
-                message: `✅ Bienvenido ${user.username}!`
+                message: welcomeMessage
             };
         }
     }
@@ -193,19 +250,245 @@ function requireLogin() {
     return true;
 }
 
-// Función para verificar si es admin
-function isAdmin() {
+// Función para verificar si es Francisco (Super Admin)
+function isSuperAdmin() {
     const currentUser = getCurrentUser();
-    return currentUser && currentUser.status === 'admin';
+    return currentUser && currentUser.status === 'super_admin' && currentUser.email === 'francisco.ramos@slepiquique.cl';
+}
+
+// Función para verificar si puede gestionar perfiles autorizados
+function canManageAuthorizedProfiles() {
+    return isSuperAdmin(); // Solo Francisco puede gestionar perfiles autorizados
+}
+
+// Función para verificar si puede promover usuarios a admin
+function canPromoteToAdmin() {
+    return isSuperAdmin(); // Solo Francisco puede promover a administradores
 }
 
 // Función para requerir permisos de admin
 function requireAdmin() {
-    if (!isAdmin()) {
+    const currentUser = getCurrentUser();
+    if (!currentUser || (currentUser.status !== 'admin' && currentUser.status !== 'super_admin')) {
         alert('⚠️ Acceso denegado\n\nEsta sección requiere permisos de administrador.');
         window.location.href = 'index.html';
         return false;
     }
+    return true;
+}
+
+// 🆕 SISTEMA MEJORADO DE PERMISOS Y ROLES
+
+// Verificar si el usuario actual es admin normal
+function isAdmin() {
+    const currentUser = getCurrentUser();
+    return currentUser && (currentUser.status === 'admin' || currentUser.status === 'super_admin');
+}
+
+// Verificar si el usuario actual es admin normal (NO super admin)
+function isNormalAdmin() {
+    const currentUser = getCurrentUser();
+    return currentUser && currentUser.status === 'admin';
+}
+
+// 🛡️ SISTEMA DE PERMISOS POR PÁGINA
+function canAccessPage(pageName) {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return false;
+    
+    const permissions = {
+        // Páginas públicas (cualquier usuario logueado)
+        'index.html': ['admin', 'super_admin', 'aprobada'],
+        'asistencia.html': ['admin', 'super_admin', 'aprobada'],
+        'establecimiento.html': ['admin', 'super_admin', 'aprobada'],
+        'documentos.html': ['admin', 'super_admin', 'aprobada'],
+        
+        // Páginas de administración normal (admin y super_admin)
+        'admin-usuarios.html': ['admin', 'super_admin'],
+        'registro.html': ['admin', 'super_admin'],
+        'registrar.html': ['admin', 'super_admin'],
+        
+        // Páginas exclusivas de super administración (solo Francisco)
+        'perfiles-autorizados.html': ['super_admin'],
+        'admin-test.html': ['super_admin']
+    };
+    
+    const allowedRoles = permissions[pageName];
+    return allowedRoles ? allowedRoles.includes(currentUser.status) : false;
+}
+
+// Verificar acceso y redirigir si es necesario
+function checkPageAccess(pageName) {
+    if (!isUserLoggedIn()) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    
+    if (!canAccessPage(pageName)) {
+        const currentUser = getCurrentUser();
+        let message = '';
+        
+        if (pageName === 'perfiles-autorizados.html') {
+            message = '🚫 Acceso Exclusivo de Super Administración\n\nSolo Francisco Ramos (Super Admin) puede acceder a la gestión de Perfiles Autorizados.';
+        } else if (['admin-usuarios.html', 'registro.html', 'registrar.html'].includes(pageName)) {
+            message = '🚫 Acceso de Administración Requerido\n\nNecesitas permisos de administrador para acceder a esta página.';
+        } else {
+            message = '🚫 Acceso Denegado\n\nNo tienes permisos para acceder a esta página.';
+        }
+        
+        alert(message);
+        window.location.href = 'index.html';
+        return false;
+    }
+    
+    return true;
+}
+
+// Función para mostrar mensaje de rol en la interfaz
+function getUserRoleDisplay() {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return '';
+    
+    switch(currentUser.status) {
+        case 'super_admin':
+            return '👑 Super Administrador';
+        case 'admin':
+            return '⚙️ Administrador';
+        case 'aprobada':
+            return '✅ Usuario Autorizado';
+        default:
+            return '👤 Usuario';
+    }
+}
+
+// 🔧 FUNCIONES DE GESTIÓN DE USUARIOS
+
+// Promover usuario a administrador (solo Francisco)
+function promoteToAdmin(userEmail) {
+    if (!canPromoteToAdmin()) {
+        alert('🚫 Acceso Denegado\n\nSolo Francisco Ramos puede promover usuarios a administradores.');
+        return false;
+    }
+    
+    const users = getUsers();
+    const userIndex = users.findIndex(u => u.email === userEmail);
+    
+    if (userIndex === -1) {
+        alert('❌ Usuario no encontrado');
+        return false;
+    }
+    
+    if (users[userIndex].status === 'admin' || users[userIndex].status === 'super_admin') {
+        alert('⚠️ El usuario ya es administrador');
+        return false;
+    }
+    
+    // Promover a admin
+    users[userIndex].status = 'admin';
+    users[userIndex].role = 'admin';
+    users[userIndex].permissions = {
+        canPromoteToAdmin: false,
+        canManageAuthorizedProfiles: false,
+        canChangeUserRoles: false,
+        fullSystemAccess: false
+    };
+    
+    saveUsers(users);
+    alert(`✅ Usuario promovido\n\n${users[userIndex].username} ahora es administrador.`);
+    return true;
+}
+
+// Quitar privilegios de administrador (solo Francisco)
+function removeAdminPrivileges(userEmail) {
+    if (!canPromoteToAdmin()) {
+        alert('🚫 Acceso Denegado\n\nSolo Francisco Ramos puede modificar roles de administrador.');
+        return false;
+    }
+    
+    // Verificar que no sea Francisco intentando quitarse sus propios privilegios
+    if (userEmail === 'francisco.ramos@slepiquique.cl') {
+        alert('🚫 Operación no permitida\n\nNo puedes quitar tus propios privilegios de Super Administrador.');
+        return false;
+    }
+    
+    const users = getUsers();
+    const userIndex = users.findIndex(u => u.email === userEmail);
+    
+    if (userIndex === -1) {
+        alert('❌ Usuario no encontrado');
+        return false;
+    }
+    
+    if (users[userIndex].status !== 'admin') {
+        alert('⚠️ El usuario no es administrador');
+        return false;
+    }
+    
+    // Quitar privilegios de admin
+    users[userIndex].status = 'aprobada';
+    users[userIndex].role = 'user';
+    users[userIndex].permissions = {};
+    
+    saveUsers(users);
+    alert(`✅ Privilegios removidos\n\n${users[userIndex].username} ya no es administrador.`);
+    return true;
+}
+
+// Aprobar usuario pendiente (solo administradores)
+function approveUser(userEmail) {
+    if (!isAdmin()) {
+        alert('🚫 Acceso Denegado\n\nNecesitas permisos de administrador para aprobar usuarios.');
+        return false;
+    }
+    
+    const users = getUsers();
+    const userIndex = users.findIndex(u => u.email === userEmail);
+    
+    if (userIndex === -1) {
+        alert('❌ Usuario no encontrado');
+        return false;
+    }
+    
+    if (users[userIndex].status !== 'pendiente') {
+        alert('⚠️ El usuario no está pendiente de aprobación');
+        return false;
+    }
+    
+    // Aprobar usuario
+    users[userIndex].status = 'aprobada';
+    users[userIndex].fechaAprobacion = new Date().toISOString();
+    
+    saveUsers(users);
+    alert(`✅ Usuario aprobado\n\n${users[userIndex].username} ahora puede acceder al sistema.`);
+    return true;
+}
+
+// Rechazar usuario pendiente (solo administradores)
+function rejectUser(userEmail) {
+    if (!isAdmin()) {
+        alert('🚫 Acceso Denegado\n\nNecesitas permisos de administrador para rechazar usuarios.');
+        return false;
+    }
+    
+    const users = getUsers();
+    const userIndex = users.findIndex(u => u.email === userEmail);
+    
+    if (userIndex === -1) {
+        alert('❌ Usuario no encontrado');
+        return false;
+    }
+    
+    if (users[userIndex].status !== 'pendiente') {
+        alert('⚠️ El usuario no está pendiente de aprobación');
+        return false;
+    }
+    
+    // Rechazar usuario
+    users[userIndex].status = 'rechazada';
+    users[userIndex].fechaRechazo = new Date().toISOString();
+    
+    saveUsers(users);
+    alert(`❌ Usuario rechazado\n\n${users[userIndex].username} no podrá acceder al sistema.`);
     return true;
 }
 
@@ -230,6 +513,27 @@ function togglePasswordVisibility(inputId, toggleId) {
                 <circle cx="12" cy="12" r="3"></circle>
             </svg>
         `;
+    }
+}
+
+// Función simple para mostrar/ocultar contraseña (compatible con login.html)
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const container = input.parentElement;
+    const toggle = container.querySelector('.password-toggle');
+    const eyeOpen = toggle.querySelector('.eye-open');
+    const eyeClosed = toggle.querySelector('.eye-closed');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (eyeOpen) eyeOpen.style.display = 'none';
+        if (eyeClosed) eyeClosed.style.display = 'block';
+        toggle.setAttribute('aria-label', 'Ocultar contraseña');
+    } else {
+        input.type = 'password';
+        if (eyeOpen) eyeOpen.style.display = 'block';
+        if (eyeClosed) eyeClosed.style.display = 'none';
+        toggle.setAttribute('aria-label', 'Mostrar contraseña');
     }
 }
 

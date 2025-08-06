@@ -70,21 +70,13 @@
 
         <!-- Tabla de usuarios -->
         <div class="table-container">
-            <div class="admin-controls">
-                <button class="btn-export" onclick="exportUserData()">
-                    📊 Exportar Datos
-                </button>
-                <button class="btn-test" onclick="testTabSystem()" style="background: #10b981; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; margin-left: 1rem; cursor: pointer;">
-                    🧪 Probar Pestañas
-                </button>
-                <button class="btn-reload" onclick="forceReloadUsers()" style="background: #3b82f6; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; margin-left: 1rem; cursor: pointer;">
-                    🔄 Recargar Usuarios
-                </button>
-                <button class="btn-debug" onclick="debugUserSystem()" style="background: #f59e0b; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; margin-left: 1rem; cursor: pointer;">
-                    🐛 Debug Sistema
-                </button>
-                <p style="color: #666; margin: 0; font-size: 0.9rem;">
-                    🔒 Haz clic en "👁️ Ver Detalles" para acceder a la información confidencial
+            <!-- Botón de prueba para modal -->
+            <div style="margin-bottom: 15px; padding: 10px; background: #f0f9ff; border-radius: 6px; border-left: 4px solid #3b82f6;">
+                <p style="margin: 0; color: #1e40af; font-weight: 500;">
+                    🧪 <strong>Probar Modal:</strong> 
+                    <button onclick="window.showUserDetailsModal('test-user')" style="background: #3b82f6; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; margin-left: 10px;">
+                        👁️ Ver Detalles (Prueba)
+                    </button>
                 </p>
             </div>
             
@@ -153,14 +145,273 @@
         </div>
     </div>
 
-    <script src="js/login.js"></script>
     <script>
+        // ===== DECLARACIÓN INMEDIATA DE FUNCIONES CRÍTICAS =====
+        console.log('🚀 Iniciando declaración inmediata de funciones críticas...');
+        
+        // DECLARACIÓN INMEDIATA - antes de cualquier otra cosa
+        window.showUserDetailsModal = function(userIdentifier) {
+            console.log('👁️ showUserDetailsModal ejecutándose - Usuario:', userIdentifier);
+            
+            // Verificar modal
+            const modal = document.getElementById('userDetailsModal');
+            if (!modal) {
+                alert('❌ Modal no encontrado');
+                return;
+            }
+            
+            // Buscar usuario
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const user = users.find(u => u.username === userIdentifier || u.email === userIdentifier);
+            
+            if (!user) {
+                alert(`❌ Usuario "${userIdentifier}" no encontrado`);
+                return;
+            }
+            
+            // Guardar usuario actual para otras funciones
+            window.currentModalUser = user;
+            
+            // Crear contenido básico del modal
+            const modalUserInfo = document.getElementById('modalUserInfo');
+            if (modalUserInfo) {
+                modalUserInfo.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h3>👤 ${user.nombreCompleto || user.username}</h3>
+                        <p><strong>Usuario:</strong> ${user.username}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Estado:</strong> ${user.status}</p>
+                        <p><strong>Establecimiento:</strong> ${user.establecimiento || 'No especificado'}</p>
+                        <p><strong>Cargo:</strong> ${user.cargo || 'No especificado'}</p>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 6px;">
+                            <label><strong>Contraseña:</strong></label>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                                <span id="modalPasswordValue" style="font-family: monospace; background: white; padding: 5px 10px; border-radius: 4px;">••••••••</span>
+                                <button id="togglePasswordBtn" onclick="window.toggleModalPassword()" style="background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                                    👁️ Mostrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Mostrar modal
+            modal.style.display = 'block';
+            console.log('✅ Modal mostrado exitosamente');
+        };
+        
+        window.closeUserModal = function() {
+            const modal = document.getElementById('userDetailsModal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log('✅ Modal cerrado');
+            }
+        };
+        
+        window.toggleModalPassword = function() {
+            const passwordSpan = document.getElementById('modalPasswordValue');
+            const toggleBtn = document.getElementById('togglePasswordBtn');
+            
+            if (!passwordSpan || !toggleBtn) {
+                console.warn('⚠️ Elementos de contraseña no encontrados');
+                return;
+            }
+            
+            if (passwordSpan.textContent === '••••••••') {
+                // Mostrar contraseña del usuario actual del modal
+                if (window.currentModalUser && window.currentModalUser.password) {
+                    passwordSpan.textContent = window.currentModalUser.password;
+                    toggleBtn.innerHTML = '🙈 Ocultar';
+                    toggleBtn.style.background = '#ef4444';
+                } else {
+                    passwordSpan.textContent = 'No disponible';
+                    toggleBtn.innerHTML = '🙈 Ocultar';
+                    toggleBtn.style.background = '#ef4444';
+                }
+            } else {
+                passwordSpan.textContent = '••••••••';
+                toggleBtn.innerHTML = '👁️ Mostrar';
+                toggleBtn.style.background = '#3b82f6';
+            }
+        };
+        
+        console.log('✅ Funciones críticas declaradas globalmente de forma inmediata');
+        
+        window.showUserDetailsModal = function(userIdentifier) {
+            console.log('�️ showUserDetailsModal ejecutándose - Usuario:', userIdentifier);
+            
+            // Verificar modal
+            const modal = document.getElementById('userDetailsModal');
+            if (!modal) {
+                alert('❌ Modal no encontrado');
+                return;
+            }
+            
+            // Buscar usuario
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const user = users.find(u => u.username === userIdentifier || u.email === userIdentifier);
+            
+            if (!user) {
+                alert(`❌ Usuario "${userIdentifier}" no encontrado`);
+                return;
+            }
+            
+            // Guardar usuario actual para otras funciones
+            window.currentModalUser = user;
+            
+            // Crear contenido básico del modal
+            const modalUserInfo = document.getElementById('modalUserInfo');
+            if (modalUserInfo) {
+                modalUserInfo.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h3>👤 ${user.nombreCompleto || user.username}</h3>
+                        <p><strong>Usuario:</strong> ${user.username}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Estado:</strong> ${user.status}</p>
+                        <p><strong>Establecimiento:</strong> ${user.establecimiento || 'No especificado'}</p>
+                        <p><strong>Cargo:</strong> ${user.cargo || 'No especificado'}</p>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 6px;">
+                            <label><strong>Contraseña:</strong></label>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                                <span id="modalPasswordValue" style="font-family: monospace; background: white; padding: 5px 10px; border-radius: 4px;">••••••••</span>
+                                <button id="togglePasswordBtn" onclick="window.toggleModalPassword()" style="background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                                    👁️ Mostrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Mostrar modal
+            modal.style.display = 'block';
+            console.log('✅ Modal mostrado exitosamente');
+        };
+        
+        // 2. Función closeUserModal
+        window.closeUserModal = function() {
+            const modal = document.getElementById('userDetailsModal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log('✅ Modal cerrado');
+            }
+        };
+        
+        // 3. Función toggleModalPassword mejorada
+        window.toggleModalPassword = function() {
+            const passwordSpan = document.getElementById('modalPasswordValue');
+            const toggleBtn = document.getElementById('togglePasswordBtn');
+            
+            if (!passwordSpan || !toggleBtn) {
+                console.warn('⚠️ Elementos de contraseña no encontrados');
+                return;
+            }
+            
+            if (passwordSpan.textContent === '••••••••') {
+                // Mostrar contraseña del usuario actual del modal
+                if (window.currentModalUser && window.currentModalUser.password) {
+                    passwordSpan.textContent = window.currentModalUser.password;
+                    toggleBtn.innerHTML = '🙈 Ocultar';
+                    toggleBtn.style.background = '#ef4444';
+                } else {
+                    passwordSpan.textContent = 'No disponible';
+                    toggleBtn.innerHTML = '🙈 Ocultar';
+                    toggleBtn.style.background = '#ef4444';
+                }
+            } else {
+                passwordSpan.textContent = '••••••••';
+                toggleBtn.innerHTML = '👁️ Mostrar';
+                toggleBtn.style.background = '#3b82f6';
+            }
+        };
+        
+        console.log('✅ Funciones críticas declaradas globalmente de forma inmediata');
+        
+        // Variable para almacenar el usuario actual del modal
+        window.currentModalUser = null;
+        
+        // Crear usuario de prueba para testing
+        function crearUsuarioPrueba() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const testUserExists = users.find(u => u.username === 'test-user');
+            
+            if (!testUserExists) {
+                const testUser = {
+                    username: 'test-user',
+                    password: 'test123',
+                    email: 'test@slep-iquique.cl',
+                    nombre: 'Usuario',
+                    apellidoPaterno: 'De',
+                    apellidoMaterno: 'Prueba',
+                    nombreCompleto: 'Usuario De Prueba',
+                    establecimiento: 'Escuela de Testing',
+                    cargo: 'Tester',
+                    status: 'aprobada',
+                    registrationDate: new Date().toISOString()
+                };
+                
+                users.push(testUser);
+                localStorage.setItem('appUsers', JSON.stringify(users));
+                console.log('✅ Usuario de prueba creado:', testUser.username);
+            }
+        }
+        
+        // Crear usuario de prueba al cargar
+        crearUsuarioPrueba();
+        
+        // Diagnóstico inmediato
+        setTimeout(() => {
+            console.log('🔍 === DIAGNÓSTICO FINAL DE FUNCIONES ===');
+            console.log('✅ showUserDetailsModal:', typeof window.showUserDetailsModal);
+            console.log('✅ closeUserModal:', typeof window.closeUserModal);
+            console.log('✅ toggleModalPassword:', typeof window.toggleModalPassword);
+            
+            const modal = document.getElementById('userDetailsModal');
+            console.log('✅ Modal en DOM:', !!modal);
+            
+            if (typeof window.showUserDetailsModal === 'function') {
+                console.log('🎉 ¡FUNCIÓN showUserDetailsModal LISTA PARA USAR!');
+            } else {
+                console.error('❌ showUserDetailsModal NO está disponible');
+            }
+        }, 100);
+
+        // Cargar script de login después de nuestras funciones
+        const loginScript = document.createElement('script');
+        loginScript.src = 'js/login.js';
+        document.head.appendChild(loginScript);
+
         let currentTab = 'pendiente';
         let selectedFile = null;
         let excelData = null;
 
         // Funcionalidad de Excel Upload
         document.addEventListener('DOMContentLoaded', function() {
+            // 🛡️ VERIFICAR PERMISOS DE ACCESO
+            if (!checkPageAccess('admin-usuarios.html')) {
+                return; // La función checkPageAccess ya maneja la redirección
+            }
+            
+            // Mostrar información del usuario con su rol
+            const currentUser = getCurrentUser();
+            const userInfo = document.getElementById('userInfo');
+            if (userInfo && currentUser) {
+                userInfo.textContent = `${getUserRoleDisplay()} - ${currentUser.username}`;
+            }
+            
+            // Verificar si es Francisco para mostrar el botón de Perfiles Autorizados
+            const authorizedProfilesButton = document.querySelector('.authorized-profiles-btn');
+            if (authorizedProfilesButton) {
+                if (canManageAuthorizedProfiles()) {
+                    authorizedProfilesButton.style.display = 'inline-block';
+                } else {
+                    authorizedProfilesButton.style.display = 'none';
+                }
+            }
+            
             setupExcelUpload();
         });
 
@@ -1046,21 +1297,61 @@ Ver consola para detalles completos.`;
         // Funciones para el modal de información confidencial
         let currentUserData = null;
 
-        function showUserDetailsModal(username) {
-            console.log('👁️ Mostrando detalles del usuario:', username);
+        function showUserDetailsModal(userIdentifier) {
+            console.log('👁️ === INICIANDO MODAL COMPLETO ===');
+            console.log('🔍 Usuario solicitado:', userIdentifier);
 
-            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
-            const user = users.find(u => u.username === username);
+            // Verificar que el modal existe
+            const modalElement = document.getElementById('userDetailsModal');
+            if (!modalElement) {
+                console.error('❌ ERROR: Modal no encontrado en DOM');
+                alert('❌ Error: Modal no encontrado');
+                return;
+            }
+            console.log('✅ Modal element encontrado');
+
+            // Buscar en ambos sistemas de usuarios
+            let users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            let user = users.find(u => u.username === userIdentifier || u.email === userIdentifier);
+            
+            // Si no se encuentra en appUsers, buscar en slep_users
+            if (!user) {
+                users = JSON.parse(localStorage.getItem('slep_users') || '[]');
+                user = users.find(u => u.email === userIdentifier || u.id === userIdentifier || u.nombre === userIdentifier);
+                
+                // Si se encuentra en slep_users, adaptarlo al formato esperado
+                if (user) {
+                    user = {
+                        username: user.email || user.id,
+                        password: user.password || 'No disponible',
+                        email: user.email,
+                        nombre: user.nombre?.split(' ')[0] || 'No disponible',
+                        apellidoPaterno: user.nombre?.split(' ')[1] || 'No disponible',
+                        apellidoMaterno: user.nombre?.split(' ')[2] || '',
+                        nombreCompleto: user.nombre,
+                        fechaNacimiento: user.fechaNacimiento || null,
+                        establecimiento: user.establecimiento || 'No especificado',
+                        cargo: user.rol || user.cargo || 'No especificado',
+                        status: user.estado || 'pendiente',
+                        registrationDate: user.fechaRegistro || new Date().toISOString()
+                    };
+                }
+            }
+            
+            console.log('📊 Total usuarios en localStorage:', users.length);
             
             if (!user) {
-                alert('❌ Usuario no encontrado');
+                console.error('❌ Usuario no encontrado:', userIdentifier);
+                console.log('📋 Usuarios disponibles:', users.map(u => u.username || u.email || u.nombre));
+                alert(`❌ Usuario "${userIdentifier}" no encontrado`);
                 return;
             }
 
+            console.log('✅ Usuario encontrado:', user);
             currentUserData = user;
             
             // Registro de acceso simplificado
-            console.log('🔍 Acceso a detalles - Usuario consultado:', username, 'Tiempo:', new Date().toISOString());
+            console.log('🔍 Acceso a detalles - Usuario consultado:', userIdentifier, 'Tiempo:', new Date().toISOString());
 
             const nombreCompleto = user.nombreCompleto || 
                 `${user.nombre || ''} ${user.apellidoPaterno || ''} ${user.apellidoMaterno || ''}`.trim() ||
@@ -1133,9 +1424,16 @@ Ver consola para detalles completos.`;
                         </div>
                         <div class="detail-item password-item">
                             <label>Contraseña:</label>
-                            <div class="password-display">
-                                <code class="password-code">${user.password || 'No disponible'}</code>
-                                <button class="btn-copy-small" onclick="copyToClipboard('${user.password}')" title="Copiar contraseña">
+                            <div class="password-display" style="display: flex; align-items: center; gap: 10px;">
+                                <span id="modalPasswordValue" style="font-family: monospace; background: #f3f4f6; padding: 0.25rem 0.5rem; border-radius: 4px; min-width: 100px;">••••••••</span>
+                                <button id="toggleModalPasswordBtn" onclick="toggleModalPassword()" style="
+                                    background: #3b82f6; color: white; border: none; padding: 0.4rem 0.8rem; 
+                                    border-radius: 4px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s ease;">
+                                    👁️ Mostrar
+                                </button>
+                                <button class="btn-copy-small" onclick="copyToClipboard('${user.password || 'No disponible'}')" title="Copiar contraseña" style="
+                                    background: #10b981; color: white; border: none; padding: 0.4rem 0.6rem; 
+                                    border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
                                     📋
                                 </button>
                             </div>
@@ -1190,18 +1488,67 @@ Ver consola para detalles completos.`;
                 </div>
             `;
 
-            document.getElementById('modalUserInfo').innerHTML = modalContent;
-            document.getElementById('userDetailsModal').style.display = 'block';
+            console.log('🔄 Cargando contenido en modal...');
+            const modalUserInfo = document.getElementById('modalUserInfo');
+            if (!modalUserInfo) {
+                console.error('❌ ERROR: modalUserInfo no encontrado');
+                alert('❌ Error: Contenedor del modal no encontrado');
+                return;
+            }
+            
+            modalUserInfo.innerHTML = modalContent;
+            console.log('✅ Contenido cargado en modal');
+            
+            console.log('🔄 Mostrando modal...');
+            const modal = document.getElementById('userDetailsModal');
+            
+            // FORZAR ESTILOS PARA ASEGURAR VISIBILIDAD
+            modal.style.cssText = `
+                position: fixed !important;
+                z-index: 99999 !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background-color: rgba(0, 0, 0, 0.8) !important;
+                display: block !important;
+                backdrop-filter: blur(5px) !important;
+            `;
+            console.log('✅ Modal display forzado con estilos inline');
             
             // Agregar efecto de entrada
             setTimeout(() => {
-                const modalContent = document.querySelector('.modal-content');
-                if (modalContent) {
-                    modalContent.style.transform = 'scale(1)';
-                    modalContent.style.opacity = '1';
+                const modalContentEl = document.querySelector('.modal-content');
+                if (modalContentEl) {
+                    // FORZAR ESTILOS DEL CONTENIDO
+                    modalContentEl.style.cssText = `
+                        background-color: white !important;
+                        margin: 2% auto !important;
+                        padding: 0 !important;
+                        border-radius: 12px !important;
+                        width: 90% !important;
+                        max-width: 800px !important;
+                        max-height: 90vh !important;
+                        overflow-y: auto !important;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+                        transform: scale(1) !important;
+                        opacity: 1 !important;
+                        position: relative !important;
+                        z-index: 100000 !important;
+                    `;
+                    console.log('✅ Efectos de entrada aplicados con estilos forzados');
+                } else {
+                    console.error('❌ ERROR: modal-content no encontrado para efectos');
                 }
             }, 10);
+            
+            console.log('✅ === MODAL COMPLETAMENTE MOSTRADO ===');
         }
+
+        // Asignar la implementación completa a la función global
+        window._showUserDetailsModalImpl = showUserDetailsModal;
+        window.showUserDetailsModal = showUserDetailsModal;
+        console.log('✅ showUserDetailsModal asignada globalmente');
 
         function closeUserModal() {
             const modal = document.getElementById('userDetailsModal');
@@ -1215,6 +1562,92 @@ Ver consola para detalles completos.`;
                 modal.style.display = 'none';
                 currentUserData = null;
             }, 200);
+        }
+
+        // Asignar closeUserModal globalmente
+        window.closeUserModal = closeUserModal;
+        console.log('✅ closeUserModal asignada globalmente');
+
+        // Función para toggle de contraseña en el modal
+        function toggleModalPassword() {
+            if (!currentUserData) return;
+            
+            const passwordSpan = document.getElementById('modalPasswordValue');
+            const toggleBtn = document.getElementById('toggleModalPasswordBtn');
+            
+            if (!passwordSpan || !toggleBtn) return;
+            
+            if (passwordSpan.textContent === '••••••••') {
+                // Mostrar contraseña
+                passwordSpan.textContent = currentUserData.password || 'No disponible';
+                toggleBtn.innerHTML = '🙈 Ocultar';
+                toggleBtn.style.background = '#ef4444';
+            } else {
+                // Ocultar contraseña
+                passwordSpan.textContent = '••••••••';
+                toggleBtn.innerHTML = '👁️ Mostrar';
+                toggleBtn.style.background = '#3b82f6';
+            }
+        }
+
+        // Asignar toggleModalPassword globalmente
+        window.toggleModalPassword = toggleModalPassword;
+        console.log('✅ toggleModalPassword asignada globalmente');
+
+        // Función para copiar texto al portapapeles
+        function copyToClipboard(text) {
+            if (!text || text === 'No disponible') {
+                alert('❌ No hay contenido para copiar');
+                return;
+            }
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('📋 Copiado al portapapeles');
+                }).catch(() => {
+                    // Fallback manual
+                    copyTextFallback(text);
+                });
+            } else {
+                // Fallback manual
+                copyTextFallback(text);
+            }
+        }
+
+        // Función fallback para copiar en navegadores sin soporte de clipboard API
+        function copyTextFallback(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('📋 Copiado al portapapeles');
+            } catch (err) {
+                console.error('Error copiando:', err);
+                alert('❌ Error al copiar. Selecciona manualmente el texto.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Función para calcular edad
+        function calculateAge(birthDate) {
+            if (!birthDate) return 'No disponible';
+            
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            return age;
         }
 
         function copyAllUserInfo() {
@@ -1258,17 +1691,60 @@ Consultado el: ${new Date().toLocaleString('es-CL')}`;
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(userInfo).then(() => {
                     showTempAlert('📋 Información completa copiada al portapapeles');
+                }).catch(() => {
+                    copyTextFallback(userInfo);
                 });
             } else {
-                // Fallback para navegadores antiguos
-                const textArea = document.createElement('textarea');
-                textArea.value = userInfo;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                showTempAlert('📋 Información completa copiada al portapapeles');
+                copyTextFallback(userInfo);
             }
+        }
+
+        // Función para mostrar alertas temporales
+        function showTempAlert(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10b981;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: bold;
+                animation: slideInRight 0.3s ease;
+            `;
+            alertDiv.textContent = message;
+            
+            // Agregar animación CSS si no existe
+            if (!document.getElementById('tempAlertStyles')) {
+                const style = document.createElement('style');
+                style.id = 'tempAlertStyles';
+                style.textContent = `
+                    @keyframes slideInRight {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOutRight {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(alertDiv);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
+                    }
+                }, 300);
+            }, 3000);
         }
 
         // Cerrar modal al hacer clic fuera de él
@@ -1286,17 +1762,131 @@ Consultado el: ${new Date().toLocaleString('es-CL')}`;
             }
         });
 
-        function calculateAge(birthDate) {
-            const birth = new Date(birthDate);
-            const today = new Date();
-            let age = today.getFullYear() - birth.getFullYear();
-            const monthDiff = today.getMonth() - birth.getMonth();
+        // === FUNCIONES AUXILIARES ===
+
+        // Función de test para verificar el modal
+        function forceShowModal() {
+            console.log('🚨 FORZANDO MODAL CON ESTILOS INLINE...');
             
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-                age--;
+            const modal = document.getElementById('userDetailsModal');
+            if (!modal) {
+                alert('❌ Modal no encontrado en DOM');
+                return;
             }
             
-            return age;
+            // Forzar estilos inline para que sea visible
+            modal.style.cssText = `
+                position: fixed !important;
+                z-index: 99999 !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background-color: rgba(0, 0, 0, 0.8) !important;
+                display: block !important;
+            `;
+            
+            // Contenido simple de prueba
+            const modalUserInfo = document.getElementById('modalUserInfo');
+            if (modalUserInfo) {
+                modalUserInfo.innerHTML = `
+                    <div style="background: white; padding: 2rem; margin: 5% auto; border-radius: 10px; max-width: 600px;">
+                        <h2 style="color: #333; margin-bottom: 1rem;">🚨 TEST MODAL FORZADO</h2>
+                        <p style="color: #666; margin-bottom: 1rem;">Si puedes ver esto, el modal funciona correctamente.</p>
+                        <button onclick="closeUserModal()" style="background: #ef4444; color: white; padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer;">
+                            Cerrar
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // Forzar estilos del contenido del modal
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.style.cssText = `
+                    background-color: white !important;
+                    margin: 5% auto !important;
+                    padding: 0 !important;
+                    border-radius: 12px !important;
+                    width: 90% !important;
+                    max-width: 800px !important;
+                    max-height: 90vh !important;
+                    overflow-y: auto !important;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+                    transform: scale(1) !important;
+                    opacity: 1 !important;
+                `;
+            }
+            
+            console.log('✅ Modal forzado mostrado');
+        }
+
+        function testModal() {
+            console.log('🧪 Testing modal...');
+            
+            // Crear usuario de prueba
+            const testUser = {
+                username: 'test.user',
+                password: 'test123',
+                email: 'test@example.com',
+                nombre: 'Usuario',
+                apellidoPaterno: 'De',
+                apellidoMaterno: 'Prueba',
+                nombreCompleto: 'Usuario De Prueba',
+                fechaNacimiento: '1990-01-01',
+                establecimiento: 'Establecimiento de Prueba',
+                cargo: 'Cargo de Prueba',
+                status: 'pendiente',
+                registrationDate: new Date().toISOString()
+            };
+            
+            // Guardar temporalmente en currentUserData
+            currentUserData = testUser;
+            
+            // Mostrar modal directamente
+            const modal = document.getElementById('userDetailsModal');
+            const modalContent = `
+                <div class="user-details-section">
+                    <div class="section-header">
+                        <h3>👤 DATOS PERSONALES (PRUEBA)</h3>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <label>Nombre Completo:</label>
+                            <span>${testUser.nombreCompleto}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Email:</label>
+                            <span>${testUser.email}</span>
+                        </div>
+                        <div class="detail-item password-item">
+                            <label>Contraseña:</label>
+                            <div class="password-display" style="display: flex; align-items: center; gap: 10px;">
+                                <span id="modalPasswordValue" style="font-family: monospace; background: #f3f4f6; padding: 0.25rem 0.5rem; border-radius: 4px; min-width: 100px;">••••••••</span>
+                                <button id="toggleModalPasswordBtn" onclick="toggleModalPassword()" style="
+                                    background: #3b82f6; color: white; border: none; padding: 0.4rem 0.8rem; 
+                                    border-radius: 4px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s ease;">
+                                    👁️ Mostrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalUserInfo').innerHTML = modalContent;
+            modal.style.display = 'block';
+            
+            // Efecto de entrada
+            setTimeout(() => {
+                const modalContentEl = document.querySelector('.modal-content');
+                if (modalContentEl) {
+                    modalContentEl.style.transform = 'scale(1)';
+                    modalContentEl.style.opacity = '1';
+                }
+            }, 10);
+            
+            console.log('✅ Modal de prueba mostrado');
         }
 
         function copyToClipboard(text) {
@@ -1506,6 +2096,32 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
             }
         }
 
+        // ===== EXPORTAR FUNCIONES GLOBALES AL WINDOW =====
+        console.log('🔧 Exportando funciones al contexto global...');
+        
+        window.showUserDetailsModal = showUserDetailsModal;
+        window.closeUserModal = closeUserModal;
+        window.toggleModalPassword = toggleModalPassword;
+        window.copyAllUserInfo = copyAllUserInfo;
+        window.testModal = testModal;
+        window.forceShowModal = forceShowModal;
+        window.copyToClipboard = copyToClipboard;
+        window.showTempAlert = showTempAlert;
+        window.calculateAge = calculateAge;
+        window.loadUsers = loadUsers;
+        window.approveUser = approveUser;
+        window.rejectUser = rejectUser;
+        window.deleteUser = deleteUser;
+        window.createSampleUsers = createSampleUsers;
+        window.updateStats = updateStats;
+        window.debugUserSystem = debugUserSystem;
+        window.forceReloadUsers = forceReloadUsers;
+        window.getStatusIcon = getStatusIcon;
+        window.showTab = showTab;
+        window.exportUserData = exportUserData;
+        
+        console.log('✅ Funciones exportadas correctamente al contexto global');
+
     </script>
 
     <!-- Cargar sistema de monitoreo de usuarios -->
@@ -1663,7 +2279,7 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
                         <td>${statusBadge}</td>
                         <td>${registerDate}</td>
                         <td>
-                            <button class="btn-action btn-view" onclick="viewUser('${user.id || index}')">👁️</button>
+                            <button class="btn-action btn-view" onclick="showUserDetailsModal('${user.email || user.id || index}')">👁️ Ver Detalles</button>
                             <button class="btn-action btn-edit" onclick="editUser('${user.id || index}')">✏️</button>
                             ${user.estado === 'pendiente' ? 
                                 `<button class="btn-action btn-approve" onclick="approveUser('${user.id || index}')">✅</button>
@@ -1742,50 +2358,75 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
                     id: 'user001',
                     nombre: 'María González',
                     email: 'maria.gonzalez@ejemplo.com',
+                    username: 'maria.gonzalez',
+                    password: 'temp123',
                     rut: '12.345.678-9',
                     rol: 'Profesor',
                     estado: 'pendiente',
                     fechaRegistro: '2024-01-15',
+                    fechaNacimiento: '1985-03-15',
+                    establecimiento: 'Escuela Básica Los Aromos',
+                    cargo: 'Profesor de Matemáticas',
                     ultimoAcceso: 'Nunca'
                 },
                 {
                     id: 'user002',
                     nombre: 'Carlos Rivera',
                     email: 'carlos.rivera@ejemplo.com',
+                    username: 'carlos.rivera',
+                    password: 'temp456',
                     rut: '98.765.432-1',
                     rol: 'Administrativo',
                     estado: 'aprobada',
                     fechaRegistro: '2024-01-10',
+                    fechaNacimiento: '1992-07-22',
+                    establecimiento: 'Liceo Técnico Industrial',
+                    cargo: 'Director',
                     ultimoAcceso: '2024-01-20'
                 },
                 {
                     id: 'user003',
                     nombre: 'Ana Martínez',
                     email: 'ana.martinez@ejemplo.com',
+                    username: 'ana.martinez',
+                    password: 'temp789',
                     rut: '11.222.333-4',
                     rol: 'Auxiliar',
                     estado: 'rechazada',
                     fechaRegistro: '2024-01-12',
+                    fechaNacimiento: '1988-11-10',
+                    establecimiento: 'Colegio San Patricio',
+                    cargo: 'Inspector General',
                     ultimoAcceso: 'Nunca'
                 },
                 {
                     id: 'user004',
                     nombre: 'Pedro Sánchez',
                     email: 'pedro.sanchez@ejemplo.com',
+                    username: 'pedro.sanchez',
+                    password: 'temp321',
                     rut: '55.666.777-8',
                     rol: 'Director',
                     estado: 'aprobada',
                     fechaRegistro: '2024-01-08',
+                    fechaNacimiento: '1990-05-18',
+                    establecimiento: 'Escuela Gabriela Mistral',
+                    cargo: 'Educadora de Párvulos',
                     ultimoAcceso: '2024-01-21'
                 },
                 {
                     id: 'user005',
                     nombre: 'Laura López',
                     email: 'laura.lopez@ejemplo.com',
+                    username: 'laura.lopez',
+                    password: 'temp654',
                     rut: '33.444.555-6',
                     rol: 'Profesor',
                     estado: 'pendiente',
                     fechaRegistro: '2024-01-18',
+                    fechaNacimiento: '1987-09-03',
+                    establecimiento: 'Liceo Domingo Santa María',
+                    cargo: 'Jefe de UTP',
                     ultimoAcceso: 'Nunca'
                 }
             ];
@@ -1946,22 +2587,133 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
                 // Cargar usuarios iniciales
                 loadUsers('pendiente');
                 
+                // Verificar acceso a Perfiles Autorizados
+                checkAuthorizedProfilesAccess();
+                
                 console.log('🚀 Sistema admin-usuarios inicializado completamente');
                 
             }, 500);
         });
         
-        // ===== EXPORTAR FUNCIONES GLOBALES =====
-        window.loadUsers = loadUsers;
+        // ===== EXPORTAR FUNCIONES DEL SEGUNDO BLOQUE =====
+        window.switchTab = switchTab;
         window.testTabSystem = testTabSystem;
-        window.forceReloadUsers = forceReloadUsers;
-        window.debugUserSystem = debugUserSystem;
+        window.goToAuthorizedProfiles = goToAuthorizedProfiles;
+        window.checkAuthorizedProfilesAccess = checkAuthorizedProfilesAccess;
+        
+        // ===== FUNCIÓN DE DEBUG PARA VERIFICAR EXPORTACIONES =====
+        window.debugExportedFunctions = function() {
+            const requiredFunctions = [
+                'showUserDetailsModal', 'closeUserModal', 'toggleModalPassword', 
+                'testModal', 'forceShowModal', 'switchTab', 'loadUsers',
+                'approveUser', 'rejectUser', 'deleteUser'
+            ];
+            
+            console.log('🔍 === VERIFICANDO FUNCIONES EXPORTADAS ===');
+            const missing = [];
+            const available = [];
+            
+            requiredFunctions.forEach(funcName => {
+                if (typeof window[funcName] === 'function') {
+                    available.push(funcName);
+                    console.log(`✅ ${funcName}: DISPONIBLE`);
+                } else {
+                    missing.push(funcName);
+                    console.error(`❌ ${funcName}: NO DISPONIBLE`);
+                }
+            });
+            
+            const summary = `🔍 FUNCIONES EXPORTADAS:
+✅ Disponibles: ${available.length}/${requiredFunctions.length}
+${available.length < requiredFunctions.length ? `❌ Faltantes: ${missing.join(', ')}` : '🎉 Todas las funciones están disponibles'}`;
+            
+            console.log(summary);
+            alert(summary);
+            return { available, missing };
+        };
+        
+        console.log('✅ Todas las funciones disponibles en el contexto global');
+        
+        // ===== FUNCIÓN PARA PERFILES AUTORIZADOS =====
+        function goToAuthorizedProfiles() {
+            const currentUser = getCurrentUser();
+            if (currentUser && currentUser.status === 'super_admin' && currentUser.email === 'francisco.ramos@slepiquique.cl') {
+                window.location.href = 'perfiles-autorizados.html';
+            } else {
+                alert('🚫 Acceso Denegado\n\nSolo Francisco Ramos puede acceder a la gestión de Perfiles Autorizados.');
+            }
+        }
+        
+        // ===== MOSTRAR BOTÓN DE PERFILES AUTORIZADOS SOLO A FRANCISCO =====
+        function checkAuthorizedProfilesAccess() {
+            const currentUser = getCurrentUser();
+            const authorizedBtn = document.getElementById('authorizedProfilesBtn');
+            const franciscoNote = document.getElementById('franciscoNote');
+            
+            if (currentUser && currentUser.status === 'super_admin' && currentUser.email === 'francisco.ramos@slepiquique.cl') {
+                if (authorizedBtn) {
+                    authorizedBtn.style.display = 'inline-block';
+                }
+                if (franciscoNote) {
+                    franciscoNote.style.display = 'inline';
+                }
+                console.log('👑 Francisco detectado - Acceso a Perfiles Autorizados habilitado');
+            } else {
+                if (authorizedBtn) {
+                    authorizedBtn.style.display = 'none';
+                }
+                if (franciscoNote) {
+                    franciscoNote.style.display = 'none';
+                }
+            }
+        }
+        
+        // ===== FUNCIÓN DE VERIFICACIÓN DE FUNCIONES EXPORTADAS =====
+        function verifyExportedFunctions() {
+            console.log('🔍 === VERIFICANDO FUNCIONES EXPORTADAS ===');
+            
+            const requiredFunctions = [
+                'showUserDetailsModal', 'closeUserModal', 'toggleModalPassword', 
+                'copyAllUserInfo', 'testModal', 'forceShowModal', 'copyToClipboard',
+                'loadUsers', 'approveUser', 'rejectUser', 'deleteUser', 'switchTab',
+                'updateStats', 'debugUserSystem', 'forceReloadUsers'
+            ];
+            
+            const missingFunctions = [];
+            const availableFunctions = [];
+            
+            requiredFunctions.forEach(funcName => {
+                if (typeof window[funcName] === 'function') {
+                    availableFunctions.push(funcName);
+                    console.log(`✅ ${funcName} - Disponible`);
+                } else {
+                    missingFunctions.push(funcName);
+                    console.error(`❌ ${funcName} - NO DISPONIBLE`);
+                }
+            });
+            
+            console.log('📊 RESUMEN:');
+            console.log(`   ✅ Disponibles: ${availableFunctions.length}`);
+            console.log(`   ❌ Faltantes: ${missingFunctions.length}`);
+            
+            if (missingFunctions.length > 0) {
+                console.error('⚠️ FUNCIONES FALTANTES:', missingFunctions);
+                return false;
+            } else {
+                console.log('🎉 Todas las funciones están disponibles!');
+                return true;
+            }
+        }
+        
+        // Exportar función de verificación
+        window.verifyExportedFunctions = verifyExportedFunctions;
         
         console.log('✅ Todas las funciones exportadas globalmente');
-    </script>
-        function debugUserSystem() {
+        
+        // Función adicional de debugging
+        function debugUserSystemExtra() {
             console.log('🔍 DEBUGGING SISTEMA DE USUARIOS ADMIN');
-            console.log('=' .repeat(50));
+            console.log('='.repeat(50));
             
             const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
             console.log(`📊 Total usuarios en localStorage: ${users.length}`);
@@ -1970,19 +2722,65 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
                 console.log(`${index + 1}. ${user.username} (${user.status}) - ${user.email}`);
             });
             
-            console.log('=' .repeat(50));
+            console.log('='.repeat(50));
             return users;
         }
+        
+        // Exportar función adicional
+        window.debugUserSystemExtra = debugUserSystemExtra;
         
         // Ejecutar debugging cuando se carga la página
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
-                debugUserSystem();
+                debugUserSystemExtra();
                 console.log('✅ Sistema de administración de usuarios listo');
             }, 500);
         });
         
         console.log('✅ Admin usuarios inicializado');
+        
+        // === DIAGNÓSTICO FINAL COMPLETO ===
+        setTimeout(() => {
+            console.log('🔍 === DIAGNÓSTICO FINAL COMPLETO ===');
+            console.log('🕐 Tiempo:', new Date().toLocaleTimeString());
+            
+            const funcionesRequeridas = [
+                'showUserDetailsModal', 'closeUserModal', 'toggleModalPassword',
+                'loadUsers', 'approveUser', 'rejectUser', 'deleteUser',
+                'switchTab', 'updateStats'
+            ];
+            
+            let funcionesDisponibles = 0;
+            let funcionesFaltantes = [];
+            
+            funcionesRequeridas.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    funcionesDisponibles++;
+                    console.log(`✅ ${func}: DISPONIBLE`);
+                } else {
+                    funcionesFaltantes.push(func);
+                    console.error(`❌ ${func}: NO DISPONIBLE`);
+                }
+            });
+            
+            const modalElement = document.getElementById('userDetailsModal');
+            console.log('🔍 Modal element:', modalElement ? 'ENCONTRADO' : 'NO ENCONTRADO');
+            
+            console.log(`📊 RESUMEN FINAL:`);
+            console.log(`   ✅ Funciones disponibles: ${funcionesDisponibles}/${funcionesRequeridas.length}`);
+            console.log(`   ❌ Funciones faltantes: ${funcionesFaltantes.length}`);
+            console.log(`   🎯 Modal en DOM: ${modalElement ? 'SÍ' : 'NO'}`);
+            
+            if (funcionesFaltantes.length === 0 && modalElement) {
+                console.log('🎉 ¡SISTEMA COMPLETAMENTE FUNCIONAL!');
+                console.log('🚀 Ready para usar showUserDetailsModal()');
+            } else {
+                console.error('⚠️ SISTEMA INCOMPLETO - Revisar errores arriba');
+            }
+            
+            console.log('=== FIN DIAGNÓSTICO FINAL ===');
+            
+        }, 1000);
     </script>
 </body>
 </html>

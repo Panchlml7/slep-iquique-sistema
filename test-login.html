@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login - SLEP Iquique</title>
+    <script src="js/login.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .test-button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .user-list {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from {transform: translateY(-50px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+        
+        .user-detail {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 5px;
+        }
+        
+        .user-detail strong {
+            color: #495057;
+            display: inline-block;
+            width: 140px;
+        }
+        
+        .password-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .password-value {
+            background: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-family: monospace;
+            border: 1px solid #ced4da;
+            flex: 1;
+        }
+        
+        .toggle-password-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .toggle-password-btn:hover {
+            background: #0056b3;
+        }
+        
+        .user-detail {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .user-detail strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .user-detail small {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .status-admin { background: #dc3545; }
+        .status-super_admin { background: #6f42c1; }
+        .status-aprobada { background: #28a745; }
+        .status-pendiente { background: #ffc107; color: #212529; }
+        .status-rechazada { background: #6c757d; }
+        
+        .user-card {
+            border: 1px solid #ddd;
+            margin: 8px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-color: #007bff;
+        }
+        
+        .view-details-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .view-details-btn:hover {
+            background: #138496;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test del Sistema de Login - SLEP Iquique</h1>
+    
+    <div class="test-container">
+        <h2>📋 Información del Sistema</h2>
+        <div class="test-info">
+            <strong>🔑 Credenciales de Administradores:</strong><br>
+            <strong>Admin Sistema:</strong><br>
+            Usuario: <code>admin</code><br>
+            Contraseña: <code>admin123</code><br><br>
+            
+            <strong>Francisco Ramos (Administración):</strong><br>
+            Usuario: <code>francisco.ramos@slepiquique.cl</code><br>
+            Contraseña: <code>13Jul1993</code>
+        </div>
+        
+        <div class="test-info">
+            <strong>🌐 URLs de Acceso:</strong><br>
+            Login: <a href="http://localhost:8080/login.html" target="_blank">http://localhost:8080/login.html</a><br>
+            Panel Admin: <a href="http://localhost:8080/admin-usuarios.html" target="_blank">http://localhost:8080/admin-usuarios.html</a>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>👥 Usuarios en el Sistema</h2>
+        <button class="test-button" onclick="mostrarUsuarios()">🔍 Mostrar Usuarios</button>
+        <button class="test-button" onclick="crearUsuariosPrueba()">➕ Crear Usuarios de Prueba</button>
+        <button class="test-button" onclick="limpiarUsuarios()">🗑️ Limpiar Sistema</button>
+        
+        <div id="usersList" class="user-list" style="display: none;">
+            <!-- Los usuarios se mostrarán aquí -->
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🧪 Pruebas de Login</h2>
+        <button class="test-button" onclick="probarLoginAdmin()">🔑 Probar Login Admin Sistema</button>
+        <button class="test-button" onclick="probarLoginFrancisco()">👨‍💼 Probar Login Francisco Ramos</button>
+        <button class="test-button" onclick="verificarSesion()">👤 Verificar Sesión Actual</button>
+        <button class="test-button" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+        
+        <div id="testResults" class="test-info">
+            <strong>Resultados de las pruebas aparecerán aquí...</strong>
+        </div>
+    </div>
+
+    <!-- Modal para ver detalles del usuario -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2>👤 Detalles del Usuario</h2>
+            <div id="modalContent">
+                <!-- El contenido se cargará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function mostrarResultado(mensaje, tipo = 'info') {
+            const resultsDiv = document.getElementById('testResults');
+            const color = tipo === 'success' ? '#4caf50' : tipo === 'error' ? '#f44336' : '#2196f3';
+            resultsDiv.innerHTML = `<div style="color: ${color}; font-weight: bold;">${mensaje}</div>`;
+        }
+
+        function mostrarUsuarios() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<p>❌ No hay usuarios en el sistema</p>';
+            } else {
+                let html = '<h3>📋 Lista de Usuarios:</h3>';
+                users.forEach((user, index) => {
+                    const statusClass = `status-${user.status}`;
+                    const statusText = {
+                        'admin': 'Administrador',
+                        'super_admin': 'Super Admin',
+                        'aprobada': 'Aprobado',
+                        'pendiente': 'Pendiente',
+                        'rechazada': 'Rechazado'
+                    }[user.status] || user.status;
+                    
+                    html += `
+                        <div class="user-card" onclick="mostrarDetallesUsuario(${index})">
+                            <div style="display: flex; justify-content: between; align-items: center;">
+                                <div style="flex: 1;">
+                                    <strong>${index + 1}. ${user.username}</strong>
+                                    <span class="status-badge ${statusClass}">${statusText}</span>
+                                    <br>
+                                    <small>📧 ${user.email}</small><br>
+                                    <small>👤 ${user.nombreCompleto || user.nombre || 'N/A'}</small>
+                                </div>
+                                <button class="view-details-btn" onclick="event.stopPropagation(); mostrarDetallesUsuario(${index})">
+                                    👁️ Ver Detalles
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                usersList.innerHTML = html;
+            }
+            
+            usersList.style.display = 'block';
+            mostrarResultado(`✅ Mostrando ${users.length} usuarios en el sistema. Haz clic en cualquier usuario para ver sus detalles completos.`, 'success');
+        }
+
+        function crearUsuariosPrueba() {
+            // Crear algunos usuarios de prueba
+            const usersPrueba = [
+                {
+                    username: 'profesor1',
+                    email: 'profesor1@slepiquique.cl',
+                    password: '123456',
+                    nombre: 'Juan',
+                    apellidoPaterno: 'Pérez',
+                    apellidoMaterno: 'González',
+                    nombreCompleto: 'Juan Pérez González',
+                    status: 'aprobada',
+                    fechaRegistro: new Date().toISOString(),
+                    establecimiento: 'Escuela Gabriela Mistral',
+                    cargo: 'Profesor'
+                },
+                {
+                    username: 'director1',
+                    email: 'director1@slepiquique.cl',
+                    password: '123456',
+                    nombre: 'María',
+                    apellidoPaterno: 'López',
+                    apellidoMaterno: 'Silva',
+                    nombreCompleto: 'María López Silva',
+                    status: 'aprobada',
+                    fechaRegistro: new Date().toISOString(),
+                    establecimiento: 'Liceo Politécnico José Gutiérrez de la Fuente',
+                    cargo: 'Director'
+                },
+                {
+                    username: 'pendiente1',
+                    email: 'pendiente1@slepiquique.cl',
+                    password: '123456',
+                    nombre: 'Carlos',
+                    apellidoPaterno: 'Ramírez',
+                    apellidoMaterno: 'Torres',
+                    nombreCompleto: 'Carlos Ramírez Torres',
+                    status: 'pendiente',
+                    fechaRegistro: new Date().toISOString(),
+                    establecimiento: 'Escuela Centenario',
+                    cargo: 'Coordinador'
+                }
+            ];
+
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            usersPrueba.forEach(newUser => {
+                const exists = users.find(u => u.username === newUser.username || u.email === newUser.email);
+                if (!exists) {
+                    users.push(newUser);
+                }
+            });
+            
+            localStorage.setItem('appUsers', JSON.stringify(users));
+            mostrarResultado(`✅ Usuarios de prueba creados. Total: ${users.length} usuarios`, 'success');
+        }
+
+        function limpiarUsuarios() {
+            if (confirm('⚠️ ¿Estás seguro de limpiar todos los usuarios excepto los administradores?')) {
+                const adminUsers = [
+                    {
+                        username: 'admin',
+                        email: 'admin@slepiquique.cl',
+                        password: 'admin123',
+                        status: 'admin',
+                        nombre: 'Administrador',
+                        apellidoPaterno: 'Sistema',
+                        apellidoMaterno: 'SLEP',
+                        nombreCompleto: 'Administrador Sistema SLEP'
+                    },
+                    {
+                        username: 'francisco.ramos',
+                        email: 'francisco.ramos@slepiquique.cl',
+                        password: '13Jul1993',
+                        status: 'admin',
+                        nombre: 'Francisco',
+                        apellidoPaterno: 'Ramos',
+                        apellidoMaterno: '',
+                        nombreCompleto: 'Francisco Ramos',
+                        cargo: 'Administración',
+                        establecimiento: 'SLEP Iquique'
+                    }
+                ];
+                
+                localStorage.setItem('appUsers', JSON.stringify(adminUsers));
+                localStorage.removeItem('currentUser');
+                mostrarResultado('✅ Sistema limpiado. Quedan los usuarios administradores', 'success');
+            }
+        }
+
+        function probarLoginAdmin() {
+            const result = login('admin', 'admin123');
+            if (result.success) {
+                mostrarResultado(`✅ Login Admin Sistema exitoso: ${result.message}`, 'success');
+            } else {
+                mostrarResultado(`❌ Login Admin Sistema fallido: ${result.message}`, 'error');
+            }
+        }
+
+        function probarLoginFrancisco() {
+            const result = login('francisco.ramos@slepiquique.cl', '13Jul1993');
+            if (result.success) {
+                mostrarResultado(`✅ Login Francisco Ramos exitoso: ${result.message}`, 'success');
+                setTimeout(() => {
+                    mostrarResultado('👑 Francisco ahora tiene acceso exclusivo a "Perfiles Autorizados" para promover usuarios a administradores', 'info');
+                }, 2000);
+            } else {
+                mostrarResultado(`❌ Login Francisco Ramos fallido: ${result.message}`, 'error');
+            }
+        }
+
+        function verificarSesion() {
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                mostrarResultado(`✅ Sesión activa: ${currentUser.username} (${currentUser.status})`, 'success');
+            } else {
+                mostrarResultado('❌ No hay sesión activa', 'error');
+            }
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('currentUser');
+            mostrarResultado('✅ Sesión cerrada', 'success');
+        }
+
+        // 👁️ FUNCIONES DEL MODAL DE DETALLES
+        function mostrarDetallesUsuario(index) {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const user = users[index];
+            
+            if (!user) {
+                alert('❌ Usuario no encontrado');
+                return;
+            }
+            
+            const modal = document.getElementById('userModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            // Determinar el tipo de status con colores
+            const statusInfo = {
+                'admin': { text: 'Administrador', class: 'status-admin', icon: '⚙️' },
+                'super_admin': { text: 'Super Administrador', class: 'status-super_admin', icon: '👑' },
+                'aprobada': { text: 'Usuario Aprobado', class: 'status-aprobada', icon: '✅' },
+                'pendiente': { text: 'Pendiente de Aprobación', class: 'status-pendiente', icon: '⏳' },
+                'rechazada': { text: 'Usuario Rechazado', class: 'status-rechazada', icon: '❌' }
+            };
+            
+            const status = statusInfo[user.status] || { text: user.status, class: 'status-pendiente', icon: '❓' };
+            
+            modalContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <h3>${status.icon} ${user.username}</h3>
+                    <span class="status-badge ${status.class}">${status.text}</span>
+                </div>
+                
+                <div class="user-detail">
+                    <strong>👤 Usuario:</strong> ${user.username}
+                </div>
+                
+                <div class="user-detail">
+                    <strong>📧 Email:</strong> ${user.email}
+                </div>
+                
+                <div class="user-detail">
+                    <strong>🔑 Contraseña:</strong>
+                    <div class="password-field">
+                        <input type="password" class="password-value" id="userPassword" value="${user.password}" readonly>
+                        <button class="toggle-password-btn" onclick="toggleModalPassword()">👁️ Mostrar</button>
+                    </div>
+                </div>
+                
+                <div class="user-detail">
+                    <strong>🏷️ Nombre Completo:</strong> ${user.nombreCompleto || user.nombre || 'No especificado'}
+                </div>
+                
+                <div class="user-detail">
+                    <strong>🏢 Establecimiento:</strong> ${user.establecimiento || 'No especificado'}
+                </div>
+                
+                <div class="user-detail">
+                    <strong>💼 Cargo:</strong> ${user.cargo || 'No especificado'}
+                </div>
+                
+                <div class="user-detail">
+                    <strong>📅 Fecha Registro:</strong> ${user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleString('es-CL') : 'No especificada'}
+                </div>
+                
+                ${user.fechaAprobacion ? `
+                    <div class="user-detail">
+                        <strong>✅ Fecha Aprobación:</strong> ${new Date(user.fechaAprobacion).toLocaleString('es-CL')}
+                    </div>
+                ` : ''}
+                
+                ${user.fechaRechazo ? `
+                    <div class="user-detail">
+                        <strong>❌ Fecha Rechazo:</strong> ${new Date(user.fechaRechazo).toLocaleString('es-CL')}
+                    </div>
+                ` : ''}
+                
+                ${user.permissions ? `
+                    <div class="user-detail">
+                        <strong>🔐 Permisos:</strong><br>
+                        <small>
+                            • Promover a Admin: ${user.permissions.canPromoteToAdmin ? '✅ Sí' : '❌ No'}<br>
+                            • Gestionar Perfiles: ${user.permissions.canManageAuthorizedProfiles ? '✅ Sí' : '❌ No'}<br>
+                            • Cambiar Roles: ${user.permissions.canChangeUserRoles ? '✅ Sí' : '❌ No'}<br>
+                            • Acceso Completo: ${user.permissions.fullSystemAccess ? '✅ Sí' : '❌ No'}
+                        </small>
+                    </div>
+                ` : ''}
+                
+                <div style="text-align: center; margin-top: 25px;">
+                    <button class="test-button" onclick="copiarCredenciales('${user.email}', '${user.password}')">📋 Copiar Credenciales</button>
+                    <button class="test-button" onclick="probarLoginUsuario('${user.email}', '${user.password}')">🔑 Probar Login</button>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+        
+        function cerrarModal() {
+            const modal = document.getElementById('userModal');
+            modal.style.display = 'none';
+        }
+        
+        function toggleModalPassword() {
+            const passwordInput = document.getElementById('userPassword');
+            const toggleBtn = event.target;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈 Ocultar';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️ Mostrar';
+            }
+        }
+        
+        function copiarCredenciales(email, password) {
+            const texto = `Email: ${email}\nContraseña: ${password}`;
+            navigator.clipboard.writeText(texto).then(() => {
+                mostrarResultado('📋 Credenciales copiadas al portapapeles', 'success');
+            }).catch(() => {
+                // Fallback para navegadores que no soportan clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = texto;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                mostrarResultado('📋 Credenciales copiadas al portapapeles', 'success');
+            });
+        }
+        
+        function probarLoginUsuario(email, password) {
+            const result = login(email, password);
+            if (result.success) {
+                mostrarResultado(`✅ Login exitoso para ${email}: ${result.message}`, 'success');
+                cerrarModal();
+            } else {
+                mostrarResultado(`❌ Login fallido para ${email}: ${result.message}`, 'error');
+            }
+        }
+        
+        // Cerrar modal si se hace clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('userModal');
+            if (event.target == modal) {
+                cerrarModal();
+            }
+        }
+
+        // Inicializar sistema al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            mostrarResultado('🚀 Sistema de pruebas cargado. Haz clic en los botones para probar.');
+        });
+    </script>
+</body>
+</html>

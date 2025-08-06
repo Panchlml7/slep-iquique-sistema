@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Simple - SLEP Iquique</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2b2b2c 0%, #1020b1 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .container {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1020b1;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1020b1;
+        }
+
+        .btn {
+            background: #1020b1;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #0d1a8a;
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .credentials {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .links {
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #1020b1;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .user-details-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .user-detail-item {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #1020b1;
+        }
+
+        .user-detail-label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .user-detail-value {
+            color: #666;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .password-toggle-modal {
+            background: #1020b1;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .password-toggle-modal:hover {
+            background: #0d1a8a;
+        }
+
+        .btn-detail {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-detail:hover {
+            background: linear-gradient(135deg, #138496, #117a8b);
+            transform: translateY(-1px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ SLEP IQUIQUE</h1>
+        <p><strong>Sistema de Gestión</strong></p>
+        
+        <div class="credentials">
+            <strong>👤 Usuarios de Prueba:</strong><br>
+            <strong>Super Admin:</strong> francisco.ramos@slepiquique.cl / 13Jul1993<br>
+            <strong>Admin Normal:</strong> maria.gonzalez@slepiquique.cl / admin2024<br>
+            <strong>Admin Sistema:</strong> admin@slepiquique.cl / admin123
+        </div>
+
+        <form id="simpleLoginForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <div style="position: relative;">
+                    <input type="password" id="password" name="password" required style="padding-right: 45px;">
+                    <button type="button" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #666;">
+                        <svg id="eyeOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <svg id="eyeClosed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                            <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" id="loginBtn" class="btn">🔐 Iniciar Sesión</button>
+        </form>
+        
+        <div id="loginMessage" style="display: none;"></div>
+
+        <div class="links">
+            <a href="index.html">🏠</a>
+        </div>
+    </div>
+
+    <!-- Modal para mostrar detalles del usuario -->
+    <div id="userDetailsModal" class="user-details-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="cerrarModalDetalles()">&times;</span>
+            <h2 style="color: #1020b1; margin-bottom: 20px;">👤 Detalles del Usuario</h2>
+            <div id="userDetailsContent">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de login simplificado
+        document.getElementById('simpleLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            const messageDiv = document.getElementById('loginMessage');
+            
+            // Deshabilitar botón
+            loginBtn.disabled = true;
+            loginBtn.textContent = '⏳ Verificando...';
+            
+            // Simular verificación
+            setTimeout(() => {
+                // Usuarios predefinidos
+                const validUsers = {
+                    'francisco.ramos@slepiquique.cl': {
+                        password: '13Jul1993',
+                        username: 'Francisco Ramos',
+                        status: 'super_admin'
+                    },
+                    'maria.gonzalez@slepiquique.cl': {
+                        password: 'admin2024',
+                        username: 'María González',
+                        status: 'admin'
+                    },
+                    'admin@slepiquique.cl': {
+                        password: 'admin123',
+                        username: 'Administrador Sistema',
+                        status: 'admin'
+                    }
+                };
+                
+                const user = validUsers[email];
+                
+                if (user && password === user.password) {
+                    // Login exitoso
+                    const userSession = {
+                        username: user.username,
+                        email: email,
+                        status: user.status,
+                        loginTime: new Date().toISOString()
+                    };
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('currentUser', JSON.stringify(userSession));
+                    
+                    // Inicializar usuarios en el sistema principal
+                    initializeMainUsers();
+                    
+                    // Mostrar mensaje de éxito
+                    messageDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <strong>✅ Login Exitoso!</strong><br>
+                            Bienvenido ${user.username}<br>
+                            Rol: ${user.status === 'super_admin' ? '👑 Super Administrador' : '⚙️ Administrador'}
+                            <button class="btn-detail" onclick="mostrarDetallesUsuario()">👁️ VER DETALLE</button>
+                        </div>
+                    `;
+                    messageDiv.style.display = 'block';
+                    
+                    // Redirigir después de 2 segundos
+                    setTimeout(() => {
+                        if (user.status === 'super_admin') {
+                            window.location.href = 'perfiles-autorizados.html';
+                        } else {
+                            window.location.href = 'admin-usuarios.html';
+                        }
+                    }, 2000);
+                    
+                } else {
+                    // Login fallido
+                    messageDiv.innerHTML = `
+                        <div class="alert alert-error">
+                            <strong>❌ Error de Login</strong><br>
+                            Credenciales incorrectas
+                        </div>
+                    `;
+                    messageDiv.style.display = 'block';
+                    
+                    // Restaurar botón
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = '🔐 Iniciar Sesión';
+                }
+            }, 1000);
+        });
+        
+        function initializeMainUsers() {
+            // Inicializar usuarios en el sistema principal
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            const adminUsers = [
+                {
+                    username: 'francisco.ramos',
+                    email: 'francisco.ramos@slepiquique.cl',
+                    password: '13Jul1993',
+                    status: 'super_admin',
+                    nombre: 'Francisco',
+                    apellidoPaterno: 'Ramos',
+                    apellidoMaterno: '',
+                    nombreCompleto: 'Francisco Ramos',
+                    role: 'super_admin'
+                },
+                {
+                    username: 'maria.gonzalez',
+                    email: 'maria.gonzalez@slepiquique.cl',
+                    password: 'admin2024',
+                    status: 'admin',
+                    nombre: 'María',
+                    apellidoPaterno: 'González',
+                    apellidoMaterno: 'López',
+                    nombreCompleto: 'María González López',
+                    role: 'admin'
+                },
+                {
+                    username: 'admin',
+                    email: 'admin@slepiquique.cl',
+                    password: 'admin123',
+                    status: 'admin',
+                    nombre: 'Administrador',
+                    apellidoPaterno: 'Sistema',
+                    apellidoMaterno: 'SLEP',
+                    nombreCompleto: 'Administrador Sistema SLEP',
+                    role: 'admin'
+                }
+            ];
+            
+            adminUsers.forEach(adminUser => {
+                const exists = users.find(u => u.email === adminUser.email);
+                if (!exists) {
+                    users.push(adminUser);
+                }
+            });
+            
+            localStorage.setItem('appUsers', JSON.stringify(users));
+        }
+        
+        // Verificar si ya está logueado
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                document.getElementById('loginMessage').innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>✅ Ya estás logueado como:</strong><br>
+                        ${user.username} (${user.status === 'super_admin' ? 'Super Admin' : 'Admin'})
+                        <button class="btn-detail" onclick="mostrarDetallesUsuario()">👁️ VER DETALLE</button>
+                    </div>
+                `;
+                document.getElementById('loginMessage').style.display = 'block';
+            }
+
+            // Funcionalidad del icono del ojo
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const eyeOpen = document.getElementById('eyeOpen');
+            const eyeClosed = document.getElementById('eyeClosed');
+
+            togglePassword.addEventListener('click', function() {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeOpen.style.display = 'none';
+                    eyeClosed.style.display = 'block';
+                } else {
+                    passwordInput.type = 'password';
+                    eyeOpen.style.display = 'block';
+                    eyeClosed.style.display = 'none';
+                }
+            });
+        });
+
+        // === FUNCIONES DEL MODAL DE DETALLES ===
+        function mostrarDetallesUsuario() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert('❌ No hay usuario logueado');
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            const modal = document.getElementById('userDetailsModal');
+            const content = document.getElementById('userDetailsContent');
+            
+            // Buscar información completa del usuario en appUsers
+            const allUsers = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const fullUserData = allUsers.find(u => u.email === user.email) || user;
+            
+            // Determinar permisos y información adicional
+            const statusInfo = {
+                'super_admin': { 
+                    name: '👑 Super Administrador', 
+                    color: '#ffd700',
+                    permissions: 'Acceso total al sistema, gestión de perfiles autorizados, promoción de usuarios'
+                },
+                'admin': { 
+                    name: '⚙️ Administrador', 
+                    color: '#007bff',
+                    permissions: 'Gestión básica de usuarios, acceso a panel administrativo'
+                }
+            };
+            
+            const userStatus = statusInfo[user.status] || { name: user.status, color: '#6c757d', permissions: 'Permisos limitados' };
+            
+            content.innerHTML = `
+                <div class="user-detail-item">
+                    <span class="user-detail-label">👤 Nombre Completo:</span>
+                    <span class="user-detail-value">${fullUserData.nombreCompleto || fullUserData.username}</span>
+                </div>
+                
+                <div class="user-detail-item">
+                    <span class="user-detail-label">📧 Email:</span>
+                    <span class="user-detail-value">${user.email}</span>
+                </div>
+                
+                <div class="user-detail-item">
+                    <span class="user-detail-label">🔑 Contraseña:</span>
+                    <span class="user-detail-value">
+                        <span id="modalPassword" style="font-family: monospace;">••••••••</span>
+                        <button class="password-toggle-modal" onclick="toggleModalPassword()">👁️ Mostrar</button>
+                    </span>
+                </div>
+                
+                <div class="user-detail-item">
+                    <span class="user-detail-label">🏷️ Rol del Sistema:</span>
+                    <span class="user-detail-value" style="color: ${userStatus.color}; font-weight: bold;">${userStatus.name}</span>
+                </div>
+                
+                <div class="user-detail-item">
+                    <span class="user-detail-label">🏢 Establecimiento:</span>
+                    <span class="user-detail-value">${fullUserData.establecimiento || 'SLEP Iquique'}</span>
+                </div>
+                
+                <div class="user-detail-item">
+                    <span class="user-detail-label">💼 Cargo:</span>
+                    <span class="user-detail-value">${fullUserData.cargo || 'No especificado'}</span>
+                </div>
+                
+                <div class="user-detail-item">
+                    <span class="user-detail-label">📅 Última Conexión:</span>
+                    <span class="user-detail-value">${new Date(user.loginTime).toLocaleString('es-CL')}</span>
+                </div>
+                
+                <div class="user-detail-item">
+                    <span class="user-detail-label">🔐 Permisos del Sistema:</span>
+                    <span class="user-detail-value">${userStatus.permissions}</span>
+                </div>
+                
+                ${fullUserData.fechaRegistro ? `
+                <div class="user-detail-item">
+                    <span class="user-detail-label">📋 Fecha de Registro:</span>
+                    <span class="user-detail-value">${new Date(fullUserData.fechaRegistro).toLocaleString('es-CL')}</span>
+                </div>
+                ` : ''}
+                
+                <div style="text-align: center; margin-top: 25px;">
+                    <button class="btn" onclick="copiarDatosUsuario()" style="margin-right: 10px;">📋 Copiar Datos</button>
+                    <button class="btn" onclick="cerrarSesionModal()" style="background: #dc3545;">🚪 Cerrar Sesión</button>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+        
+        function cerrarModalDetalles() {
+            const modal = document.getElementById('userDetailsModal');
+            modal.style.display = 'none';
+        }
+        
+        function toggleModalPassword() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const allUsers = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const fullUserData = allUsers.find(u => u.email === currentUser.email) || currentUser;
+            
+            const passwordSpan = document.getElementById('modalPassword');
+            const toggleBtn = event.target;
+            
+            if (passwordSpan.textContent === '••••••••') {
+                passwordSpan.textContent = fullUserData.password || '***';
+                toggleBtn.textContent = '🙈 Ocultar';
+            } else {
+                passwordSpan.textContent = '••••••••';
+                toggleBtn.textContent = '👁️ Mostrar';
+            }
+        }
+        
+        function copiarDatosUsuario() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const allUsers = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const fullUserData = allUsers.find(u => u.email === currentUser.email) || currentUser;
+            
+            const datos = `
+👤 DATOS DEL USUARIO - SLEP IQUIQUE
+═══════════════════════════════════
+👤 Nombre: ${fullUserData.nombreCompleto || fullUserData.username}
+📧 Email: ${currentUser.email}
+🔑 Contraseña: ${fullUserData.password || '***'}
+🏷️ Rol: ${currentUser.status === 'super_admin' ? '👑 Super Administrador' : '⚙️ Administrador'}
+🏢 Establecimiento: ${fullUserData.establecimiento || 'SLEP Iquique'}
+💼 Cargo: ${fullUserData.cargo || 'No especificado'}
+📅 Última Conexión: ${new Date(currentUser.loginTime).toLocaleString('es-CL')}
+            `.trim();
+            
+            navigator.clipboard.writeText(datos).then(() => {
+                alert('📋 Datos del usuario copiados al portapapeles');
+            }).catch(() => {
+                // Fallback para navegadores que no soportan clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = datos;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('📋 Datos del usuario copiados al portapapeles (fallback)');
+            });
+        }
+        
+        function cerrarSesionModal() {
+            if (confirm('🚪 ¿Estás seguro de que quieres cerrar la sesión?')) {
+                localStorage.removeItem('currentUser');
+                cerrarModalDetalles();
+                location.reload();
+            }
+        }
+        
+        // Cerrar modal si se hace clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('userDetailsModal');
+            if (event.target === modal) {
+                cerrarModalDetalles();
+            }
+        }
+    </script>
+</body>
+</html>

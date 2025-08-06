@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple - SLEP Iquique</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2b2b2c 0%, #1020b1 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .container {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1020b1;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1020b1;
+        }
+
+        .btn {
+            background: #1020b1;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background: #0d1a8a;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .links {
+            margin-top: 30px;
+        }
+
+        .links a {
+            color: #1020b1;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 8px 16px;
+            border: 1px solid #1020b1;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .links a:hover {
+            background: #1020b1;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ SLEP IQUIQUE</h1>
+        <p><strong>Sistema de Gestión - Test de Login</strong></p>
+        
+        <div class="alert">
+            <strong>👤 Credenciales Disponibles:</strong><br>
+            <strong>🔵 Super Admin (Francisco):</strong> francisco.ramos@slepiquique.cl / 13Jul1993<br>
+            <strong>🟡 Admin Normal (María):</strong> maria.gonzalez@slepiquique.cl / admin2024<br>
+            <strong>🟢 Admin Sistema:</strong> admin@slepiquique.cl / admin123
+        </div>
+
+        <div class="login-form">
+            <form id="testLoginForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Selecciona un usuario para probar" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" placeholder="Ingresa la contraseña correspondiente" required>
+                </div>
+                
+                <button type="submit" class="btn">🔐 Iniciar Sesión</button>
+            </form>
+            
+            <div id="loginStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <div class="links">
+            <a href="login.html">🔙 Login Original</a>
+            <a href="index.html">🏠 Inicio</a>
+            <a href="perfiles-autorizados.html">👑 Perfiles</a>
+        </div>
+    </div>
+
+    <script>
+        // Cargar el sistema de login
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si ya hay usuario logueado
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                document.getElementById('loginStatus').innerHTML = `
+                    <strong>✅ Ya estás logueado como:</strong><br>
+                    ${user.username} (${user.email})<br>
+                    Status: ${user.status}
+                `;
+                document.getElementById('loginStatus').style.display = 'block';
+            }
+
+            // Manejar el formulario de login
+            document.getElementById('testLoginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const statusDiv = document.getElementById('loginStatus');
+                
+                // Definir usuarios de prueba
+                const testUsers = {
+                    'francisco.ramos@slepiquique.cl': {
+                        password: '13Jul1993',
+                        username: 'Francisco Ramos',
+                        status: 'super_admin',
+                        role: '👑 Super Administrador',
+                        permissions: 'Acceso total - Puede gestionar Perfiles Autorizados'
+                    },
+                    'maria.gonzalez@slepiquique.cl': {
+                        password: 'admin2024',
+                        username: 'María González',
+                        status: 'admin',
+                        role: '⚙️ Administrador Normal',
+                        permissions: 'Puede usar admin-usuarios.html pero NO Perfiles Autorizados'
+                    },
+                    'admin@slepiquique.cl': {
+                        password: 'admin123',
+                        username: 'Administrador Sistema',
+                        status: 'admin',
+                        role: '⚙️ Administrador Normal',
+                        permissions: 'Puede usar admin-usuarios.html pero NO Perfiles Autorizados'
+                    }
+                };
+                
+                const user = testUsers[email];
+                
+                // Verificar credenciales
+                if (user && password === user.password) {
+                    // Crear sesión de usuario
+                    const userSession = {
+                        username: user.username,
+                        email: email,
+                        status: user.status,
+                        loginTime: new Date().toISOString()
+                    };
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('currentUser', JSON.stringify(userSession));
+                    
+                    // Determinar qué página puede acceder
+                    let accessInfo = '';
+                    if (user.status === 'super_admin') {
+                        accessInfo = `
+                            <button onclick="location.href='perfiles-autorizados.html'" style="margin: 5px; padding: 8px 16px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                👑 Perfiles Autorizados (Exclusivo)
+                            </button>
+                            <button onclick="location.href='admin-usuarios.html'" style="margin: 5px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                ⚙️ Panel de Administración
+                            </button>
+                            <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+                                <h4 style="margin-bottom: 10px; color: #495057;">🔧 Gestión de Usuarios (Solo Francisco):</h4>
+                                <div style="margin-bottom: 10px;">
+                                    <input type="email" id="userEmailInput" placeholder="Email del usuario" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-right: 5px;">
+                                </div>
+                                <button onclick="testPromoteUser()" style="margin: 2px; padding: 6px 12px; background: #ffc107; color: #212529; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                    ⬆️ Promover a Admin
+                                </button>
+                                <button onclick="testRemoveAdmin()" style="margin: 2px; padding: 6px 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                    ⬇️ Quitar Admin
+                                </button>
+                                <button onclick="testApproveUser()" style="margin: 2px; padding: 6px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                    ✅ Aprobar Usuario
+                                </button>
+                                <button onclick="testRejectUser()" style="margin: 2px; padding: 6px 12px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                    ❌ Rechazar Usuario
+                                </button>
+                                <br>
+                                <button onclick="showAllUsers()" style="margin-top: 10px; padding: 8px 16px; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                    👥 Ver Todos los Usuarios
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        accessInfo = `
+                            <button onclick="location.href='admin-usuarios.html'" style="margin: 5px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                ⚙️ Panel de Administración
+                            </button>
+                            <p style="margin-top: 10px; color: #6c757d; font-size: 0.9rem;">
+                                ❌ Perfiles Autorizados: Solo Francisco Ramos
+                            </p>
+                            <p style="margin-top: 5px; color: #6c757d; font-size: 0.9rem;">
+                                ❌ Gestión de Roles: Solo Francisco Ramos
+                            </p>
+                        `;
+                    }
+                    
+                    statusDiv.innerHTML = `
+                        <strong>✅ Login Exitoso!</strong><br>
+                        <strong>Usuario:</strong> ${user.username}<br>
+                        <strong>Rol:</strong> ${user.role}<br>
+                        <strong>Permisos:</strong> ${user.permissions}<br>
+                        <div style="margin-top: 15px;">
+                            ${accessInfo}
+                        </div>
+                    `;
+                    statusDiv.style.display = 'block';
+                    statusDiv.style.background = '#d4edda';
+                    statusDiv.style.borderColor = '#c3e6cb';
+                    statusDiv.style.color = '#155724';
+                } else {
+                    statusDiv.innerHTML = `
+                        <strong>❌ Error de Login</strong><br>
+                        Credenciales incorrectas
+                    `;
+                    statusDiv.style.display = 'block';
+                    statusDiv.style.background = '#f8d7da';
+                    statusDiv.style.borderColor = '#f5c6cb';
+                    statusDiv.style.color = '#721c24';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
