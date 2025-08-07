@@ -414,6 +414,14 @@
     </nav>
 
     <div class="container">
+        <!-- Modal de confirmación reutilizable -->
+        <div id="modalConfirmacion" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); align-items:center; justify-content:center;">
+            <div style="background:white; border-radius:12px; max-width:350px; margin:auto; padding:2rem; box-shadow:0 8px 32px rgba(0,0,0,0.18); text-align:center;">
+                <div id="modalMensaje" style="font-size:1.15rem; margin-bottom:1.5rem; color:#374151;">¿Está seguro de guardar los cambios?</div>
+                <button id="btnModalConfirmar" style="background:#667eea; color:white; border:none; border-radius:6px; padding:0.7rem 1.5rem; font-weight:600; margin-right:1rem; cursor:pointer;">Sí</button>
+                <button id="btnModalCancelar" style="background:#e5e7eb; color:#374151; border:none; border-radius:6px; padding:0.7rem 1.5rem; font-weight:600; cursor:pointer;">Cancelar</button>
+            </div>
+        </div>
         
         
         <div class="header">
@@ -562,10 +570,11 @@
                                     <label for="cicloApoyo" class="required">🔄 Ciclo de Apoyo</label>
                                     <select id="cicloApoyo" name="cicloApoyo" required>
                                         <option value="">Seleccione ciclo</option>
-                                        <option value="Ciclo 1">Ciclo 1</option>
-                                        <option value="Ciclo 2">Ciclo 2</option>
-                                        <option value="Ciclo 3">Ciclo 3</option>
-                                        <option value="Ciclo 4">Ciclo 4</option>
+                                       <option value="Involucramiento">Involucramiento</option>
+                                        <option value="Diagnóstico">Diagnóstico</option>
+                                        <option value="Planificación">Planificación</option>
+                                        <option value="Ejecución">Ejecución</option>
+                                        <option value="Evaluación">Evaluación</option>
                                     </select>
                                 </div>
                             </div>
@@ -594,22 +603,22 @@
                                     <label for="capacidadBasal" class="required">🎯 Capacidad Basal Focalizada</label>
                                     <select id="capacidadBasal" name="capacidadBasal" required>
                                         <option value="">Seleccione capacidad</option>
-                                        <option value="Liderazgo Pedagógico">Liderazgo Pedagógico</option>
-                                        <option value="Gestión Curricular">Gestión Curricular</option>
-                                        <option value="Convivencia Escolar">Convivencia Escolar</option>
-                                        <option value="Gestión de Recursos">Gestión de Recursos</option>
-                                        <option value="Evaluación y Monitoreo">Evaluación y Monitoreo</option>
-                                    </select>
+                                        <option value="Reflexión">Reflexión</option>
+                                        <option value="Colaboración Relacional">Colaboración Relacional</option>
+                                        <option value="Liderazgo Distribuido">Liderazgo Distribuido</option>
+                                    </select>                                    
+                                    <div id="help-capacidadBasal" class="select-help" style="color:#b91c1c; font-size:0.95em; display:none;">Por favor seleccione una capacidad basal.</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="nivelImplementacion" class="required">📊 Nivel de Implementación</label>
                                     <select id="nivelImplementacion" name="nivelImplementacion" required>
                                         <option value="">Seleccione nivel</option>
-                                        <option value="Inicial">Inicial</option>
-                                        <option value="En Desarrollo">En Desarrollo</option>
-                                        <option value="Avanzado">Avanzado</option>
-                                        <option value="Consolidado">Consolidado</option>
+                                        <option value="Exploración">Exploración</option>
+                                        <option value="Emergente">Emergente</option>
+                                        <option value="Satisfactoria">Satisfactoria</option>
+                                        <option value="Sustentabilidad">Sustentabilidad</option>
                                     </select>
+                                    <div id="help-nivelImplementacion" class="select-help" style="color:#b91c1c; font-size:0.95em; display:none;">Por favor seleccione un nivel de implementación.</div>
                                 </div>
                             </div>
 
@@ -617,14 +626,12 @@
                                 <label for="rolProfesional" class="required">👔 Rol Profesional</label>
                                 <select id="rolProfesional" name="rolProfesional" required>
                                     <option value="">Seleccione rol</option>
-                                    <option value="Director/a">Director/a</option>
-                                    <option value="Subdirector/a">Subdirector/a</option>
-                                    <option value="Jefe UTP">Jefe UTP</option>
-                                    <option value="Inspector General">Inspector General</option>
-                                    <option value="Coordinador/a">Coordinador/a</option>
-                                    <option value="Docente">Docente</option>
-                                    <option value="Equipo Directivo">Equipo Directivo</option>
+                                    <option value="Acompañante">Acompañante</option>
+                                    <option value="Facilitador/a">Facilitador/a</option>
+                                    <option value="Orientador/a">Orientador/a</option>
+                                    <option value="Articulador/a">Articulador/a</option>
                                 </select>
+                                <div id="help-rolProfesional" class="select-help" style="color:#b91c1c; font-size:0.95em; display:none;">Por favor seleccione un rol profesional.</div>
                             </div>
                         </div>
                     </div>
@@ -763,6 +770,114 @@
     <!-- Sistema de JavaScript LIMPIO - Solo clase externa -->
     <script src="../js/login.js"></script>
     <script src="../js/documentos-html.js"></script>
+    <script>
+    // Modal de confirmación reutilizable
+    function mostrarModalConfirmacion(mensaje, callbackOK) {
+        const modal = document.getElementById('modalConfirmacion');
+        const msg = document.getElementById('modalMensaje');
+        const btnOK = document.getElementById('btnModalConfirmar');
+        const btnCancel = document.getElementById('btnModalCancelar');
+        if (!modal || !msg || !btnOK || !btnCancel) return;
+        if (modal.dataset.showing === 'true') return; // Evitar doble modal
+        msg.textContent = mensaje;
+        modal.style.display = 'flex';
+        modal.dataset.showing = 'true';
+        // Limpiar listeners previos
+        btnOK.onclick = null;
+        btnCancel.onclick = null;
+        btnOK.onclick = function() {
+            modal.style.display = 'none';
+            modal.dataset.showing = '';
+            if (typeof callbackOK === 'function') callbackOK();
+        };
+        btnCancel.onclick = function() {
+            modal.style.display = 'none';
+            modal.dataset.showing = '';
+        };
+    }
+
+    // Interceptar guardar (nuevo o editar)
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('uploadForm');
+        let guardando = false;
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (guardando) return true;
+                e.preventDefault();
+                mostrarModalConfirmacion('¿Está seguro de guardar este documento?', function() {
+                    guardando = true;
+                    form.requestSubmit();
+                    setTimeout(() => { guardando = false; }, 2000); // Reset por si algo sale mal
+                });
+            }, true);
+        }
+
+        // Interceptar borrado de documento (asumiendo botón con clase .btn-borrar-doc)
+        let borrando = false;
+        document.addEventListener('click', function(ev) {
+            const btn = ev.target.closest('.btn-borrar-doc');
+            if (btn) {
+                if (borrando) return;
+                ev.preventDefault();
+                mostrarModalConfirmacion('¿Está seguro de borrar este documento? Esta acción no se puede deshacer.', function() {
+                    borrando = true;
+                    if (typeof window.documentManagerHTML?.borrarDocumento === 'function') {
+                        window.documentManagerHTML.borrarDocumento(btn.dataset.docId);
+                    } else {
+                        if (btn.tagName === 'A' && btn.href) {
+                            window.location.href = btn.href;
+                        } else if (btn.form) {
+                            btn.form.submit();
+                        }
+                    }
+                    setTimeout(() => { borrando = false; }, 2000);
+                });
+            }
+        });
+    });
+    </script>
+    <script>
+    // Validación y ayuda visual para selects clave
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('uploadForm');
+        const selects = [
+            {id: 'capacidadBasal', help: 'help-capacidadBasal'},
+            {id: 'nivelImplementacion', help: 'help-nivelImplementacion'},
+            {id: 'rolProfesional', help: 'help-rolProfesional'}
+        ];
+
+        selects.forEach(sel => {
+            const select = document.getElementById(sel.id);
+            const help = document.getElementById(sel.help);
+            if (select && help) {
+                select.addEventListener('change', function() {
+                    if (select.value === '') {
+                        help.style.display = 'block';
+                    } else {
+                        help.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                let valid = true;
+                selects.forEach(sel => {
+                    const select = document.getElementById(sel.id);
+                    const help = document.getElementById(sel.help);
+                    if (select && help && select.value === '') {
+                        help.style.display = 'block';
+                        valid = false;
+                    }
+                });
+                if (!valid) {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+    </script>
     <script>
         console.log('🚀 Iniciando sistema de documentos SLEP IQUIQUE (SOLO CLASE EXTERNA)...');
         
