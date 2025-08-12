@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompañamiento de visita - SLEP IQUIQUE</title>
+    <link rel="stylesheet" href="../css/estilo.css">
+    <link rel="stylesheet" href="../css/documentos.css">
+    <link rel="stylesheet" href="../css/iconos-extension.css">
+    
+    <style>
+        /* MEJORAS VISUALES FORMULARIO Y BOTONES */
+        .form-group {
+            margin-bottom: 1.2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-input, select, textarea {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            background: #f8f9fa;
+            color: #374151;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            margin-top: 0.2rem;
+        }
+
+        .form-input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 2px #667eea33;
+        }
+
+        .form-label, label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: #2d3748;
+            letter-spacing: 0.01em;
+        }
+
+        .form-tab-btn {
+            flex: 1;
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            padding: 0.9rem 1.2rem;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .form-tab-btn.active {
+            background: #fff;
+            color: #2c5aa0;
+            border-bottom: 2.5px solid #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+            z-index: 2;
+        }
+
+        .main-tab-btn {
+            flex: 1;
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            padding: 1.1rem 2.2rem;
+            border-radius: 10px 10px 0 0;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .main-tab-btn.active {
+            background: #fff;
+            color: #2c5aa0;
+            border-bottom: 2.5px solid #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+            z-index: 2;
+        }
+
+        .main-tab-btn:hover {
+            background: #e0e7ff;
+            color: #2c5aa0;
+        }
+
+        .nav-btn.primary {
+            background: #667eea;
+            color: #fff;
+            border: 1.5px solid #667eea;
+            border-radius: 8px;
+            padding: 0.95rem 2.3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            box-shadow: none;
+        }
+
+        .nav-btn.primary:hover {
+            background: #fff;
+            color: #667eea;
+            border: 1.5px solid #667eea;
+            box-shadow: none;
+        }
+        /* ESTILOS OPTIMIZADOS */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 100px; /* Espacio para la barra de navegación estándar */
+        }
+        
+        .back-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #2c5aa0;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .main-tabs-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .main-tab-btn {
+            flex: 1;
+            background: #f8f9fa;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .main-tab-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .main-tab-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .main-content-section {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .main-content-section.active {
+            display: block;
+        }
+        
+        .form-tabs-navigation {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+        
+        .form-tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .form-tab-btn.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .form-tab-content {
+            display: none;
+        }
+        
+        .form-tab-content.active {
+            display: block;
+        }
+        
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-bottom: 2rem;
+            align-items: stretch;
+        }
+
+        .document-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            border-radius: 18px;
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            box-shadow: 0 6px 24px rgba(102, 126, 234, 0.10), 0 1.5px 6px rgba(0,0,0,0.04);
+            transition: all 0.25s cubic-bezier(.4,0,.2,1);
+            border-left: 6px solid #667eea;
+            display: flex;
+            flex-direction: column;
+            min-height: 220px;
+        }
+
+        .document-card:hover {
+            transform: translateY(-7px) scale(1.025);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.18), 0 2px 8px rgba(0,0,0,0.07);
+            border-left-color: #764ba2;
+        }
+
+        .document-card .doc-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.01em;
+        }
+
+        .document-card .doc-meta {
+            font-size: 0.98rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .document-card .doc-desc {
+            color: #4b5563;
+            font-size: 0.97rem;
+            margin-bottom: 1rem;
+            flex: 1 1 auto;
+        }
+
+        .document-card .doc-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .document-card .doc-date {
+            font-size: 0.92rem;
+            color: #64748b;
+            background: #e0e7ff;
+            border-radius: 6px;
+            padding: 0.2rem 0.7rem;
+        }
+
+        .document-card .doc-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .document-card .doc-action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem 1.1rem;
+            font-size: 0.98rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .document-card .doc-action-btn:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.18);
+        }
+
+        @media (max-width: 600px) {
+            .documents-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+            .document-card {
+                padding: 1.2rem 0.7rem 1rem 0.7rem;
+            }
+        }
+
+        /* ESTILOS DEL BUSCADOR MEJORADO */
+        .search-container-docs {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .search-container-docs:hover {
+            border-color: #667eea;
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .search-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .search-header h3 {
+            margin: 0;
+            color: #374151;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .search-input-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .search-input-docs {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            color: #374151;
+        }
+
+        .search-input-docs:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .search-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn.clear {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .search-btn.clear:hover {
+            box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);
+        }
+
+        .search-info {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .quick-filters {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px 0;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            color: #374151;
+            margin-right: 10px;
+        }
+
+        .filter-btn {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #e9ecef;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.recent {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fbbf24;
+        }
+
+        .filter-btn.recent:hover {
+            background: #fbbf24;
+            color: white;
+        }
+
+        .filter-btn.clear-all {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+
+        .filter-btn.clear-all:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .search-results-info {
+            background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+            color: #0277bd;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid #29b6f6;
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .search-input-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .quick-filters {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .quick-filters > div:first-child {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .filter-btn {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Documentos</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link" id="userInfo">Usuario</a>
+                <a href="#" class="nav-link" id="logoutBtn">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        
+        <div class="header">
+            <h1>📋 Acompañamiento de Visita</h1>
+            <p>Sistema SLEP IQUIQUE - Acompañamiento Pedagógico</p>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-section">
+            <div class="stat-box">
+                <div class="stat-number" id="totalDocs">0</div>
+                <div class="stat-label">📄 Documentos Totales</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="totalEstablecimientos">0</div>
+                <div class="stat-label">🏫 Establecimientos</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="recentUploads">0</div>
+                <div class="stat-label">📅 Este Mes</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="totalAsesores">0</div>
+                <div class="stat-label">👥 Asesores</div>
+            </div>
+        </div>
+
+        <!-- Navegación de pestañas principales -->
+        <div class="main-tabs-navigation">
+            <button class="main-tab-btn active" data-maintab="nuevo-documento" id="btnNuevoDocumento">
+                📝 Nuevo Documento
+            </button>
+            <button class="main-tab-btn" data-maintab="documentos-guardados" id="btnDocumentosGuardados">
+                📂 Documentos Guardados
+            </button>
+        </div>
+
+        <!-- Sección: Nuevo Documento -->
+        <div id="nuevo-documento" class="main-content-section active">
+            <div class="upload-section">
+                <form id="uploadForm">
+                    <!-- Pestañas del formulario -->
+                    <div class="form-tabs-navigation">
+                        <button type="button" class="form-tab-btn active" data-tab="datos-basicos" id="btnDatosBasicos">
+                            📋 Datos Básicos
+                        </button>
+                        <button type="button" class="form-tab-btn" data-tab="desarrollo-visita" id="btnDesarrolloVisita">
+                            🔄 Desarrollo de Visita
+                        </button>
+                    </div>
+
+                    <!-- Pestaña: Datos Básicos -->
+                    <div id="datos-basicos" class="form-tab-content active">
+                        <div class="form-section">
+                            <h3>📋 Información General</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="acta" class="required">🏷️ N° ACTA</label>
+                                    <input type="text" id="acta" name="acta" required readonly style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold; text-align: center;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="fecha" class="required">📅 Fecha</label>
+                                    <input type="date" id="fecha" name="fecha" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="objetivo" class="required">🎯 Objetivo Estratégico</label>
+                                <textarea id="objetivo" name="objetivo" required rows="3" placeholder="Describir el objetivo estratégico del acompañamiento..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>🏫 Establecimiento y Ubicación</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="establecimiento" class="required">🏢 Establecimiento</label>
+                                    <select id="establecimiento" name="establecimiento" required>
+                                        <option value="">Seleccione un establecimiento</option>
+                                        <option value="Instituto Comercial Baldomero Wolnitzky">Instituto Comercial Baldomero Wolnitzky</option>
+                                        <option value="INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY">INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY</option>
+                                        <option value="Escuela Especial Flor del Inca">Escuela Especial Flor del Inca</option>
+                                        <option value="Escuela Artística Violeta Parra">Escuela Artística Violeta Parra</option>
+                                        <option value="Centro de Capacitación Laboral">Centro de Capacitación Laboral</option>
+                                        <option value="Liceo Libertador General Bernardo O'Higgins">Liceo Libertador General Bernardo O'Higgins</option>
+                                        <option value="Liceo Politécnico José Gutiérrez de la Fuente">Liceo Politécnico José Gutiérrez de la Fuente</option>
+                                        <option value="Liceo Deportivo Elena Duvauchelle Cabezón">Liceo Deportivo Elena Duvauchelle Cabezón</option>
+                                        <option value="Liceo Bicentenario Domingo Santa María">Liceo Bicentenario Domingo Santa María</option>
+                                        <option value="Escuela Gabriela Mistral">Escuela Gabriela Mistral</option>
+                                        <option value="Escuela Eduardo Llanos Nava">Escuela Eduardo Llanos Nava</option>
+                                        <option value="Escuela Almirante Patricio Lynch">Escuela Almirante Patricio Lynch</option>
+                                        <option value="Escuela Plácido Villarroel">Escuela Plácido Villarroel</option>
+                                        <option value="Escuela República de Croacia">Escuela República de Croacia</option>
+                                        <option value="Escuela Paula Jaraquemada">Escuela Paula Jaraquemada</option>
+                                        <option value="Escuela Centenario">Escuela Centenario</option>
+                                        <option value="Escuela Thilda Portillo Olivares">Escuela Thilda Portillo Olivares</option>
+                                        <option value="Escuela España">Escuela España</option>
+                                        <option value="Liceo Luis Cruz Martínez">Liceo Luis Cruz Martínez</option>
+                                        <option value="Colegio Manuel Castro Ramos">Colegio Manuel Castro Ramos</option>
+                                        <option value="Colegio República de Italia">Colegio República de Italia</option>
+                                        <option value="Escuela Caleta Chanavayita">Escuela Caleta Chanavayita</option>
+                                        <option value="Liceo Bicentenario Minero Juan Pablo II">Liceo Bicentenario Minero Juan Pablo II</option>
+                                        <option value="Escuela Chipana">Escuela Chipana</option>
+                                        <option value="Escuela San Marcos">Escuela San Marcos</option>
+                                        <option value="Colegio Simón Bolívar">Colegio Simón Bolívar</option>
+                                        <option value="Escuela Oasis del Saber">Escuela Oasis del Saber</option>
+                                        <option value="Liceo CEIA José Alejandro Soria Varas">Liceo CEIA José Alejandro Soria Varas</option>
+                                        <option value="Liceo Técnico Profesional de Adultos">Liceo Técnico Profesional de Adultos</option>
+                                        <option value="Otro establecimiento">Otro establecimiento</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rbd" class="required">🏢 RBD</label>
+                                    <input type="text" id="rbd" name="rbd" required readonly placeholder="Seleccione un establecimiento primero" style="background: #f8fafc; color: #64748b; text-align: center;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="from-sector">
+                            <div class="form-section">
+                            <h3>👥 Equipo de Asesores</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="asesor1" class="required">👨‍🏫 Asesor Principal</label>
+                                    <input type="text" id="asesor1" name="asesor1" required placeholder="Nombre completo del asesor principal">
+                                </div>
+                                <div class="form-group">
+                                    <label for="asesor2">👨‍🏫 Asesor Secundario</label>
+                                    <input type="text" id="asesor2" name="asesor2" placeholder="Nombre completo del asesor secundario (opcional)">
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>⏰ Horarios y Modalidad</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="hora" class="required">🕐 Hora Inicio</label>
+                                    <input type="time" id="hora" name="hora" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="horaTermino" class="required">🕐 Hora Término</label>
+                                    <input type="time" id="horaTermino" name="horaTermino" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="modalidad" class="required">📍 Modalidad</label>
+                                    <select id="modalidad" name="modalidad" required>
+                                        <option value="">Seleccione modalidad</option>
+                                        <option value="Presencial">Presencial</option>
+                                        <option value="Virtual">Virtual</option>
+                                        <option value="Híbrida">Híbrida</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="form-section">
+                            <h3>💡 Capacidades y Competencias</h3>
+                            
+                            <div class="form-row">                                
+                                <div class="form-group">
+                                    <label for="cicloApoyo" class="required">🔄 Ciclo de Apoyo</label>
+                                    <select id="cicloApoyo" name="cicloApoyo" required>
+                                        <option value="">Seleccione ciclo</option>
+                                        <option value="Involucramiento">Involucramiento</option>
+                                        <option value="Diagnóstico">Diagnóstico</option>
+                                        <option value="Planificación">Planificación</option>
+                                        <option value="Ejecución">Ejecución</option>
+                                        <option value="Evaluación">Evaluación</option>
+                                    </select>
+                                    <div style="font-size:0.97rem;color:#667eea;margin-top:0.2rem;">
+                                        <strong>Opciones:</strong> Involucramiento, Diagnóstico, Planificación, Ejecución, Evaluación
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="capacidadBasal" class="required">🎯 Capacidad Basal Focalizada</label>
+                                    <select id="capacidadBasal" name="capacidadBasal" required>
+                                        <option value="">Seleccione capacidad</option>
+                                        <option value="Reflexión">Reflexión</option>
+                                        <option value="Colaboración Relacional">Colaboración Relacional</option>
+                                        <option value="Liderazgo Distribuido">Liderazgo Distribuido</option>
+                                    </select>
+                                    <div style="font-size:0.97rem;color:#667eea;margin-top:0.2rem;">
+                                        <strong>Opciones:</strong> Reflexión, Colaboración Relacional, Liderazgo Distribuido
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nivelImplementacion" class="required">📊 Nivel de Implementación</label>
+                                    <select id="nivelImplementacion" name="nivelImplementacion" required>
+                                        <option value="">Seleccione nivel</option>
+                                        <option value="Exploración">Exploración</option>
+                                        <option value="Emergente">Emergente</option>
+                                        <option value="Satisfactoria">Satisfactoria</option>
+                                        <option value="Sustentabilidad">Sustentabilidad</option>
+                                    </select>
+                                    <div style="font-size:0.97rem;color:#667eea;margin-top:0.2rem;">
+                                        <strong>Opciones:</strong> Exploración, Emergente, Satisfactoria, Sustentabilidad
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="rolProfesional" class="required">👔 Rol Profesional</label>
+                                <select id="rolProfesional" name="rolProfesional" required>
+                                    <option value="">Seleccione rol</option>
+                                    <option value="Acompañante">Acompañante</option>
+                                    <option value="Facilitador/a">Facilitador/a</option>
+                                    <option value="Orientador/a">Orientador/a</option>
+                                    <option value="Articulador/a">Articulador/a</option>
+                                </select>
+                                <div style="font-size:0.97rem;color:#667eea;margin-top:0.2rem;">
+                                    <strong>Opciones:</strong> Acompañante, Facilitador/a, Orientador/a, Articulador/a
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pestaña: Desarrollo de Visita -->
+                    <div id="desarrollo-visita" class="form-tab-content">
+                        <div class="form-section">
+                            <h3>🎯 Objetivos y Propósitos</h3>
+                            
+                            <div class="form-group">
+                                <label for="objetivoVisita" class="required">🎯 Objetivo de la Visita</label>
+                                <textarea id="objetivoVisita" name="objetivoVisita" required rows="3" placeholder="Describir el objetivo específico de esta visita de acompañamiento..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="antecedentes">📋 Antecedentes</label>
+                                <textarea id="antecedentes" name="antecedentes" rows="3" placeholder="Contexto y antecedentes relevantes para la visita..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>🔧 Metodología e Instrumentos</h3>
+                            
+                            <div class="form-group">
+                                <label for="instrumentos">🔧 Instrumentos/Insumos Utilizados</label>
+                                <textarea id="instrumentos" name="instrumentos" rows="3" placeholder="Instrumentos, pautas, materiales utilizados durante la visita..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="practica">⚠️ Práctica Problemática</label>
+                                <textarea id="practica" name="practica" rows="3" placeholder="Descripción de prácticas problemáticas identificadas..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>🔄 Desarrollo y Actividades</h3>
+                            
+                            <div class="form-group">
+                                <label for="actividades" class="required">🔄 Actividades Realizadas</label>
+                                <textarea id="actividades" name="actividades" required rows="4" placeholder="Descripción detallada de las actividades realizadas durante la visita..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="acuerdos" class="required">📝 Acuerdos/Fecha de Implementación/Responsables</label>
+                                <textarea id="acuerdos" name="acuerdos" required rows="4" placeholder="Acuerdos establecidos, fechas de implementación y responsables..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>📊 Evaluación y Seguimiento</h3>
+                            
+                            <div class="form-group">
+                                <label for="aspectosPositivos" class="required">✅ Aspectos Positivos Observados</label>
+                                <textarea id="aspectosPositivos" name="aspectosPositivos" required rows="3" placeholder="Fortalezas y aspectos positivos identificados..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="areasMejora" class="required">📈 Áreas de Mejora Identificadas</label>
+                                <textarea id="areasMejora" name="areasMejora" required rows="3" placeholder="Áreas que requieren mejora o fortalecimiento..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de navegación -->
+                    <div class="form-navigation">
+                        <button type="submit" id="submitBtn" class="nav-btn primary">💾 Guardar Documento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sección: Documentos Guardados -->
+        <div id="documentos-guardados" class="main-content-section">
+            <!-- Buscador mejorado -->
+            <div class="search-container-docs">
+                <div class="search-header">
+                    <div class="search-icon">🔍</div>
+                    <h3>Buscar Documentos</h3>
+                </div>
+                
+                <div class="search-input-container">
+                    <input 
+                        type="text" 
+                        id="searchActa" 
+                        class="search-input-docs"
+                        placeholder="Buscar por N° ACTA, establecimiento, asesor, fecha..." 
+                        autocomplete="off"
+                    >
+                    <div class="search-buttons">
+                        <button class="search-btn" id="btnBuscar">
+                            🔍 Buscar
+                        </button>
+                        <button class="search-btn clear" id="btnLimpiarBusqueda">
+                            🔄 Limpiar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-info">
+                    💡 Busca por cualquier campo: N° ACTA, establecimiento, asesor, fecha, modalidad o capacidad
+                </div>
+
+                <!-- Filtros rápidos -->
+                <div class="quick-filters">
+                    <div class="filter-label">⚡ Filtros rápidos:</div>
+                    <button class="filter-btn" id="btnPresencial">
+                        📍 Presencial
+                    </button>
+                    <button class="filter-btn" id="btnVirtual">
+                        💻 Virtual
+                    </button>
+                    <button class="filter-btn" id="btnHibrida">
+                        🔄 Híbrida
+                    </button>
+                    <button class="filter-btn recent" id="btnRecientes">
+                        📅 Recientes
+                    </button>
+                    <button class="filter-btn clear-all" id="btnTodos">
+                        🔄 Todos
+                    </button>
+                </div>
+
+                <!-- Información de resultados -->
+                <div id="search-results-info" class="search-results-info" style="display: none;">
+                    <!-- Se mostrará dinámicamente -->
+                </div>
+            </div>
+
+            <div id="documentsGrid" class="documents-grid">
+                <!-- Los documentos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistema de JavaScript LIMPIO - Solo clase externa -->
+    <script src="../js/login.js"></script>
+    <script src="../js/documentos-html.js"></script>
+    <script>
+        console.log('🚀 Iniciando sistema de documentos SLEP IQUIQUE (SOLO CLASE EXTERNA)...');
+        
+        // Instanciar la clase DocumentManagerHTML (SISTEMA ÚNICO)
+        window.documentManagerHTML = new DocumentManagerHTML();
+        console.log('✅ DocumentManagerHTML instanciado correctamente');
+        
+        // Actualizar información del usuario en la barra de navegación
+        function updateNavUserInfo() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const userInfo = document.getElementById('userInfo');
+            
+            if (currentUser.username) {
+                const userDisplay = `👤 ${currentUser.username}`;
+                if (userInfo) userInfo.textContent = userDisplay;
+            }
+        }
+        
+        // Configurar eventos de logout
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (documentManagerHTML && documentManagerHTML.logout) {
+                    documentManagerHTML.logout();
+                } else {
+                    if (confirm('¿Está seguro de que desea cerrar sesión?')) {
+                        localStorage.removeItem('currentUser');
+                        window.location.href = '../index.html';
+                    }
+                }
+            });
+        }
+        
+        // Función para cambiar pestañas principales
+        function switchMainTab(tabName) {
+            console.log('🔄 Cambiando a pestaña principal:', tabName);
+            
+            // Ocultar todas las secciones principales
+            const sections = document.querySelectorAll('.main-content-section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección activa
+            const activeSection = document.getElementById(tabName);
+            if (activeSection) {
+                activeSection.style.display = 'block';
+                activeSection.classList.add('active');
+            }
+            
+            // Actualizar botones de pestañas
+            const buttons = document.querySelectorAll('.main-tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-maintab') === tabName) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Cargar datos según la pestaña
+            if (tabName === 'documentos-guardados' && documentManagerHTML) {
+                setTimeout(() => {
+                    documentManagerHTML.loadDocuments();
+                    documentManagerHTML.loadStatistics();
+                }, 100);
+            }
+            
+            console.log('✅ Pestaña cambiada a:', tabName);
+        }
+        
+        // Función para cambiar pestañas del formulario
+        function switchFormTab(tabName) {
+            console.log('📝 Cambiando pestaña del formulario a:', tabName);
+            
+            // Ocultar todas las pestañas del formulario
+            const formTabs = document.querySelectorAll('.form-tab-content');
+            formTabs.forEach(tab => {
+                tab.style.display = 'none';
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar pestaña activa
+            const activeTab = document.getElementById(tabName);
+            if (activeTab) {
+                activeTab.style.display = 'block';
+                activeTab.classList.add('active');
+            }
+            
+            // Actualizar botones de pestañas del formulario
+            const tabButtons = document.querySelectorAll('.form-tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-tab') === tabName) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            console.log('✅ Pestaña del formulario cambiada a:', tabName);
+        }
+        
+        // Función para manejar cambio de establecimiento
+        function handleEstablecimientoChange(value) {
+            if (documentManagerHTML && documentManagerHTML.handleEstablecimientoChange) {
+                documentManagerHTML.handleEstablecimientoChange(value);
+            }
+        }
+        
+        // Función para buscar documentos
+        function searchDocuments() {
+            if (documentManagerHTML && documentManagerHTML.searchDocuments) {
+                documentManagerHTML.searchDocuments();
+            }
+        }
+
+        // Función para manejar teclas en el buscador
+        function handleSearchKeyup(event) {
+            if (event.key === 'Enter') {
+                searchDocuments();
+            } else if (event.key === 'Escape') {
+                clearDocumentSearch();
+            }
+        }
+
+        // Función para limpiar búsqueda
+        function clearDocumentSearch() {
+            const searchInput = document.getElementById('searchActa');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            hideSearchResults();
+            if (documentManagerHTML && documentManagerHTML.loadDocuments) {
+                documentManagerHTML.loadDocuments();
+            }
+        }
+
+        // Función para filtrar por modalidad
+        function filterByModalidad(modalidad) {
+            const searchInput = document.getElementById('searchActa');
+            if (searchInput) {
+                searchInput.value = modalidad;
+            }
+            showSearchResults(`Mostrando documentos en modalidad "${modalidad}"`);
+            searchDocuments();
+        }
+
+        // Función para filtrar documentos recientes
+        function filterRecent() {
+            const searchInput = document.getElementById('searchActa');
+            if (searchInput) {
+                const today = new Date();
+                const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+                const formattedDate = lastMonth.toISOString().split('T')[0];
+                searchInput.value = 'recientes';
+            }
+            showSearchResults('Mostrando documentos del último mes');
+            // Aquí puedes implementar la lógica específica para filtrar por fechas recientes
+            if (documentManagerHTML && documentManagerHTML.filterRecentDocuments) {
+                documentManagerHTML.filterRecentDocuments();
+            } else {
+                searchDocuments();
+            }
+        }
+
+        // Función para limpiar todos los filtros
+        function clearAllFilters() {
+            clearDocumentSearch();
+        }
+
+        // Función para mostrar información de resultados
+        function showSearchResults(message) {
+            const resultsInfo = document.getElementById('search-results-info');
+            if (resultsInfo) {
+                resultsInfo.textContent = `🎯 ${message}`;
+                resultsInfo.style.display = 'block';
+            }
+        }
+
+        // Función para ocultar información de resultados
+        function hideSearchResults() {
+            const resultsInfo = document.getElementById('search-results-info');
+            if (resultsInfo) {
+                resultsInfo.style.display = 'none';
+            }
+        }
+        
+        // Ejecutar cuando se carga la página
+        setTimeout(updateNavUserInfo, 100);
+        
+        // Event listeners para los botones convertidos (reemplazar onclick)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pestañas principales
+            const btnNuevoDocumento = document.getElementById('btnNuevoDocumento');
+            const btnDocumentosGuardados = document.getElementById('btnDocumentosGuardados');
+            
+            if (btnNuevoDocumento) {
+                btnNuevoDocumento.addEventListener('click', () => switchMainTab('nuevo-documento'));
+            }
+            
+            if (btnDocumentosGuardados) {
+                btnDocumentosGuardados.addEventListener('click', () => switchMainTab('documentos-guardados'));
+            }
+            
+            // Pestañas del formulario
+            const btnDatosBasicos = document.getElementById('btnDatosBasicos');
+            const btnDesarrolloVisita = document.getElementById('btnDesarrolloVisita');
+            
+            if (btnDatosBasicos) {
+                btnDatosBasicos.addEventListener('click', () => switchFormTab('datos-basicos'));
+            }
+            
+            if (btnDesarrolloVisita) {
+                btnDesarrolloVisita.addEventListener('click', () => switchFormTab('desarrollo-visita'));
+            }
+            
+            // Botones de búsqueda
+            const btnBuscar = document.getElementById('btnBuscar');
+            const btnLimpiarBusqueda = document.getElementById('btnLimpiarBusqueda');
+            
+            if (btnBuscar) {
+                btnBuscar.addEventListener('click', searchDocuments);
+            }
+            
+            if (btnLimpiarBusqueda) {
+                btnLimpiarBusqueda.addEventListener('click', clearDocumentSearch);
+            }
+            
+            // Botones de filtro
+            const btnPresencial = document.getElementById('btnPresencial');
+            const btnVirtual = document.getElementById('btnVirtual');
+            const btnHibrida = document.getElementById('btnHibrida');
+            const btnRecientes = document.getElementById('btnRecientes');
+            const btnTodos = document.getElementById('btnTodos');
+            
+            if (btnPresencial) {
+                btnPresencial.addEventListener('click', () => filterByModalidad('Presencial'));
+            }
+            
+            if (btnVirtual) {
+                btnVirtual.addEventListener('click', () => filterByModalidad('Virtual'));
+            }
+            
+            if (btnHibrida) {
+                btnHibrida.addEventListener('click', () => filterByModalidad('Híbrida'));
+            }
+            
+            if (btnRecientes) {
+                btnRecientes.addEventListener('click', filterRecent);
+            }
+            
+            if (btnTodos) {
+                btnTodos.addEventListener('click', clearAllFilters);
+            }
+            
+            // Event listener para el select de establecimiento
+            const selectEstablecimiento = document.getElementById('establecimiento');
+            if (selectEstablecimiento) {
+                selectEstablecimiento.addEventListener('change', function() {
+                    handleEstablecimientoChange(this.value);
+                });
+            }
+            
+            // Event listener para el input de búsqueda
+            const searchActa = document.getElementById('searchActa');
+            if (searchActa) {
+                searchActa.addEventListener('keyup', handleSearchKeyup);
+            }
+        });
+        
+        console.log('🎉 SISTEMA LISTO - USANDO SOLO CLASE EXTERNA');
+    </script>
+</body>
+</html>
