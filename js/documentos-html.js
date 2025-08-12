@@ -1119,12 +1119,12 @@ class DocumentManagerHTML {
     }
 
     // Cerrar sesión
-    logout() {
-        localStorage.removeItem('currentUser');
-        // Detectar si estamos en una subcarpeta
-        const isInSubfolder = window.location.pathname.includes('/documentos/');
-        window.location.href = isInSubfolder ? '../index.html' : 'index.html';
-    }
+    // logout() {
+    //     localStorage.removeItem('currentUser');
+    //     // Detectar si estamos en una subcarpeta
+    //     const isInSubfolder = window.location.pathname.includes('/documentos/');
+    //     window.location.href = isInSubfolder ? '../index.html' : 'index.html';
+    // }
 
     // Configurar número de acta automático
     setupAutoActaNumber() {
