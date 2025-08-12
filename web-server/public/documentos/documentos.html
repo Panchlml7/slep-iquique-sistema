@@ -9,6 +9,106 @@
     <link rel="stylesheet" href="../css/iconos-extension.css">
     
     <style>
+        /* MEJORAS VISUALES FORMULARIO Y BOTONES */
+        .form-group {
+            margin-bottom: 1.2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-input, select, textarea {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            background: #f8f9fa;
+            color: #374151;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            margin-top: 0.2rem;
+        }
+
+        .form-input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 2px #667eea33;
+        }
+
+        .form-label, label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: #2d3748;
+            letter-spacing: 0.01em;
+        }
+
+        .form-tab-btn {
+            flex: 1;
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            padding: 0.9rem 1.2rem;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .form-tab-btn.active {
+            background: #fff;
+            color: #2c5aa0;
+            border-bottom: 2.5px solid #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+            z-index: 2;
+        }
+
+        .main-tab-btn {
+            flex: 1;
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            padding: 1.1rem 2.2rem;
+            border-radius: 10px 10px 0 0;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .main-tab-btn.active {
+            background: #fff;
+            color: #2c5aa0;
+            border-bottom: 2.5px solid #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+            z-index: 2;
+        }
+
+        .main-tab-btn:hover {
+            background: #e0e7ff;
+            color: #2c5aa0;
+        }
+
+        .nav-btn.primary {
+            background: #667eea;
+            color: #fff;
+            border: 1.5px solid #667eea;
+            border-radius: 8px;
+            padding: 0.95rem 2.3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            box-shadow: none;
+        }
+
+        .nav-btn.primary:hover {
+            background: #fff;
+            color: #667eea;
+            border: 1.5px solid #667eea;
+            box-shadow: none;
+        }
         /* ESTILOS OPTIMIZADOS */
         .container {
             max-width: 1200px;
@@ -165,23 +265,98 @@
         
         .documents-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
             margin-top: 2rem;
+            padding-bottom: 2rem;
+            align-items: stretch;
         }
-        
+
         .document-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            border-left: 4px solid #667eea;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            border-radius: 18px;
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            box-shadow: 0 6px 24px rgba(102, 126, 234, 0.10), 0 1.5px 6px rgba(0,0,0,0.04);
+            transition: all 0.25s cubic-bezier(.4,0,.2,1);
+            border-left: 6px solid #667eea;
+            display: flex;
+            flex-direction: column;
+            min-height: 220px;
         }
-        
+
         .document-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-7px) scale(1.025);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.18), 0 2px 8px rgba(0,0,0,0.07);
+            border-left-color: #764ba2;
+        }
+
+        .document-card .doc-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.01em;
+        }
+
+        .document-card .doc-meta {
+            font-size: 0.98rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .document-card .doc-desc {
+            color: #4b5563;
+            font-size: 0.97rem;
+            margin-bottom: 1rem;
+            flex: 1 1 auto;
+        }
+
+        .document-card .doc-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .document-card .doc-date {
+            font-size: 0.92rem;
+            color: #64748b;
+            background: #e0e7ff;
+            border-radius: 6px;
+            padding: 0.2rem 0.7rem;
+        }
+
+        .document-card .doc-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .document-card .doc-action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem 1.1rem;
+            font-size: 0.98rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .document-card .doc-action-btn:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.18);
+        }
+
+        @media (max-width: 600px) {
+            .documents-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+            .document-card {
+                padding: 1.2rem 0.7rem 1rem 0.7rem;
+            }
         }
 
         /* ESTILOS DEL BUSCADOR MEJORADO */
@@ -406,22 +581,14 @@
                 </div>
             </div>
             <div class="nav-menu">
-                <a href="../SISTEMA-SLEP-COMPLETO.html" class="nav-link">Inicio</a>
+                <a href="../index.html" class="nav-link">Inicio</a>
                 <a href="#" class="nav-link" id="userInfo">Usuario</a>
-                
+                <a href="#" class="nav-link" id="logoutBtn">Cerrar Sesión</a>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <!-- Modal de confirmación reutilizable -->
-        <div id="modalConfirmacion" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); align-items:center; justify-content:center;">
-            <div style="background:white; border-radius:12px; max-width:350px; margin:auto; padding:2rem; box-shadow:0 8px 32px rgba(0,0,0,0.18); text-align:center;">
-                <div id="modalMensaje" style="font-size:1.15rem; margin-bottom:1.5rem; color:#374151;">¿Está seguro de guardar los cambios?</div>
-                <button id="btnModalConfirmar" style="background:#667eea; color:white; border:none; border-radius:6px; padding:0.7rem 1.5rem; font-weight:600; margin-right:1rem; cursor:pointer;">Sí</button>
-                <button id="btnModalCancelar" style="background:#e5e7eb; color:#374151; border:none; border-radius:6px; padding:0.7rem 1.5rem; font-weight:600; cursor:pointer;">Cancelar</button>
-            </div>
-        </div>
         
         
         <div class="header">
@@ -451,10 +618,10 @@
 
         <!-- Navegación de pestañas principales -->
         <div class="main-tabs-navigation">
-            <button class="main-tab-btn active" data-maintab="nuevo-documento" onclick="switchMainTab('nuevo-documento')">
+            <button class="main-tab-btn active" data-maintab="nuevo-documento" id="btnNuevoDocumento">
                 📝 Nuevo Documento
             </button>
-            <button class="main-tab-btn" data-maintab="documentos-guardados" onclick="switchMainTab('documentos-guardados')">
+            <button class="main-tab-btn" data-maintab="documentos-guardados" id="btnDocumentosGuardados">
                 📂 Documentos Guardados
             </button>
         </div>
@@ -465,10 +632,10 @@
                 <form id="uploadForm">
                     <!-- Pestañas del formulario -->
                     <div class="form-tabs-navigation">
-                        <button type="button" class="form-tab-btn active" data-tab="datos-basicos" onclick="switchFormTab('datos-basicos')">
+                        <button type="button" class="form-tab-btn active" data-tab="datos-basicos" id="btnDatosBasicos">
                             📋 Datos Básicos
                         </button>
-                        <button type="button" class="form-tab-btn" data-tab="desarrollo-visita" onclick="switchFormTab('desarrollo-visita')">
+                        <button type="button" class="form-tab-btn" data-tab="desarrollo-visita" id="btnDesarrolloVisita">
                             🔄 Desarrollo de Visita
                         </button>
                     </div>
@@ -501,7 +668,7 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="establecimiento" class="required">🏢 Establecimiento</label>
-                                    <select id="establecimiento" name="establecimiento" required onchange="handleEstablecimientoChange(this.value)">>
+                                    <select id="establecimiento" name="establecimiento" required>
                                         <option value="">Seleccione un establecimiento</option>
                                         <option value="Instituto Comercial Baldomero Wolnitzky">Instituto Comercial Baldomero Wolnitzky</option>
                                         <option value="INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY">INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY</option>
@@ -542,6 +709,23 @@
                             </div>
                         </div>
 
+                        <div class="from-sector">
+                            <div class="form-section">
+                            <h3>👥 Equipo de Asesores</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="asesor1" class="required">👨‍🏫 Asesor Principal</label>
+                                    <input type="text" id="asesor1" name="asesor1" required placeholder="Nombre completo del asesor principal">
+                                </div>
+                                <div class="form-group">
+                                    <label for="asesor2">👨‍🏫 Asesor Secundario</label>
+                                    <input type="text" id="asesor2" name="asesor2" placeholder="Nombre completo del asesor secundario (opcional)">
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
                         <div class="form-section">
                             <h3>⏰ Horarios y Modalidad</h3>
                             
@@ -566,39 +750,29 @@
                                         <option value="Híbrida">Híbrida</option>
                                     </select>
                                 </div>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="form-section">
+                            <h3>💡 Capacidades y Competencias</h3>
+                            
+                            <div class="form-row">                                
                                 <div class="form-group">
                                     <label for="cicloApoyo" class="required">🔄 Ciclo de Apoyo</label>
                                     <select id="cicloApoyo" name="cicloApoyo" required>
                                         <option value="">Seleccione ciclo</option>
-                                       <option value="Involucramiento">Involucramiento</option>
+                                        <option value="Involucramiento">Involucramiento</option>
                                         <option value="Diagnóstico">Diagnóstico</option>
                                         <option value="Planificación">Planificación</option>
                                         <option value="Ejecución">Ejecución</option>
                                         <option value="Evaluación">Evaluación</option>
                                     </select>
+                                    <div style="font-size:0.97rem;color:#667eea;margin-top:0.2rem;">
+                                        <strong>Opciones:</strong> Involucramiento, Diagnóstico, Planificación, Ejecución, Evaluación
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="form-section">
-                            <h3>👥 Equipo de Asesores</h3>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="asesor1" class="required">👨‍🏫 Asesor Principal</label>
-                                    <input type="text" id="asesor1" name="asesor1" required placeholder="Nombre completo del asesor principal">
-                                </div>
-                                <div class="form-group">
-                                    <label for="asesor2">👨‍🏫 Asesor Secundario</label>
-                                    <input type="text" id="asesor2" name="asesor2" placeholder="Nombre completo del asesor secundario (opcional)">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-section">
-                            <h3>💡 Capacidades y Competencias</h3>
-                            
-                            <div class="form-row">
                                 <div class="form-group">
                                     <label for="capacidadBasal" class="required">🎯 Capacidad Basal Focalizada</label>
                                     <select id="capacidadBasal" name="capacidadBasal" required>
@@ -606,8 +780,10 @@
                                         <option value="Reflexión">Reflexión</option>
                                         <option value="Colaboración Relacional">Colaboración Relacional</option>
                                         <option value="Liderazgo Distribuido">Liderazgo Distribuido</option>
-                                    </select>                                    
-                                    <div id="help-capacidadBasal" class="select-help" style="color:#b91c1c; font-size:0.95em; display:none;">Por favor seleccione una capacidad basal.</div>
+                                    </select>
+                                    <div style="font-size:0.97rem;color:#667eea;margin-top:0.2rem;">
+                                        <strong>Opciones:</strong> Reflexión, Colaboración Relacional, Liderazgo Distribuido
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="nivelImplementacion" class="required">📊 Nivel de Implementación</label>
@@ -618,7 +794,9 @@
                                         <option value="Satisfactoria">Satisfactoria</option>
                                         <option value="Sustentabilidad">Sustentabilidad</option>
                                     </select>
-                                    <div id="help-nivelImplementacion" class="select-help" style="color:#b91c1c; font-size:0.95em; display:none;">Por favor seleccione un nivel de implementación.</div>
+                                    <div style="font-size:0.97rem;color:#667eea;margin-top:0.2rem;">
+                                        <strong>Opciones:</strong> Exploración, Emergente, Satisfactoria, Sustentabilidad
+                                    </div>
                                 </div>
                             </div>
 
@@ -631,7 +809,9 @@
                                     <option value="Orientador/a">Orientador/a</option>
                                     <option value="Articulador/a">Articulador/a</option>
                                 </select>
-                                <div id="help-rolProfesional" class="select-help" style="color:#b91c1c; font-size:0.95em; display:none;">Por favor seleccione un rol profesional.</div>
+                                <div style="font-size:0.97rem;color:#667eea;margin-top:0.2rem;">
+                                    <strong>Opciones:</strong> Acompañante, Facilitador/a, Orientador/a, Articulador/a
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -718,14 +898,13 @@
                         id="searchActa" 
                         class="search-input-docs"
                         placeholder="Buscar por N° ACTA, establecimiento, asesor, fecha..." 
-                        onkeyup="handleSearchKeyup(event)"
                         autocomplete="off"
                     >
                     <div class="search-buttons">
-                        <button class="search-btn" onclick="searchDocuments()">
+                        <button class="search-btn" id="btnBuscar">
                             🔍 Buscar
                         </button>
-                        <button class="search-btn clear" onclick="clearDocumentSearch()">
+                        <button class="search-btn clear" id="btnLimpiarBusqueda">
                             🔄 Limpiar
                         </button>
                     </div>
@@ -738,19 +917,19 @@
                 <!-- Filtros rápidos -->
                 <div class="quick-filters">
                     <div class="filter-label">⚡ Filtros rápidos:</div>
-                    <button class="filter-btn" onclick="filterByModalidad('Presencial')">
+                    <button class="filter-btn" id="btnPresencial">
                         📍 Presencial
                     </button>
-                    <button class="filter-btn" onclick="filterByModalidad('Virtual')">
+                    <button class="filter-btn" id="btnVirtual">
                         💻 Virtual
                     </button>
-                    <button class="filter-btn" onclick="filterByModalidad('Híbrida')">
+                    <button class="filter-btn" id="btnHibrida">
                         🔄 Híbrida
                     </button>
-                    <button class="filter-btn recent" onclick="filterRecent()">
+                    <button class="filter-btn recent" id="btnRecientes">
                         📅 Recientes
                     </button>
-                    <button class="filter-btn clear-all" onclick="clearAllFilters()">
+                    <button class="filter-btn clear-all" id="btnTodos">
                         🔄 Todos
                     </button>
                 </div>
@@ -770,114 +949,6 @@
     <!-- Sistema de JavaScript LIMPIO - Solo clase externa -->
     <script src="../js/login.js"></script>
     <script src="../js/documentos-html.js"></script>
-    <script>
-    // Modal de confirmación reutilizable
-    function mostrarModalConfirmacion(mensaje, callbackOK) {
-        const modal = document.getElementById('modalConfirmacion');
-        const msg = document.getElementById('modalMensaje');
-        const btnOK = document.getElementById('btnModalConfirmar');
-        const btnCancel = document.getElementById('btnModalCancelar');
-        if (!modal || !msg || !btnOK || !btnCancel) return;
-        if (modal.dataset.showing === 'true') return; // Evitar doble modal
-        msg.textContent = mensaje;
-        modal.style.display = 'flex';
-        modal.dataset.showing = 'true';
-        // Limpiar listeners previos
-        btnOK.onclick = null;
-        btnCancel.onclick = null;
-        btnOK.onclick = function() {
-            modal.style.display = 'none';
-            modal.dataset.showing = '';
-            if (typeof callbackOK === 'function') callbackOK();
-        };
-        btnCancel.onclick = function() {
-            modal.style.display = 'none';
-            modal.dataset.showing = '';
-        };
-    }
-
-    // Interceptar guardar (nuevo o editar)
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('uploadForm');
-        let guardando = false;
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                if (guardando) return true;
-                e.preventDefault();
-                mostrarModalConfirmacion('¿Está seguro de guardar este documento?', function() {
-                    guardando = true;
-                    form.requestSubmit();
-                    setTimeout(() => { guardando = false; }, 2000); // Reset por si algo sale mal
-                });
-            }, true);
-        }
-
-        // Interceptar borrado de documento (asumiendo botón con clase .btn-borrar-doc)
-        let borrando = false;
-        document.addEventListener('click', function(ev) {
-            const btn = ev.target.closest('.btn-borrar-doc');
-            if (btn) {
-                if (borrando) return;
-                ev.preventDefault();
-                mostrarModalConfirmacion('¿Está seguro de borrar este documento? Esta acción no se puede deshacer.', function() {
-                    borrando = true;
-                    if (typeof window.documentManagerHTML?.borrarDocumento === 'function') {
-                        window.documentManagerHTML.borrarDocumento(btn.dataset.docId);
-                    } else {
-                        if (btn.tagName === 'A' && btn.href) {
-                            window.location.href = btn.href;
-                        } else if (btn.form) {
-                            btn.form.submit();
-                        }
-                    }
-                    setTimeout(() => { borrando = false; }, 2000);
-                });
-            }
-        });
-    });
-    </script>
-    <script>
-    // Validación y ayuda visual para selects clave
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('uploadForm');
-        const selects = [
-            {id: 'capacidadBasal', help: 'help-capacidadBasal'},
-            {id: 'nivelImplementacion', help: 'help-nivelImplementacion'},
-            {id: 'rolProfesional', help: 'help-rolProfesional'}
-        ];
-
-        selects.forEach(sel => {
-            const select = document.getElementById(sel.id);
-            const help = document.getElementById(sel.help);
-            if (select && help) {
-                select.addEventListener('change', function() {
-                    if (select.value === '') {
-                        help.style.display = 'block';
-                    } else {
-                        help.style.display = 'none';
-                    }
-                });
-            }
-        });
-
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                let valid = true;
-                selects.forEach(sel => {
-                    const select = document.getElementById(sel.id);
-                    const help = document.getElementById(sel.help);
-                    if (select && help && select.value === '') {
-                        help.style.display = 'block';
-                        valid = false;
-                    }
-                });
-                if (!valid) {
-                    e.preventDefault();
-                }
-            });
-        }
-    });
-    </script>
     <script>
         console.log('🚀 Iniciando sistema de documentos SLEP IQUIQUE (SOLO CLASE EXTERNA)...');
         
@@ -906,7 +977,7 @@
                 } else {
                     if (confirm('¿Está seguro de que desea cerrar sesión?')) {
                         localStorage.removeItem('currentUser');
-                        window.location.href = '../SISTEMA-SLEP-COMPLETO.html';
+                        window.location.href = '../index.html';
                     }
                 }
             });
@@ -1067,6 +1138,86 @@
         
         // Ejecutar cuando se carga la página
         setTimeout(updateNavUserInfo, 100);
+        
+        // Event listeners para los botones convertidos (reemplazar onclick)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pestañas principales
+            const btnNuevoDocumento = document.getElementById('btnNuevoDocumento');
+            const btnDocumentosGuardados = document.getElementById('btnDocumentosGuardados');
+            
+            if (btnNuevoDocumento) {
+                btnNuevoDocumento.addEventListener('click', () => switchMainTab('nuevo-documento'));
+            }
+            
+            if (btnDocumentosGuardados) {
+                btnDocumentosGuardados.addEventListener('click', () => switchMainTab('documentos-guardados'));
+            }
+            
+            // Pestañas del formulario
+            const btnDatosBasicos = document.getElementById('btnDatosBasicos');
+            const btnDesarrolloVisita = document.getElementById('btnDesarrolloVisita');
+            
+            if (btnDatosBasicos) {
+                btnDatosBasicos.addEventListener('click', () => switchFormTab('datos-basicos'));
+            }
+            
+            if (btnDesarrolloVisita) {
+                btnDesarrolloVisita.addEventListener('click', () => switchFormTab('desarrollo-visita'));
+            }
+            
+            // Botones de búsqueda
+            const btnBuscar = document.getElementById('btnBuscar');
+            const btnLimpiarBusqueda = document.getElementById('btnLimpiarBusqueda');
+            
+            if (btnBuscar) {
+                btnBuscar.addEventListener('click', searchDocuments);
+            }
+            
+            if (btnLimpiarBusqueda) {
+                btnLimpiarBusqueda.addEventListener('click', clearDocumentSearch);
+            }
+            
+            // Botones de filtro
+            const btnPresencial = document.getElementById('btnPresencial');
+            const btnVirtual = document.getElementById('btnVirtual');
+            const btnHibrida = document.getElementById('btnHibrida');
+            const btnRecientes = document.getElementById('btnRecientes');
+            const btnTodos = document.getElementById('btnTodos');
+            
+            if (btnPresencial) {
+                btnPresencial.addEventListener('click', () => filterByModalidad('Presencial'));
+            }
+            
+            if (btnVirtual) {
+                btnVirtual.addEventListener('click', () => filterByModalidad('Virtual'));
+            }
+            
+            if (btnHibrida) {
+                btnHibrida.addEventListener('click', () => filterByModalidad('Híbrida'));
+            }
+            
+            if (btnRecientes) {
+                btnRecientes.addEventListener('click', filterRecent);
+            }
+            
+            if (btnTodos) {
+                btnTodos.addEventListener('click', clearAllFilters);
+            }
+            
+            // Event listener para el select de establecimiento
+            const selectEstablecimiento = document.getElementById('establecimiento');
+            if (selectEstablecimiento) {
+                selectEstablecimiento.addEventListener('change', function() {
+                    handleEstablecimientoChange(this.value);
+                });
+            }
+            
+            // Event listener para el input de búsqueda
+            const searchActa = document.getElementById('searchActa');
+            if (searchActa) {
+                searchActa.addEventListener('keyup', handleSearchKeyup);
+            }
+        });
         
         console.log('🎉 SISTEMA LISTO - USANDO SOLO CLASE EXTERNA');
     </script>

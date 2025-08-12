@@ -628,15 +628,6 @@
         // Función de prueba para agregar un usuario pendiente (solo para testing)
         function addTestPendingUser() {
             const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
-            const testUser = {
-                username: 'maria.gonzalez',
-                email: 'maria.gonzalez@slepiquique.cl',
-                password: 'test123',
-                establecimiento: 'Escuela Gabriela Mistral',
-                cargo: 'Profesor/a de Asignatura',
-                status: 'pendiente',
-                registrationDate: new Date().toISOString()
-            };
             
             const testUser2 = {
                 username: 'carlos.lopez',

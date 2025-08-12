@@ -23,7 +23,6 @@ Se ha implementado un sistema de **tres niveles de acceso** que controla quién 
 
 ### 🟡 **2. ADMINISTRACIÓN NORMAL**
 **Usuarios Ejemplo:**
-- **María González:** `maria.gonzalez@slepiquique.cl` / `admin2024`
 - **Admin Sistema:** `admin@slepiquique.cl` / `admin123`
 
 **Status:** `admin`
@@ -103,7 +102,6 @@ Incluye todas las credenciales para probar los diferentes niveles:
 - francisco.ramos@slepiquique.cl / 13Jul1993
 
 **Admin Normal:**
-- maria.gonzalez@slepiquique.cl / admin2024
 - admin@slepiquique.cl / admin123
 
 ### 🔍 **Escenarios de Prueba**

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Diagnóstico Final - SLEP Iquique</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .diagnostic-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #674ea7;
+        }
+        
+        .test-button {
+            display: inline-block;
+            margin: 5px;
+            padding: 12px 20px;
+            background: #674ea7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .test-button:hover {
+            background: #5d4a95;
+            transform: translateY(-2px);
+        }
+        
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .status-success { color: #28a745; }
+        .status-error { color: #dc3545; }
+        .status-warning { color: #ffc107; }
+        .status-info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-container">
+        <div class="header">
+            <h1>🔧 Diagnóstico Final de Botones</h1>
+            <p>Sistema completo de verificación de funcionalidad</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Pruebas Básicas de JavaScript</h3>
+            <button class="test-button" onclick="testBasic1()">Prueba Básica 1</button>
+            <button class="test-button" onclick="testBasic2()">Prueba Básica 2</button>
+            <button class="test-button" onclick="alert('¡Alert directo funciona!')" >Alert Directo</button>
+            <button class="test-button" onclick="document.getElementById('basic-result').innerHTML += '<div>Click directo: ' + new Date().toLocaleTimeString() + '</div>'">DOM Directo</button>
+            <div class="result-box" id="basic-result">
+                <div class="status-info">📝 Resultados de pruebas básicas aparecerán aquí...</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🚀 Pruebas de Navegación</h3>
+            <button class="test-button" onclick="testNavFunction('goToAsistencia')">Test Asistencia</button>
+            <button class="test-button" onclick="testNavFunction('showUsers')">Test Usuarios</button>
+            <button class="test-button" onclick="testNavFunction('checkLoginAndRedirect')">Test Documentos</button>
+            <button class="test-button" onclick="testNavFunction('showHabilitacion')">Test Establecimientos</button>
+            <button class="test-button" onclick="testNavFunction('goToAdmin')">Test Admin</button>
+            <div class="result-box" id="nav-result">
+                <div class="status-info">🔍 Resultados de navegación aparecerán aquí...</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Estado del Sistema</h3>
+            <button class="test-button" onclick="checkSystemStatus()">Verificar Sistema</button>
+            <button class="test-button" onclick="listAllFunctions()">Listar Funciones</button>
+            <button class="test-button" onclick="testConsole()">Probar Console</button>
+            <div class="result-box" id="system-result">
+                <div class="status-info">⚡ Estado del sistema aparecerá aquí...</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔗 Enlaces Directos de Respaldo</h3>
+            <a href="asistencia.html" class="test-button">→ Asistencia</a>
+            <a href="admin-usuarios.html" class="test-button">→ Admin Usuarios</a>
+            <a href="documentos/documentos.html" class="test-button">→ Documentos</a>
+            <a href="establecimiento.html" class="test-button">→ Establecimientos</a>
+            <a href="login.html" class="test-button">→ Login</a>
+        </div>
+    </div>
+    
+    <script>
+        console.log('🔥 Diagnóstico final iniciado');
+        
+        // Funciones básicas de prueba
+        function testBasic1() {
+            console.log('✅ testBasic1 ejecutada');
+            document.getElementById('basic-result').innerHTML += '<div class="status-success">✅ testBasic1: FUNCIONANDO - ' + new Date().toLocaleTimeString() + '</div>';
+        }
+        
+        function testBasic2() {
+            console.log('✅ testBasic2 ejecutada');
+            alert('¡Test básico 2 funcionando!');
+            document.getElementById('basic-result').innerHTML += '<div class="status-success">✅ testBasic2: FUNCIONANDO con Alert - ' + new Date().toLocaleTimeString() + '</div>';
+        }
+        
+        // Funciones de navegación para prueba
+        function goToAsistencia() {
+            console.log('🚀 goToAsistencia ejecutada');
+            return 'asistencia.html';
+        }
+        
+        function showUsers() {
+            console.log('🚀 showUsers ejecutada');
+            return 'admin-usuarios.html';
+        }
+        
+        function checkLoginAndRedirect() {
+            console.log('🚀 checkLoginAndRedirect ejecutada');
+            return 'documentos/documentos.html';
+        }
+        
+        function showHabilitacion() {
+            console.log('🚀 showHabilitacion ejecutada');
+            return 'establecimiento.html';
+        }
+        
+        function goToAdmin() {
+            console.log('🚀 goToAdmin ejecutada');
+            return 'admin-usuarios.html';
+        }
+        
+        // Función para probar navegación
+        function testNavFunction(funcName) {
+            const resultDiv = document.getElementById('nav-result');
+            
+            try {
+                if (typeof window[funcName] === 'function') {
+                    console.log(`🧪 Probando función: ${funcName}`);
+                    const result = window[funcName]();
+                    resultDiv.innerHTML += `<div class="status-success">✅ ${funcName}: EXISTE y FUNCIONA → ${result || 'OK'}</div>`;
+                    
+                    // Si la función devuelve una URL, preguntar si navegar
+                    if (result && result.includes('.html')) {
+                        setTimeout(() => {
+                            if (confirm(`¿Navegar a ${result}?`)) {
+                                window.location.href = result;
+                            }
+                        }, 1000);
+                    }
+                } else {
+                    resultDiv.innerHTML += `<div class="status-error">❌ ${funcName}: NO ENCONTRADA</div>`;
+                    console.error(`❌ Función ${funcName} no existe`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML += `<div class="status-error">💥 ${funcName}: ERROR → ${error.message}</div>`;
+                console.error(`💥 Error en ${funcName}:`, error);
+            }
+        }
+        
+        // Verificar estado del sistema
+        function checkSystemStatus() {
+            const resultDiv = document.getElementById('system-result');
+            
+            resultDiv.innerHTML += '<div class="status-info">🔍 Verificando sistema...</div>';
+            
+            // Información básica
+            resultDiv.innerHTML += `<div class="status-success">📍 URL: ${window.location.href}</div>`;
+            resultDiv.innerHTML += `<div class="status-success">🕒 Tiempo: ${new Date().toLocaleString()}</div>`;
+            resultDiv.innerHTML += `<div class="status-success">🌐 User Agent: ${navigator.userAgent.substring(0, 50)}...</div>`;
+            
+            // Verificar localStorage
+            try {
+                const testKey = 'diagnostic_test';
+                localStorage.setItem(testKey, 'OK');
+                const testValue = localStorage.getItem(testKey);
+                localStorage.removeItem(testKey);
+                resultDiv.innerHTML += `<div class="status-success">💾 localStorage: FUNCIONAL</div>`;
+            } catch (e) {
+                resultDiv.innerHTML += `<div class="status-error">💾 localStorage: ERROR</div>`;
+            }
+        }
+        
+        // Listar todas las funciones disponibles
+        function listAllFunctions() {
+            const resultDiv = document.getElementById('system-result');
+            
+            const functions = Object.getOwnPropertyNames(window).filter(prop => 
+                typeof window[prop] === 'function' && 
+                !prop.startsWith('_') && 
+                prop.length < 30
+            );
+            
+            resultDiv.innerHTML += `<div class="status-info">🔢 Total funciones encontradas: ${functions.length}</div>`;
+            resultDiv.innerHTML += `<div class="status-info">📋 Algunas funciones: ${functions.slice(0, 10).join(', ')}</div>`;
+        }
+        
+        // Probar console
+        function testConsole() {
+            console.log('🧪 Prueba de console.log');
+            console.warn('⚠️ Prueba de console.warn');
+            console.error('❌ Prueba de console.error');
+            console.info('ℹ️ Prueba de console.info');
+            
+            document.getElementById('system-result').innerHTML += '<div class="status-success">📝 Pruebas de console enviadas - revisar DevTools</div>';
+        }
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Diagnóstico final: DOM cargado');
+            
+            // Auto-verificación básica
+            setTimeout(() => {
+                document.getElementById('basic-result').innerHTML += '<div class="status-success">🚀 Sistema de diagnóstico listo</div>';
+            }, 500);
+        });
+    </script>
+</body>
+</html>

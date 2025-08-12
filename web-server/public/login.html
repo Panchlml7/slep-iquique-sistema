@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - SLEP Iquique</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <script src="js/login.js"></script>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Acceso</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="registrar.html" class="nav-link">Registrarse</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Iniciar Sesión</h1>
+                <p>Sistema de gestión SLEP IQUIQUE</p>
+                
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 10px; margin: 10px 0; color: #856404;">
+                    <strong>⚠️ Aviso:</strong> Este sistema solo permite acceso a usuarios autorizados.
+                </div>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" name="username" required placeholder="Ingresa tu usuario">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <div class="password-input-container">
+                        <input type="password" id="password" name="password" required placeholder="Ingresa tu contraseña">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')" aria-label="Mostrar/ocultar contraseña">
+                            <svg class="eye-icon eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-icon eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" id="loginBtn" class="auth-btn">🔐 Iniciar Sesión</button>
+            </form>
+              <div class="register-link">
+                ¿No tienes cuenta? <a href="registrar.html">Crear una cuenta</a>
+            </div>
+            <br>
+            <br>
+            <div><a href="login-simple.html">🏛️</a></div>
+
+            <!-- Contenedor de alertas AQUÍ -->
+            <div id="alertContainer"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Función para mostrar alertas
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            if (!alertContainer) return;
+            
+            // Limpiar alertas anteriores
+            alertContainer.innerHTML = '';
+            
+            // Crear nueva alerta
+            const alertDiv = document.createElement('div');
+            alertDiv.textContent = message;
+            
+            if (type === 'error') {
+                alertDiv.style.cssText = `
+                    background: #dc3545;
+                    color: white;
+                    padding: 15px;
+                    margin: 15px 0;
+                    border-radius: 8px;
+                    text-align: center;
+                    font-weight: bold;
+                    border: 2px solid #c82333;
+                `;
+            } else {
+                alertDiv.style.cssText = `
+                    background: #28a745;
+                    color: white;
+                    padding: 15px;
+                    margin: 15px 0;
+                    border-radius: 8px;
+                    text-align: center;
+                    font-weight: bold;
+                    border: 2px solid #1e7e34;
+                `;
+            }
+            
+            alertContainer.appendChild(alertDiv);
+            
+            // Remover después de 5 segundos
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+        
+        // Función para mostrar/ocultar contraseña
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling;
+            const eyeOpen = toggle.querySelector('.eye-open');
+            const eyeClosed = toggle.querySelector('.eye-closed');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOpen.style.display = 'none';
+                eyeClosed.style.display = 'block';
+                toggle.setAttribute('aria-label', 'Ocultar contraseña');
+            } else {
+                input.type = 'password';
+                eyeOpen.style.display = 'block';
+                eyeClosed.style.display = 'none';
+                toggle.setAttribute('aria-label', 'Mostrar contraseña');
+            }
+        }
+        
+        // Verificar si ya está logueado cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isUserLoggedIn()) {
+                const currentUser = getCurrentUser();
+                if (currentUser && currentUser.status === 'admin') {
+                    // Mensaje especial para admin
+                    console.log('🔐 Administrador detectado - Acceso completo al sistema');
+                }
+                window.location.href = 'index.html';
+                return;
+            }
+        });
+    </script>

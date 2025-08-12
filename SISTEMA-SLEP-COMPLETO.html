@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="Sistema de gestión documental para establecimientos educacionales del SLEP Iquique">
+    <title>SLEP Iquique - Sistema de Gestión Documental</title>
+    
+    <!-- Favicon para mejor presentación -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJsMy4wOSA2LjI2TDIyIDlsLTUgNC44NyAxLjE4IDYuODhMMTIgMTcuMjdsLTYuMTggMy4yOEw3IDEzLjg3IDIgOWw2LjkxLTAuNzR6IiBmaWxsPSIjNjc0ZWE3Ci8+PC9zdmc+">
+    
+    <style>
+        /* CSS COMPLETO INTEGRADO */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-main {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Grid de menú */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .menu-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .menu-card p {
+            color: #718096;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .btn-menu {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-menu:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-message {
+            color: #718096;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .modal-close-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Estilos para formularios */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Sistema</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link" id="registerBtn">Registrarse</a>
+                <a href="#" class="nav-link" id="loginBtn">Iniciar Sesión</a>
+                <a href="#" class="nav-link" id="adminPanelBtn" style="display: none; background: #ff6b6b; color: white; font-weight: bold;">Panel Admin</a>
+                <a href="#" class="nav-link" id="userInfo" style="display: none;"></a>
+                <a href="#" class="nav-link" id="logoutBtn" style="display: none;">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <header class="header">
+            <h1>Bienvenido al Sistema</h1>
+            <p>Selecciona una opción del menú principal</p>
+        </header>
+
+        <!-- Menú principal con 4 botones -->
+        <div class="menu-grid">
+            <div class="menu-card">
+                <div class="card-icon">👤</div>
+                <h3>Asistencia</h3>
+                <p>Ver registro de asistencia y estadísticas</p>
+                <button class="btn-menu" id="btnAsistencia">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">🏫</div>
+                <h3>Establecimiento</h3>
+                <p>Jardines, Escuelas, Institutos y Liceos</p>
+                <button class="btn-menu" id="btnUsuarios">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">📁</div>
+                <h3>Documentos</h3>
+                <p>Gestionar documentos de equipos</p>
+                <button class="btn-menu" id="btnDocumentos">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">🚧</div>
+                <h3>Habilitación</h3>
+                <p>Gestionar habilitaciones del sistema</p>
+                <button class="btn-menu" id="btnHabilitacion">Acceder</button>
+            </div>
+
+            <!-- Nuevo cuadro Convivencia Escolar -->
+            <div class="menu-card">
+                <div class="card-icon">🤝</div>
+                <h3>Convivencia Escolar</h3>
+                <p>Gestión y recursos para la convivencia escolar</p>
+                <button class="btn-menu" id="btnConvivencia">Acceder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para funcionalidades próximas -->
+    <div class="modal-overlay" id="comingSoonModal">
+        <div class="modal-content">
+            <div class="modal-icon">🚧</div>
+            <h3 class="modal-title">Próximamente</h3>
+            <p class="modal-message">Esta funcionalidad estará disponible muy pronto. Estamos trabajando para mejorar tu experiencia en el sistema SLEP Iquique.</p>
+            <button class="modal-close-btn" id="closeModal">Entendido</button>
+        </div>
+    </div>
+
+    <!-- Modal de Registro de Usuarios -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-icon">👤</div>
+            <h3 class="modal-title">Registrar Nuevo Funcionario</h3>
+            <form id="registerForm" style="text-align: left; margin-top: 1rem;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Nombre Completo:</label>
+                    <input type="text" id="regFullName" required style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Fecha de nacimiento:</label>
+                    <input type="date" id="regBirthDate" required style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Email:</label>
+                    <input type="email" id="regEmail" required placeholder="nombre@slepiquique.cl" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Contraseña:</label>
+                    <input type="password" id="regPassword" required minlength="6" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Establecimiento:</label>
+                    <select id="regEstablishment" required style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                        <option value="">Seleccionar establecimiento</option>
+                                        <option value="SLEP Iquique - Oficina Central">SLEP Iquique - Oficina Central</option>
+                                        <option value="Instituto Comercial Baldomero Wolnitzky">Instituto Comercial Baldomero Wolnitzky</option>
+                                        <option value="INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY">INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY</option>
+                                        <option value="Escuela Especial Flor del Inca">Escuela Especial Flor del Inca</option>
+                                        <option value="Escuela Artística Violeta Parra">Escuela Artística Violeta Parra</option>
+                                        <option value="Centro de Capacitación Laboral">Centro de Capacitación Laboral</option>
+                                        <option value="Liceo Libertador General Bernardo O'Higgins">Liceo Libertador General Bernardo O'Higgins</option>
+                                        <option value="Liceo Politécnico José Gutiérrez de la Fuente">Liceo Politécnico José Gutiérrez de la Fuente</option>
+                                        <option value="Liceo Deportivo Elena Duvauchelle Cabezón">Liceo Deportivo Elena Duvauchelle Cabezón</option>
+                                        <option value="Liceo Bicentenario Domingo Santa María">Liceo Bicentenario Domingo Santa María</option>
+                                        <option value="Escuela Gabriela Mistral">Escuela Gabriela Mistral</option>
+                                        <option value="Escuela Eduardo Llanos Nava">Escuela Eduardo Llanos Nava</option>
+                                        <option value="Escuela Almirante Patricio Lynch">Escuela Almirante Patricio Lynch</option>
+                                        <option value="Escuela Plácido Villarroel">Escuela Plácido Villarroel</option>
+                                        <option value="Escuela República de Croacia">Escuela República de Croacia</option>
+                                        <option value="Escuela Paula Jaraquemada">Escuela Paula Jaraquemada</option>
+                                        <option value="Escuela Centenario">Escuela Centenario</option>
+                                        <option value="Escuela Thilda Portillo Olivares">Escuela Thilda Portillo Olivares</option>
+                                        <option value="Escuela España">Escuela España</option>
+                                        <option value="Liceo Luis Cruz Martínez">Liceo Luis Cruz Martínez</option>
+                                        <option value="Colegio Manuel Castro Ramos">Colegio Manuel Castro Ramos</option>
+                                        <option value="Colegio República de Italia">Colegio República de Italia</option>
+                                        <option value="Escuela Caleta Chanavayita">Escuela Caleta Chanavayita</option>
+                                        <option value="Liceo Bicentenario Minero Juan Pablo II">Liceo Bicentenario Minero Juan Pablo II</option>
+                                        <option value="Escuela Chipana">Escuela Chipana</option>
+                                        <option value="Escuela San Marcos">Escuela San Marcos</option>
+                                        <option value="Colegio Simón Bolívar">Colegio Simón Bolívar</option>
+                                        <option value="Escuela Oasis del Saber">Escuela Oasis del Saber</option>
+                                        <option value="Liceo CEIA José Alejandro Soria Varas">Liceo CEIA José Alejandro Soria Varas</option>
+                                        <option value="Liceo Técnico Profesional de Adultos">Liceo Técnico Profesional de Adultos</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Cargo:</label>
+                    <input type="text" id="regPosition" required placeholder="Ej: Director, Profesor, Secretaria" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button type="button" id="cancelRegister" style="padding: 0.75rem 1.5rem; background: #e2e8f0; color: #4a5568; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                    <button type="submit" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-icon">🔐</div>
+            <h3 class="modal-title">Iniciar Sesión</h3>
+            <form id="loginForm" style="text-align: left; margin-top: 1rem;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Email:</label>
+                    <input type="email" id="loginEmail" required placeholder="tu-email@slepiquique.cl" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Contraseña:</label>
+                    <input type="password" id="loginPassword" required style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button type="button" id="cancelLogin" style="padding: 0.75rem 1.5rem; background: #e2e8f0; color: #4a5568; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                    <button type="submit" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Entrar</button>
+                </div>
+            </form>
+            <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #718096;">
+                ¿No tienes cuenta? <a href="#" id="showRegisterFromLogin" style="color: #667eea; text-decoration: none; font-weight: 600;">Regístrate aquí</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Panel de Administración -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
+            <div class="modal-icon">🔑</div>
+            <h3 class="modal-title">Panel de Administración - Francisco Ramos</h3>
+            
+            <div style="margin: 2rem 0; text-align: left;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                    <button id="viewUsersBtn" class="btn-primary" style="width: 100%;">👥 Ver Todos los Usuarios</button>
+                    <button id="viewPasswordsBtn" class="btn-primary" style="width: 100%;">🔒 Ver Contraseñas</button>
+                </div>
+                
+                <div id="adminContent" style="background: #f7fafc; padding: 1.5rem; border-radius: 8px; min-height: 300px;">
+                    <p style="text-align: center; color: #718096; font-style: italic;">Selecciona una opción del menú superior</p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button id="closeAdminModal" class="btn-secondary">Cerrar Panel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sistema completamente autocontenido
+        
+        // Mapping de establecimientos con sus RBDs
+        const establishmentRBD = {
+            "Instituto Comercial de Iquique Baldomero Wolnitzky": "97-3",
+            "Escuela Educación Especial Flor del Inca": "102-3",
+            "Escuela Gabriela Mistral": "111-2",
+            "Escuela Eduardo Llanos": "112-0",
+            "SLEP Iquique - Oficina Central": "SLEP-IQQ"
+        };
+
+        // Usuario administrador autorizado
+        const adminUser = {
+            username: 'Francisco Ramos',
+            email: 'francisco.ramos@slepiquique.cl',
+            password: '13Jul1993',
+            status: 'admin'
+        };
+
+        // Inicializar sistema con usuario admin
+        function initializeUsers() {
+            console.log('🔧 Inicializando usuarios...');
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            const adminExists = users.find(u => u.email === adminUser.email);
+            if (!adminExists) {
+                console.log('⚠️ Usuario admin no encontrado. Creando usuario por defecto...');
+                const defaultAdmin = {
+                    username: 'Francisco Ramos',
+                    email: 'francisco.ramos@slepiquique.cl',
+                    password: '13Jul1993',
+                    establecimiento: 'SLEP Iquique - Oficina Central',
+                    cargo: 'Administrador del Sistema',
+                    status: 'admin',
+                    registrationDate: new Date().toISOString()
+                };
+                users.push(defaultAdmin);
+                localStorage.setItem('appUsers', JSON.stringify(users));
+                console.log('✅ Usuario admin creado por defecto');
+            } else {
+                console.log('✅ Usuario admin configurado correctamente');
+            }
+        }
+
+        // Funciones para manejar el modal
+        function showComingSoonModal() {
+            const modal = document.getElementById('comingSoonModal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function hideComingSoonModal() {
+            hideModal('comingSoonModal');
+        }
+        // Forzar el event listener por si acaso
+        setTimeout(() => {
+            const btn = document.getElementById('closeModal');
+            if (btn) btn.onclick = hideComingSoonModal;
+        }, 0);
+
+        // Función para actualizar la interfaz de usuario
+        function updateUserInterface() {
+            console.log('🔄 Actualizando interfaz de usuario...');
+            const currentUser = localStorage.getItem('currentUser');
+            const registerBtn = document.getElementById('registerBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const adminPanelBtn = document.getElementById('adminPanelBtn');
+            const userInfo = document.getElementById('userInfo');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                console.log('👤 Usuario logueado:', user.username);
+                
+                if (registerBtn) registerBtn.style.display = 'none';
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (userInfo) {
+                    userInfo.style.display = 'block';
+                    userInfo.textContent = user.status === 'admin' ? 
+                        `🔑 Admin: ${user.username}` : 
+                        `Hola, ${user.username}`;
+                }
+                if (logoutBtn) logoutBtn.style.display = 'block';
+                
+                // Mostrar panel admin solo para Francisco Ramos
+                if (adminPanelBtn && user.status === 'admin' && user.email === 'francisco.ramos@slepiquique.cl') {
+                    adminPanelBtn.style.display = 'block';
+                } else if (adminPanelBtn) {
+                    adminPanelBtn.style.display = 'none';
+                }
+            } else {
+                console.log('🚫 No hay usuario logueado');
+                if (registerBtn) registerBtn.style.display = 'block';
+                if (loginBtn) loginBtn.style.display = 'block';
+                if (adminPanelBtn) adminPanelBtn.style.display = 'none';
+                if (userInfo) userInfo.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
+        }
+
+        // Funciones para manejar modals
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.visibility = 'visible';
+                modal.style.opacity = '1';
+                modal.removeAttribute('aria-hidden');
+                // Forzar reflow para navegadores antiguos
+                void modal.offsetWidth;
+            }
+        }
+
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.style.visibility = 'hidden';
+                modal.style.opacity = '0';
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        function showComingSoonModal() {
+            showModal('comingSoonModal');
+        }
+
+        function hideComingSoonModal() {
+            hideModal('comingSoonModal');
+        }
+
+        // Función para registrar nuevo usuario
+        function registerNewUser(userData) {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            // Verificar si el email ya existe
+            const existingUser = users.find(u => u.email === userData.email);
+            if (existingUser) {
+                alert('❌ Error: Ya existe un usuario con ese email');
+                return false;
+            }
+
+            // Crear nuevo usuario con estado pendiente
+            const newUser = {
+                username: userData.fullName,
+                email: userData.email,
+                password: userData.password,
+                establecimiento: userData.establishment,
+                cargo: userData.position,
+                birthDate: userData.birthDate, // Guardar fecha de nacimiento
+                status: 'pending', // Los nuevos usuarios necesitan aprobación
+                registrationDate: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('appUsers', JSON.stringify(users));
+            
+            console.log('✅ Nuevo usuario registrado (pendiente de aprobación):', newUser.username);
+            return true;
+        }
+
+        // Función para login de usuario
+        function loginUser(email, password) {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (!user) {
+                console.log('❌ Login fallido para:', email);
+                return false;
+            }
+
+            if (user.status === 'pending') {
+                alert('⏳ Tu cuenta está pendiente de aprobación por el administrador Francisco Ramos.\n\n📧 Email: francisco.ramos@slepiquique.cl\n🔑 Una vez aprobada, podrás acceder al sistema.');
+                return false;
+            }
+
+            if (user.status === 'rejected') {
+                alert('❌ Tu cuenta ha sido rechazada por el administrador.\n\nContacta a Francisco Ramos para más información:\n📧 francisco.ramos@slepiquique.cl');
+                return false;
+            }
+
+            if (user.status === 'suspended') {
+                alert('⏸️ Tu cuenta está temporalmente suspendida.\n\nContacta a Francisco Ramos para reactivar tu cuenta:\n📧 francisco.ramos@slepiquique.cl');
+                return false;
+            }
+
+            // Permitir login para admin y usuarios aprobados
+            if (user.status === 'admin' || user.status === 'approved') {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                updateUserInterface();
+                console.log('✅ Login exitoso:', user.username);
+                return true;
+            }
+
+            return false;
+        }
+
+        // Funciones de navegación simplificadas
+        function goToAsistencia() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert('🔐 Necesitas iniciar sesión para acceder a Asistencia.\n\nHaz clic en "Iniciar Sesión" en el menú superior.');
+                showModal('loginModal');
+                return;
+            }
+            // Si el archivo está en la raíz
+            window.location.href = 'asistencia.html';
+        }
+
+        function goToEstablecimiento() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert('🔐 Necesitas iniciar sesión para acceder a Establecimiento.\n\nHaz clic en "Iniciar Sesión" en el menú superior.');
+                showModal('loginModal');
+                return;
+            }
+            // Si el archivo está en la raíz
+            window.location.href = 'establecimiento.html';
+        }
+
+        function checkLoginAndRedirect() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                // Si el archivo está en la raíz
+                window.location.href = 'documentos/documentos.html';
+                // Si está en una carpeta, usa: window.location.href = 'documentos/documentos.html';
+            } else {
+                alert('🔐 Necesitas iniciar sesión para acceder a Documentos.\n\nHaz clic en "Iniciar Sesión" en el menú superior.');
+                showModal('loginModal');
+            }
+        }
+
+        function showHabilitacion() {
+            showComingSoonModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            updateUserInterface();
+            alert('👋 Sesión cerrada correctamente');
+        }
+
+        // Funciones del panel de administración
+        function showAdminPanel() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (currentUser && currentUser.status === 'admin' && currentUser.email === 'francisco.ramos@slepiquique.cl') {
+                showModal('adminModal');
+            } else {
+                alert('❌ Acceso denegado. Solo Francisco Ramos puede acceder al panel de administración.');
+            }
+        }
+
+        function showAllUsers() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const adminContent = document.getElementById('adminContent');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const isAdmin = currentUser && currentUser.status === 'admin' && currentUser.email === 'francisco.ramos@slepiquique.cl';
+
+            if (users.length === 0) {
+                adminContent.innerHTML = '<p style="text-align: center; color: #718096;">No hay usuarios registrados</p>';
+                return;
+            }
+
+            let html = '<h4 style="margin-bottom: 1rem; color: #2d3748;">👥 Gestión de Usuarios</h4>';
+
+            // Ordenar usuarios: admin primero, luego aprobados, luego pendientes, luego rechazados
+            const statusOrder = { admin: 0, approved: 1, pending: 2, rejected: 3, suspended: 4 };
+            users.sort((a, b) => {
+                const sa = statusOrder[a.status] ?? 99;
+                const sb = statusOrder[b.status] ?? 99;
+                if (sa !== sb) return sa - sb;
+                return (a.username || '').localeCompare(b.username || '');
+            });
+
+            users.forEach((user, index) => {
+            if (index > 0) html += '<hr style="border: 1px solid #e2e8f0; margin: 1rem 0;">';
+                let userStatus = user.status;
+              
+                const statusBadge = userStatus === 'admin' ? 
+                    '<span style="background: #ff6b6b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">ADMIN</span>' :
+                    userStatus === 'approved' ? 
+                    '<span style="background: #48bb78; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">APROBADO</span>' :
+                    userStatus === 'pending' ?
+                    '<span style="background: #ed8936; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">PENDIENTE</span>' :
+                    userStatus === 'suspended' ?
+                    '<span style="background: #a0aec0; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">SUSPENDIDO</span>' :
+                    '<span style="background: #e53e3e; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">RECHAZADO</span>';
+
+                html += `
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+                            <!-- Datos usuario -->
+                            <div style="flex: 1; min-width: 220px;">
+                                <div style="margin-bottom: 0.5rem;">
+                                    <strong style="color: #2d3748;">${user.username}</strong>
+                                    ${statusBadge}
+                                </div>
+                                <div><small style="color: #4a5568;">📧 ${user.email}</small></div>
+                                ${isAdmin && user.birthDate ? `<div><small style="color: #4a5568;">🎂 ${user.birthDate}</small></div>` : ''}
+                                ${isAdmin && user.establecimiento ? `<div><small style="color: #4a5568;">🏢 ${user.establecimiento}</small></div>` : ''}
+                                <div><small style="color: #4a5568;">💼 ${user.cargo}</small></div>
+                                <div><small style="color: #718096;">Registrado: ${new Date(user.registrationDate).toLocaleDateString()}</small></div>
+                            </div>
+                            <!-- Acciones usuario -->
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; min-width: 140px;">
+                                ${userStatus !== 'admin' ? `
+                                    ${userStatus === 'pending' || userStatus === 'rejected' ? `<button onclick="approveUser('${user.email}')" style="background: #48bb78; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">✅ Aprobar</button>` : ''}
+                                    ${userStatus === 'pending' || userStatus === 'approved' ? `<button onclick="rejectUser('${user.email}')" style="background: #e53e3e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">❌ Rechazar</button>` : ''}
+                                    ${userStatus === 'approved' ? `<button onclick="suspendUser('${user.email}')" style="background: #ed8936; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">⏸️ Suspender</button>` : ''}
+                                    <button class="delete-user-btn" data-email="${user.email}" style="background: #a0aec0; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">🗑️ Eliminar</button>
+                                ` : `
+                                    <!-- Quitar admin solo, si quieres dejarlo, si no, deja vacío -->
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            adminContent.innerHTML = html;
+
+            // Asignar eventos a los botones Eliminar (delegación)
+            document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const email = this.getAttribute('data-email');
+                    deleteUser(email);
+                };
+            });
+        }
+
+        // Eliminar usuario (solo admin)
+        function deleteUser(email) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!currentUser || currentUser.status !== 'admin' || currentUser.email !== 'francisco.ramos@slepiquique.cl') {
+                alert('❌ Solo el administrador puede eliminar usuarios.');
+                return;
+            }
+            
+            if (!confirm('¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.')) return;
+            let users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            users = users.filter(u => u.email !== email);
+            localStorage.setItem('appUsers', JSON.stringify(users));
+            alert('🗑️ Usuario eliminado correctamente.');
+            showAllUsers();
+        }
+
+        // Función para ver contraseñas (debe estar definida antes de usar)
+        function showAllPasswords() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!currentUser || currentUser.email !== 'francisco.ramos@slepiquique.cl') {
+                alert('❌ Solo Francisco Ramos puede ver las contraseñas');
+                return;
+            }
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const adminContent = document.getElementById('adminContent');
+            if (users.length === 0) {
+                adminContent.innerHTML = '<p style="text-align: center; color: #718096;">No hay usuarios registrados</p>';
+                return;
+            }
+            let html = '<h4 style="margin-bottom: 1rem; color: #2d3748;">🔒 Contraseñas de Usuarios</h4>';
+            html += '<div style="background: #fef2f2; border: 1px solid #fecaca; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;"><small style="color: #991b1b;"><strong>⚠️ CONFIDENCIAL:</strong> Esta información es solo para el administrador Francisco Ramos.</small></div>';
+            users.forEach((user) => {
+                html += `
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="color: #2d3748;">${user.username}</strong>
+                                ${user.status === 'admin' ? '<span style="background: #ff6b6b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem;">ADMIN</span>' : ''}
+                                <br>
+                                <small style="color: #4a5568;">📧 ${user.email}</small>
+                            </div>
+                            <div style="background: #f7fafc; padding: 0.5rem 1rem; border-radius: 6px; font-family: monospace;">
+                                <strong style="color: #2d3748;">🔑 ${user.password}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            adminContent.innerHTML = html;
+        }
+
+        // Event listeners
+        function addMenuButtonListeners() {
+            // Asistencia
+            const btnAsistencia = document.getElementById('btnAsistencia');
+            if (btnAsistencia) {
+                btnAsistencia.onclick = goToAsistencia;
+            }
+            // Establecimiento
+            const btnUsuarios = document.getElementById('btnUsuarios');
+            if (btnUsuarios) {
+                btnUsuarios.onclick = goToEstablecimiento;
+            }
+            // Documentos
+            const btnDocumentos = document.getElementById('btnDocumentos');
+            if (btnDocumentos) {
+                btnDocumentos.onclick = checkLoginAndRedirect;
+            }
+            // Habilitación
+            const btnHabilitacion = document.getElementById('btnHabilitacion');
+            if (btnHabilitacion) {
+                btnHabilitacion.onclick = showHabilitacion;
+            }
+            // Convivencia Escolar
+            const btnConvivencia = document.getElementById('btnConvivencia');
+            if (btnConvivencia) {
+                btnConvivencia.onclick = showComingSoonModal;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Sistema SLEP cargado correctamente');
+            // Inicializar sistema
+            initializeUsers();
+            updateUserInterface();
+            // Asegurar listeners de los botones del menú principal
+            addMenuButtonListeners();
+
+            // Modal "Próximamente"
+            document.getElementById('closeModal')?.addEventListener('click', hideComingSoonModal);
+            document.getElementById('comingSoonModal')?.addEventListener('click', function(e) {
+                if (e.target === this) hideComingSoonModal();
+            });
+
+            // Botón de Registro
+            document.getElementById('registerBtn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                showModal('registerModal');
+            });
+
+            // Botón de Login
+            document.getElementById('loginBtn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                showModal('loginModal');
+            });
+
+            // Botón de Logout
+            document.getElementById('logoutBtn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                logout();
+            });
+
+            // Panel de Administración
+            document.getElementById('adminPanelBtn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                showAdminPanel();
+            });
+
+            document.getElementById('viewUsersBtn')?.addEventListener('click', showAllUsers);
+            document.getElementById('viewPasswordsBtn')?.addEventListener('click', showAllPasswords);
+            document.getElementById('closeAdminModal')?.addEventListener('click', function() {
+                hideModal('adminModal');
+            });
+
+            // Cerrar modal admin al hacer clic fuera
+            document.getElementById('adminModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideModal('adminModal');
+                }
+            });
+
+            // Formulario de registro
+            document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const userData = {
+                    fullName: document.getElementById('regFullName').value.trim(),
+                    birthDate: document.getElementById('regBirthDate').value, // Nuevo campo
+                    email: document.getElementById('regEmail').value.trim(),
+                    password: document.getElementById('regPassword').value,
+                    establishment: document.getElementById('regEstablishment').value,
+                    position: document.getElementById('regPosition').value.trim()
+                };
+
+                // Validaciones
+                if (!userData.fullName || !userData.birthDate || !userData.email || !userData.password || !userData.establishment || !userData.position) {
+                    alert('❌ Por favor completa todos los campos');
+                    return;
+                }
+
+                if (userData.password.length < 6) {
+                    alert('❌ La contraseña debe tener al menos 6 caracteres');
+                    return;
+                }
+
+                // Registrar usuario
+                if (registerNewUser(userData)) {
+                    alert(`✅ ¡Registro exitoso!\n\nHola ${userData.fullName}\n\n⏳ Tu cuenta está PENDIENTE de aprobación por Francisco Ramos.\n📧 francisco.ramos@slepiquique.cl\n\nUna vez aprobada, podrás iniciar sesión con tu email y contraseña.`);
+                    hideModal('registerModal');
+                    document.getElementById('registerForm').reset();
+                    // Actualizar panel admin si está abierto
+                    if (document.getElementById('adminModal')?.style.display === 'flex') {
+                        showAllUsers();
+                    }
+                }
+            });
+
+            // Formulario de login
+            var loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var email = document.getElementById('loginEmail').value.trim();
+                    var password = document.getElementById('loginPassword').value;
+                    if (!email || !password) {
+                        alert('❌ Por favor ingresa email y contraseña');
+                        return;
+                    }
+                    if (loginUser(email, password)) {
+                        alert('✅ ¡Bienvenido al sistema SLEP Iquique!');
+                        hideModal('loginModal');
+                        loginForm.reset();
+                    } else {
+                        alert('❌ Email o contraseña incorrectos\n\nVerifica tus credenciales o regístrate si eres nuevo.');
+                    }
+                });
+            }
+
+            // Botones de cancelar en modals
+            document.getElementById('cancelRegister')?.addEventListener('click', function() {
+                hideModal('registerModal');
+                document.getElementById('registerForm').reset();
+            });
+
+            document.getElementById('cancelLogin')?.addEventListener('click', function() {
+                hideModal('loginModal');
+                document.getElementById('loginForm').reset();
+            });
+
+            // Link para ir de login a registro
+            document.getElementById('showRegisterFromLogin')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                hideModal('loginModal');
+                showModal('registerModal');
+            });
+
+            // Cerrar modals al hacer clic fuera
+            document.getElementById('registerModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideModal('registerModal');
+                    document.getElementById('registerForm').reset();
+                }
+            });
+
+            document.getElementById('loginModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideModal('loginModal');
+                    document.getElementById('loginForm').reset();
+                }
+            });
+
+            // Eliminar duplicados de event listeners (arregla el bug de mostrar texto duplicado)
+            // No hay más código duplicado después de este punto
+
+            console.log('✅ Todos los event listeners configurados');
+        });
+
+        // Mensaje de bienvenida
+        setTimeout(() => {
+            console.log('🎉 Sistema SLEP Iquique listo para usar!');
+        }, 1000);
+    </script>
+</body>
+</html>

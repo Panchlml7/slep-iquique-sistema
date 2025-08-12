@@ -18,15 +18,15 @@
                 </div>
             </div>
             <div class="nav-menu">
-                <a href="SISTEMA-SLEP-COMPLETO.html" class="nav-link">Inicio</a>
+                <a href="index.html" class="nav-link">Inicio</a>
                 <a href="#" class="nav-link" id="userInfo"></a>
-                
+                <a href="#" class="nav-link" id="logoutBtn">Cerrar Sesión</a>
             </div>
         </div>
     </nav>
 
     <div class="container dashboard-container">
-        <a href="SISTEMA-SLEP-COMPLETO.html" class="back-btn">← Volver al Menú Principal</a>
+        <a href="index.html" class="back-btn">← Volver al Menú Principal</a>
         
         <header class="header">
             <h1>Registro de Asistencia</h1>
@@ -40,14 +40,14 @@
             <div class="data-header">
                 <h2>📊 Datos de Asistencia</h2>
                 <p id="lastUpdateInfo">Datos cargados por el administrador</p>
-                <button class="btn-refresh" onclick="loadAsistenciaData()">
+                <button class="btn-refresh" id="btnActualizar">
                     🔄 Actualizar Datos
                 </button>
             </div>
             
             <div class="filters-section">
                 <input type="text" id="searchFilter" placeholder="🔍 Buscar en los datos..." class="search-input">
-                <button class="btn-export-csv" onclick="exportToCSV()">
+                <button class="btn-export-csv" id="btnExportarCSV">
                     📋 Exportar CSV
                 </button>
             </div>
@@ -70,9 +70,9 @@
             </div>
             
             <div class="pagination-section" id="paginationSection" style="display: none;">
-                <button class="btn-page" onclick="previousPage()">« Anterior</button>
+                <button class="btn-page" id="btnAnterior">« Anterior</button>
                 <span id="pageInfo">Página 1 de 1</span>
-                <button class="btn-page" onclick="nextPage()">Siguiente »</button>
+                <button class="btn-page" id="btnSiguiente">Siguiente »</button>
             </div>
         </div>
         
@@ -363,6 +363,30 @@
 
             alert(`✅ Archivo CSV exportado con ${filteredData.length} registros`);
         }
+        
+        // Event listeners para los botones convertidos (reemplazar onclick)
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnActualizar = document.getElementById('btnActualizar');
+            const btnExportarCSV = document.getElementById('btnExportarCSV');
+            const btnAnterior = document.getElementById('btnAnterior');
+            const btnSiguiente = document.getElementById('btnSiguiente');
+            
+            if (btnActualizar) {
+                btnActualizar.addEventListener('click', loadAsistenciaData);
+            }
+            
+            if (btnExportarCSV) {
+                btnExportarCSV.addEventListener('click', exportToCSV);
+            }
+            
+            if (btnAnterior) {
+                btnAnterior.addEventListener('click', previousPage);
+            }
+            
+            if (btnSiguiente) {
+                btnSiguiente.addEventListener('click', nextPage);
+            }
+        });
     </script>
 </body>
 </html>

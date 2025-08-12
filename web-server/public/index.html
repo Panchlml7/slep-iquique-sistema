@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<ht    <title>SLEP Iquique - Sistema de Gestión Documental</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/mobile-compatibility.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Favicon para mejor presentación -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJsMy4wOSA2LjI2TDIyIDlsLTUgNC44NyAxLjE4IDYuODhMMTIgMTcuMjdsLTYuMTggMy4yOEw3IDEzLjg3IDIgOWw2LjkxLTAuNzR6IiBmaWxsPSIjNjc0ZWE3Ii8+PC9zdmc+">>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="Sistema de gestión documental para establecimientos educacionales del SLEP Iquique">
+    <meta name="keywords" content="SLEP, Iquique, educación, gestión documental, establecimientos">
+    <meta name="author" content="Francisco Ramos - SLEP Iquique">
+    
+    <!-- Open Graph para redes sociales -->
+    <meta property="og:title" content="SLEP Iquique - Sistema de Gestión">
+    <meta property="og:description" content="Sistema de gestión documental para establecimientos educacionales">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://panchlml7.github.io/slep-iquique-sistema/">
+    
+    <!-- iOS Safari optimizations -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SLEP Iquique">
+    
+    <title>SLEP Iquique - Sistema de Gestión Documental</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/mobile-compatibility.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Favicon para mejor presentación -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJsMy4wOSA2LjI2TDIyIDlsLTUgNC44NyAxLjE4IDYuODhMMTIgMTcuMjdsLTYuMTggMy4yOEw3IDEzLjg3IDIgOWw2LjkxLTAuNzR6IiBmaWxsPSIjNjc0ZWE3Ii8+PC9zdmc+">
+    
+    <!-- Sistema de Seguridad del Proyecto -->
+    <script src="js/security.js"></script>
+    <!-- Sistema de Inicialización -->
+    <script src="js/system-init.js"></script>
+    <style>
+        /* Modal para funcionalidades próximas */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-message {
+            color: #718096;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .modal-close-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-text">
+                    <span class="logo-main">SLEP IQUIQUE</span>
+                    <span class="logo-subtitle">Sistema</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="login.html" class="nav-link" id="loginBtn">Iniciar Sesión</a>
+                <a href="#" class="nav-link" id="userInfo" style="display: none;"></a>
+                <a href="#" class="nav-link" id="logoutBtn" style="display: none;">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <header class="header">
+            <h1>Bienvenido al Sistema</h1>
+            <p>Selecciona una opción del menú principal</p>
+        </header>
+
+        <!-- Menú principal con 4 botones -->
+        <div class="menu-grid">
+            <div class="menu-card">
+                <div class="card-icon">👤</div>
+                <h3>Asistencia</h3>
+                <p>Ver registro de asistencia y estadísticas</p>
+                <button class="btn-menu" id="btnAsistencia">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">🏫</div>
+                <h3>Establecimiento</h3>
+                <p>Jardines, Escuelas, Institutos y Liceos</p>
+                <button class="btn-menu" id="btnUsuarios">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">📁</div>
+                <h3>Documentos</h3>
+                <p>Gestionar documentos de equipos</p>
+                <button class="btn-menu" id="btnDocumentos">Acceder</button>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-icon">🚧</div>
+                <h3>Habilitación</h3>
+                <p>Gestionar habilitaciones del sistema</p>
+                <button class="btn-menu" id="btnHabilitacion">Acceder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para funcionalidades próximas -->
+    <div class="modal-overlay" id="comingSoonModal">
+        <div class="modal-content">
+            <div class="modal-icon">🚧</div>
+            <h3 class="modal-title">Próximamente</h3>
+            <p class="modal-message">Esta funcionalidad estará disponible muy pronto. Estamos trabajando para mejorar tu experiencia en el sistema SLEP Iquique.</p>
+            <button class="modal-close-btn" id="closeModal">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        // Mapping de establecimientos con sus RBDs
+        const establishmentRBD = {
+            "Instituto Comercial de Iquique Baldomero Wolnitzky": "97-3",
+            "Escuela Educación Especial Flor del Inca": "102-3",
+            "Escuela Educación General Básica y Desarrollo Artístico Violeta Parra": "103-1",
+            "Centro de Capacitación Laboral": "105-8",
+            "Liceo Libertador General Bernardo O´Higgins": "107-4",
+            "Liceo Politécnico José Gutiérrez de la Fuente": "108-2",
+            "Liceo Deportivo Técnico Profesional Elena Duvauchelle Cabezón": "109-0",
+            "Liceo Bicentenario Domingo Santa María de Iquique": "110-4",
+            "Escuela Gabriela Mistral": "111-2",
+            "Escuela Eduardo Llanos": "112-0",
+            "Escuela Almirante Patricio Lynch": "113-9",
+            "Escuela Placido Villarroel": "114-7",
+            "Colegio Republica De Croacia": "116-3",
+            "Escuela Paula Jaraquemada Alquizar": "117-1",
+            "Escuela Centenario": "119-8",
+            "Escuela Thilda Portillo Olivares": "122-8",
+            "Colegio España": "123-6",
+            "Liceo Luis Cruz Martínez": "124-4",
+            "Escuela Profesor Manuel Castro Ramos": "125-2",
+            "Colegio Republica De Italia": "126-0",
+            "Escuela Caleta Chanavayita": "10916-9",
+            "Liceo Bicentenario S.S. Juan Pablo Segundo": "10917-7",
+            "Escuela Chipana": "12538-5",
+            "Escuela Caleta San Marcos": "12542-3",
+            "Colegio Simón Bolívar": "12632-2",
+            "Escuela Especial de Lenguaje Oasis del Saber": "12739-6",
+            "Liceo C.E.I.A. José Alejandro Soria Varas": "12758-2",
+            "Carita de Sol": "33015-9",
+            "Oasis Del Saber": "33019-1",
+            "Intina Wawapa": "33020-5",
+            "Los Naranjos": "33021-3",
+            "Tortuguitas": "33022-1",
+            "Arumanti": "33024-8",
+            "Lucerito Dorado": "33025-6",
+            "Aventuras de Aprender": "33026-4",
+            "Arcoíris del Desierto": "33027-2",
+            "Magia de Aprender": "33028-0",
+            "Mi Pequeño Mundo": "33030-2",
+            "Suma Inti": "35987-4",
+            "Liceo Técnico Profesional de Adultos": "40429-2",
+            "SLEP Iquique - Oficina Central": "SLEP-IQQ"
+        };
+
+        // Usuario administrador autorizado - Credenciales configuradas de forma segura
+        const adminUser = {
+            username: 'francisco.ramos',
+            email: 'fun@slepiqq.cl',
+            password: '', // Se establece durante la configuración inicial
+            status: 'admin'
+        };
+
+        // Inicializar sistema con usuario admin
+        function initializeUsers() {
+            console.log('🔧 Inicializando usuarios...');
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            
+            // Verificar que el admin existe, si no existe crear uno por defecto
+            const adminExists = users.find(u => u.email === adminUser.email);
+            if (!adminExists) {
+                console.log('⚠️ Usuario admin no encontrado. Creando usuario por defecto...');
+                // Crear usuario admin por defecto para que el sistema funcione
+                const defaultAdmin = {
+                    username: 'francisco.ramos',
+                    email: 'fun@slepiqq.cl',
+                    password: 'SLEP2025',
+                    establecimiento: 'SLEP Iquique - Oficina Central',
+                    cargo: 'Administrador',
+                    status: 'admin',
+                    registrationDate: new Date().toISOString()
+                };
+                users.push(defaultAdmin);
+                localStorage.setItem('appUsers', JSON.stringify(users));
+                console.log('✅ Usuario admin creado por defecto');
+            } else {
+                console.log('✅ Usuario admin configurado correctamente');
+            }
+        }
+
+        // Función para obtener RBD del establecimiento
+        function getEstablishmentRBD(establishmentName) {
+            return establishmentRBD[establishmentName] || "No disponible";
+        }
+
+        // Funciones para manejar el modal
+        function showComingSoonModal() {
+            const modal = document.getElementById('comingSoonModal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function hideComingSoonModal() {
+            const modal = document.getElementById('comingSoonModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Función para actualizar la interfaz de usuario
+        function updateUserInterface() {
+            console.log('🔄 Actualizando interfaz de usuario...');
+            const currentUser = localStorage.getItem('currentUser');
+            const loginBtn = document.getElementById('loginBtn');
+            const userInfo = document.getElementById('userInfo');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                console.log('👤 Usuario logueado:', user.username);
+                
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (userInfo) {
+                    userInfo.style.display = 'block';
+                    userInfo.textContent = `Hola, ${user.username}`;
+                }
+                if (logoutBtn) logoutBtn.style.display = 'block';
+            } else {
+                console.log(' No hay usuario logueado');
+                // Usuario no logueado
+                if (loginBtn) loginBtn.style.display = 'block';
+                if (userInfo) userInfo.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
+        }
+
+        // Event listener para cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Página cargada, inicializando sistema...');
+            
+            // Verificar estado de login y actualizar interfaz
+            updateUserInterface();
+            
+            // Inicializar usuarios para asegurar que el admin existe
+            initializeUsers();
+            
+            // ===== AGREGAR EVENT LISTENERS PARA LOS 4 BOTONES PRINCIPALES =====
+            console.log('🔧 Configurando event listeners para botones...');
+            
+            // Botón Asistencia
+            const btnAsistencia = document.getElementById('btnAsistencia');
+            if (btnAsistencia) {
+                btnAsistencia.addEventListener('click', goToAsistencia);
+                console.log('✅ Event listener para Asistencia configurado');
+            }
+            
+            // Botón Usuarios/Establecimientos - Va a establecimiento.html
+            const btnUsuarios = document.getElementById('btnUsuarios');
+            if (btnUsuarios) {
+                btnUsuarios.addEventListener('click', goToEstablecimiento);
+                console.log('✅ Event listener para Establecimiento configurado');
+            }
+            
+            // Botón Documentos
+            const btnDocumentos = document.getElementById('btnDocumentos');
+            if (btnDocumentos) {
+                btnDocumentos.addEventListener('click', checkLoginAndRedirect);
+                console.log('✅ Event listener para Documentos configurado');
+            }
+            
+            // Botón Habilitación
+            const btnHabilitacion = document.getElementById('btnHabilitacion');
+            if (btnHabilitacion) {
+                btnHabilitacion.addEventListener('click', showHabilitacion);
+                console.log('✅ Event listener para Habilitación configurado');
+            }
+            
+            // Modal de próximamente
+            const closeModal = document.getElementById('closeModal');
+            if (closeModal) {
+                closeModal.addEventListener('click', hideComingSoonModal);
+                console.log('✅ Event listener para Modal configurado');
+            }
+
+            // Cerrar modal al hacer clic fuera
+            const modal = document.getElementById('comingSoonModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        hideComingSoonModal();
+                    }
+                });
+                console.log('✅ Event listener para cerrar modal por click externo configurado');
+            }
+            
+            console.log('🎉 Todos los event listeners configurados correctamente');
+            
+            const documentsBtn = document.getElementById('documentsBtn');
+            if (documentsBtn) {
+                documentsBtn.addEventListener('click', function() {
+                    // Verificar si el usuario está logueado
+                    const currentUser = localStorage.getItem('currentUser');
+                    
+                    if (currentUser) {
+                        // Usuario logueado, redirigir a documentos
+                        window.location.href = './documentos/documentos.html';
+                    } else {
+                        // Usuario no logueado, redirigir a login
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+
+            // Event listener para botón de logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+
+        // ===== FUNCIONES DE NAVEGACIÓN PRINCIPALES =====
+
+        // Funciones básicas de autenticación
+        function isUserLoggedIn() {
+            return localStorage.getItem('currentUser') !== null;
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            updateUserInterface();
+        }
+
+        // ===== FUNCIONES DE NAVEGACIÓN REPARADAS =====
+        
+        // 📊 Ir a Asistencia - REPARADA
+        function goToAsistencia() {
+            try {
+                console.log('🚀 Navegando a Asistencia...');
+                window.location.href = 'asistencia.html';
+            } catch (error) {
+                console.error('Error en goToAsistencia:', error);
+                alert('Error al navegar a Asistencia');
+            }
+        }
+        
+        // 👥 Mostrar Usuarios - REPARADA
+        function showUsers() {
+            try {
+                console.log('🚀 Navegando a Usuarios...');
+                window.location.href = 'admin-usuarios.html';
+            } catch (error) {
+                console.error('Error en showUsers:', error);
+                alert('Error al navegar a Usuarios');
+            }
+        }
+        
+        // 🔐 Verificar Login y Redirigir - REPARADA
+        function checkLoginAndRedirect() {
+            try {
+                console.log('🚀 Verificando login...');
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    window.location.href = 'documentos/documentos.html';
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Error en checkLoginAndRedirect:', error);
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // � Ir a Establecimiento - NUEVA FUNCIÓN
+        function goToEstablecimiento() {
+            try {
+                console.log('🚀 Navegando a Establecimiento...');
+                window.location.href = 'establecimiento.html';
+            } catch (error) {
+                console.error('Error en goToEstablecimiento:', error);
+                alert('Error al navegar a Establecimiento');
+            }
+        }
+        
+        // �🎫 Mostrar Habilitación - MODAL
+        function showHabilitacion() {
+            try {
+                console.log('� Mostrando modal de próximamente...');
+                showComingSoonModal();
+            } catch (error) {
+                console.error('Error en showHabilitacion:', error);
+                alert('Error al mostrar modal');
+            }
+        }
+        
+        console.log('✅ Funciones de navegación cargadas correctamente');
+        
+        // Mensaje de debug para confirmar que el script está funcionando
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 DOM completamente cargado');
+            console.log('🔍 Verificando funciones disponibles:');
+            console.log('- goToAsistencia:', typeof goToAsistencia);
+            console.log('- goToEstablecimiento:', typeof goToEstablecimiento);
+            console.log('- checkLoginAndRedirect:', typeof checkLoginAndRedirect);
+            console.log('- showHabilitacion:', typeof showHabilitacion);
+            
+            // Mostrar alerta temporal para confirmar que todo funciona
+            setTimeout(() => {
+                console.log('🚀 Sistema listo - Puedes hacer clic en los botones');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

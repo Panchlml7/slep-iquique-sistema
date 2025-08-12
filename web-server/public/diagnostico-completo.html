@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 DIAGNÓSTICO COMPLETO - Todas las páginas HTML</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .master-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .page-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .page-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .page-card.working {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .page-card.broken {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .page-card.testing {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+        
+        .page-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .test-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #674ea7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px 0;
+            transition: background 0.3s;
+        }
+        
+        .test-button:hover {
+            background: #5d4a95;
+        }
+        
+        .working .test-button {
+            background: #28a745;
+        }
+        
+        .working .test-button:hover {
+            background: #218838;
+        }
+        
+        .broken .test-button {
+            background: #dc3545;
+        }
+        
+        .broken .test-button:hover {
+            background: #c82333;
+        }
+        
+        .status-summary {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .status-counts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .status-count {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .count-working {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .count-broken {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .count-testing {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .count-unknown {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+    </style>
+</head>
+<body>
+    <div class="master-container">
+        <div class="header">
+            <h1>🔧 DIAGNÓSTICO COMPLETO DEL SISTEMA</h1>
+            <p><strong>Análisis de funcionalidad de botones en todas las páginas HTML</strong></p>
+        </div>
+        
+        <div class="status-summary">
+            <h3>📊 Resumen de Estado</h3>
+            <div class="status-counts">
+                <div class="count-working status-count">
+                    <div>✅ FUNCIONAN</div>
+                    <div id="working-count">0</div>
+                </div>
+                <div class="count-broken status-count">
+                    <div>❌ NO FUNCIONAN</div>
+                    <div id="broken-count">0</div>
+                </div>
+                <div class="count-testing status-count">
+                    <div>🧪 PRUEBAS</div>
+                    <div id="testing-count">0</div>
+                </div>
+                <div class="count-unknown status-count">
+                    <div>❓ DESCONOCIDO</div>
+                    <div id="unknown-count">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page-grid" id="page-grid">
+            <!-- Las páginas se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+    
+    <script>
+        // Lista completa de páginas HTML del sistema
+        const pages = [
+            { name: 'index.html', title: '🏠 Página Principal', status: 'working', 
+              description: 'Página principal con 4 botones de navegación - REPARADA',
+              buttons: ['goToAsistencia()', 'showUsers()', 'checkLoginAndRedirect()', 'showHabilitacion()'] },
+              
+            { name: 'asistencia.html', title: '👤 Asistencia', status: 'working', 
+              description: 'Sistema de registro de asistencia y estadísticas',
+              buttons: ['loadAsistenciaData()', 'exportToCSV()', 'previousPage()', 'nextPage()'] },
+              
+            { name: 'admin-usuarios.html', title: '👥 Administración de Usuarios', status: 'working', 
+              description: 'Panel de administración completo de usuarios',
+              buttons: ['switchTab()', 'approveUser()', 'deleteUser()', 'showUserDetailsModal()'] },
+              
+            { name: 'documentos/documentos.html', title: '📁 Gestión de Documentos', status: 'working', 
+              description: 'Sistema de documentos con búsqueda modernizada',
+              buttons: ['searchDocuments()', 'filterByModalidad()', 'clearFilters()', 'exportData()'] },
+              
+            { name: 'establecimiento.html', title: '🏫 Establecimientos', status: 'working', 
+              description: 'Gestión de establecimientos educativos',
+              buttons: ['Verificar botones específicos'] },
+              
+            { name: 'login.html', title: '🔐 Login', status: 'working', 
+              description: 'Página de inicio de sesión',
+              buttons: ['togglePassword()', 'login form submit'] },
+              
+            { name: 'registrar.html', title: '📝 Registro', status: 'unknown', 
+              description: 'Formulario de registro de usuarios',
+              buttons: ['Verificar funcionalidad'] },
+              
+            { name: 'perfiles-autorizados.html', title: '🎫 Perfiles Autorizados', status: 'unknown', 
+              description: 'Gestión de perfiles y autorizaciones',
+              buttons: ['Verificar funcionalidad'] },
+              
+            // Páginas de prueba (ya funcionan)
+            { name: 'botones-reparados.html', title: '✅ Verificación de Reparación', status: 'testing', 
+              description: 'Página de prueba para confirmar reparaciones',
+              buttons: ['Todas las funciones de prueba'] },
+              
+            { name: 'diagnostico-final.html', title: '🔧 Diagnóstico Final', status: 'testing', 
+              description: 'Herramienta completa de diagnóstico',
+              buttons: ['Funciones de diagnóstico'] },
+              
+            { name: 'simple-test.html', title: '🧪 Prueba Simple', status: 'testing', 
+              description: 'Prueba básica de funcionalidad JavaScript',
+              buttons: ['test1()', 'test2()', 'test3()'] }
+        ];
+        
+        function createPageCard(page) {
+            const card = document.createElement('div');
+            card.className = `page-card ${page.status}`;
+            
+            const statusIcon = {
+                'working': '✅',
+                'broken': '❌', 
+                'testing': '🧪',
+                'unknown': '❓'
+            }[page.status];
+            
+            card.innerHTML = `
+                <div class="page-title">
+                    ${statusIcon} ${page.title}
+                </div>
+                <div class="page-description">
+                    ${page.description}
+                </div>
+                <button class="test-button" onclick="testPage('${page.name}')">
+                    🧪 Probar Página
+                </button>
+                <button class="test-button" onclick="openPage('${page.name}')">
+                    🌐 Abrir Página
+                </button>
+                <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                    <strong>Botones:</strong> ${page.buttons.join(', ')}
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function loadPages() {
+            const grid = document.getElementById('page-grid');
+            let counts = { working: 0, broken: 0, testing: 0, unknown: 0 };
+            
+            pages.forEach(page => {
+                counts[page.status]++;
+                grid.appendChild(createPageCard(page));
+            });
+            
+            // Actualizar contadores
+            document.getElementById('working-count').textContent = counts.working;
+            document.getElementById('broken-count').textContent = counts.broken;
+            document.getElementById('testing-count').textContent = counts.testing;
+            document.getElementById('unknown-count').textContent = counts.unknown;
+        }
+        
+        function testPage(pageName) {
+            console.log(`🧪 Probando página: ${pageName}`);
+            alert(`🧪 Iniciando prueba de: ${pageName}\n\nSe abrirá la página en una nueva pestaña para verificar su funcionalidad.`);
+            window.open(pageName, '_blank');
+        }
+        
+        function openPage(pageName) {
+            console.log(`🌐 Abriendo página: ${pageName}`);
+            window.location.href = pageName;
+        }
+        
+        // Inicializar al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPages();
+            console.log('🔧 Sistema de diagnóstico completo cargado');
+        });
+    </script>
+</body>
+</html>

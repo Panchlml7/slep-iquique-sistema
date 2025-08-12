@@ -1,0 +1,1332 @@
+/* ================================
+   ESTILOS PARA SISTEMA DE DOCUMENTOS 
+   SLEP IQUIQUE
+   ================================ */
+
+/* ================================
+   GRID DE DATOS BÁSICOS
+   ================================ */
+.datos-basicos-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.grid-row {
+    display: grid;
+    gap: 1rem;
+    align-items: end;
+}
+
+/* Configuraciones específicas por fila */
+.grid-row.acta-fecha {
+    grid-template-columns: 1fr 1fr;
+}
+
+.grid-row.objetivo {
+    grid-template-columns: 1fr;
+}
+
+.grid-row.establecimiento-rbd {
+    grid-template-columns: 2fr 1fr;
+}
+
+.grid-row.asesores {
+    grid-template-columns: 1fr 1fr;
+}
+
+.grid-row.horarios {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.grid-row.ciclos {
+    grid-template-columns: 1fr 1fr;
+}
+
+.grid-row.nivel-rol {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Destacar fecha */
+.fecha-destacada {
+    position: relative;
+}
+
+.fecha-destacada label {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    font-size: 1.1rem;
+}
+
+.fecha-destacada input {
+    border: 3px solid #667eea;
+    border-radius: 10px;
+    padding: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+}
+
+.fecha-destacada input:focus {
+    outline: none;
+    border-color: #4c51bf;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* Estilos responsivos para grid */
+@media (max-width: 768px) {
+    .grid-row.acta-fecha,
+    .grid-row.horarios,
+    .grid-row.asesores,
+    .grid-row.establecimiento-rbd,
+    .grid-row.ciclos,
+    .grid-row.nivel-rol {
+        grid-template-columns: 1fr;
+    }
+    
+    .datos-basicos-grid {
+        gap: 1rem;
+    }
+}
+
+/* Contenedor principal */
+.documents-container {
+    padding: 2rem;
+}
+
+.upload-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+/* ================================
+   PESTAÑAS PRINCIPALES
+   ================================ */
+.main-tabs-navigation {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 3px solid #e2e8f0;
+}
+
+.main-tab-btn {
+    padding: 1rem 2rem;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 10;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.main-tab-btn:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+.main-tab-btn.active {
+    background: #667eea;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    z-index: 20;
+}
+
+.main-tab-btn:hover:not(.active) {
+    background: #f1f5f9;
+    color: #475569;
+    transform: translateY(-1px);
+}
+
+/* ================================
+   SUB-PESTAÑAS DEL FORMULARIO
+   ================================ */
+.form-tabs-navigation {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.form-tab-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-align: center;
+}
+
+.form-tab-btn.active {
+    background: #667eea;
+    color: white;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+}
+
+.form-tab-btn:hover:not(.active) {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* ================================
+   CONTENIDO DE PESTAÑAS
+   ================================ */
+.main-tab-content {
+    display: none !important;
+    animation: fadeIn 0.4s ease-in;
+    min-height: 200px;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0 0 10px 10px;
+    background: white;
+}
+
+.main-tab-content.active {
+    display: block !important;
+}
+
+/* Debug styles - remover después */
+.main-tab-content[data-maintab="documentos-guardados"] {
+    background: #f0f9ff;
+}
+
+.main-tab-content[data-maintab="nuevo-documento"] {
+    background: #f8fafc;
+}
+
+.form-tab-content {
+    display: none;
+    animation: slideIn 0.3s ease-in;
+}
+
+.form-tab-content.active {
+    display: block;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* ================================
+   NAVEGACIÓN DEL FORMULARIO
+   ================================ */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #e2e8f0;
+    gap: 1rem;
+}
+
+.nav-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 140px;
+    justify-content: center;
+}
+
+#prevTab {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+    border: 2px solid #4b5563;
+}
+
+#nextTab {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 2px solid #4c51bf;
+}
+
+#submitBtn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    font-size: 1.1rem;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    border: 2px solid #059669;
+    font-weight: 700;
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+#prevTab:hover {
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    border-color: #374151;
+}
+
+#nextTab:hover {
+    background: linear-gradient(135deg, #4c51bf 0%, #6366f1 100%);
+    border-color: #3730a3;
+}
+
+#submitBtn:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    border-color: #047857;
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ================================
+   FORMULARIOS
+   ================================ */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.form-group label.required::after {
+    content: ' *';
+    color: #e53e3e;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* ================================
+   DOCUMENTOS GUARDADOS
+   ================================ */
+.documents-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.document-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.document-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.document-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    border-color: #667eea;
+}
+
+.doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.doc-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.doc-acta {
+    background: #667eea;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.doc-info {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.doc-info .icon {
+    font-size: 0.8rem;
+}
+
+.doc-description {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: #4b5563;
+    border-left: 3px solid #667eea;
+}
+
+.doc-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.btn-small {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.btn-view {
+    background: #667eea;
+    color: white;
+}
+
+.btn-edit {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-delete {
+    background: #e53e3e;
+    color: white;
+}
+
+.btn-small:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* ================================
+   ESTADÍSTICAS
+   ================================ */
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.stat-label {
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+/* ================================
+   ESTADOS DE CARGA
+   ================================ */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+
+.empty-state .icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* ================================
+   BUSCADOR DE DOCUMENTOS
+   ================================ */
+.search-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.search-section h3 {
+    color: white;
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+@media (max-width: 768px) {
+    .documents-container {
+        padding: 1rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .main-tabs-navigation {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .form-tabs-navigation {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .form-navigation {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .nav-btn {
+        width: 100%;
+        min-width: unset;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+    
+    #submitBtn {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+    }
+
+    .documents-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .main-tab-btn {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+    
+    .form-tab-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .documents-container {
+        padding: 0.5rem;
+    }
+    
+    .upload-section,
+    .documents-section {
+        padding: 1rem;
+    }
+    
+    .stat-box {
+        padding: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+}
+
+/* ================================
+   ESTILOS ADICIONALES PARA DOCUMENTOS_NEW
+   ================================ */
+
+/* Upload area con drag & drop */
+.file-upload-area {
+    border: 2px dashed #667eea;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    background: #f8faff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-upload-area:hover {
+    border-color: #764ba2;
+    background: #f0f4ff;
+}
+
+.file-upload-area.dragover {
+    border-color: #38a169;
+    background: #f0fff4;
+}
+
+/* Tipos de documentos */
+.doc-type {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.doc-type.pdf { background: #fed7d7; color: #e53e3e; }
+.doc-type.word { background: #bee3f8; color: #2b6cb0; }
+.doc-type.excel { background: #c6f6d5; color: #38a169; }
+.doc-type.image { background: #fbb6ce; color: #d53f8c; }
+.doc-type.other { background: #e2e8f0; color: #4a5568; }
+.doc-type.form { background: #d6f5d6; color: #2f855a; }
+
+/* Botones adicionales */
+.btn-download {
+    background: #667eea;
+    color: white;
+}
+
+/* Filtros de equipo */
+.team-filter {
+    margin-bottom: 2rem;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid #e2e8f0;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* ================================
+   MODAL DE DOCUMENTOS
+   ================================ */
+.modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 1000 !important;
+    animation: modalFadeIn 0.4s ease-out !important;
+    padding: 2rem !important;
+}
+
+@keyframes modalFadeIn {
+    from { 
+        opacity: 0; 
+        backdrop-filter: blur(0px);
+    }
+    to { 
+        opacity: 1; 
+        backdrop-filter: blur(8px);
+    }
+}
+
+.modal-content {
+    background: white !important;
+    border-radius: 20px !important;
+    max-width: 100% !important;
+    max-height: 90% !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+    position: relative !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3) !important;
+    animation: modalSlideIn 0.5s ease-out !important;
+    border: 3px solid #667eea !important;
+}
+
+@keyframes modalSlideIn {
+    from { 
+        transform: scale(0.9) translateY(-50px); 
+        opacity: 0;
+    }
+    to { 
+        transform: scale(1) translateY(0); 
+        opacity: 1;
+    }
+}
+
+/* Header del modal */
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    padding: 2rem !important;
+    border-radius: 17px 17px 0 0 !important;
+    text-align: center !important;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3) !important;
+    position: relative !important;
+}
+
+.modal-header h2 {
+    margin: 0 !important;
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.modal-header p {
+    margin: 0.5rem 0 0 0 !important;
+    opacity: 0.9 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+}
+
+/* Botón cerrar mejorado */
+.modal-close-btn {
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    cursor: pointer !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.modal-close-btn:hover {
+    background: rgba(239, 68, 68, 0.8) !important;
+    border-color: rgba(239, 68, 68, 1) !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Contenido del modal */
+.modal-body {
+    padding: 2rem !important;
+    line-height: 1.6 !important;
+}
+
+/* Grid de información */
+.modal-info-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.modal-info-section {
+    background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%) !important;
+    padding: 1.5rem !important;
+    border-radius: 15px !important;
+    border: 2px solid #e2e8f0 !important;
+    transition: all 0.3s ease !important;
+}
+
+.modal-info-section:hover {
+    border-color: #667eea !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.1) !important;
+}
+
+.modal-info-section h3 {
+    margin: 0 0 1rem 0 !important;
+    color: #1f2937 !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.modal-info-section p {
+    margin: 0.5rem 0 !important;
+    color: #4b5563 !important;
+    font-size: 1rem !important;
+}
+
+.modal-info-section strong {
+    color: #1f2937 !important;
+    font-weight: 600 !important;
+}
+
+/* Secciones de contenido largo */
+.modal-content-section {
+    background: white !important;
+    margin-bottom: 1.5rem !important;
+    padding: 1.5rem !important;
+    border-radius: 12px !important;
+    border-left: 4px solid #667eea !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+.modal-content-section h3 {
+    margin: 0 0 1rem 0 !important;
+    color: #667eea !important;
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.modal-content-section p {
+    margin: 0 !important;
+    color: #374151 !important;
+    font-size: 1.05rem !important;
+    line-height: 1.7 !important;
+    text-align: justify !important;
+}
+
+/* Footer del modal */
+.modal-footer {
+    background: #f8fafc !important;
+    padding: 1.5rem 2rem !important;
+    border-radius: 0 0 17px 17px !important;
+    border-top: 2px solid #e2e8f0 !important;
+    color: #6b7280 !important;
+    font-size: 0.9rem !important;
+}
+
+.modal-footer p {
+    margin: 0.3rem 0 !important;
+}
+
+.modal-footer strong {
+    color: #374151 !important;
+}
+
+/* Responsive para modal */
+@media (max-width: 768px) {
+    .modal-overlay {
+        padding: 1rem !important;
+    }
+    
+    .modal-content {
+        max-width: 98% !important;
+        max-height: 95% !important;
+    }
+    
+    .modal-header {
+        padding: 1.5rem !important;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .modal-body {
+        padding: 1.5rem !important;
+    }
+    
+    .modal-info-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .modal-info-section {
+        padding: 1rem !important;
+    }
+    
+    .modal-content-section {
+        padding: 1rem !important;
+    }
+}
+
+/* Scrollbar personalizado para el modal */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.filter-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+/* ================================
+   ESTILOS PARA EXPORTACIÓN PDF
+   ================================ */
+.pdf-export-container {
+    background: white;
+    max-width: 216mm; /* Tamaño Legal */
+    margin: 0 auto;
+    padding: 20mm;
+    font-family: 'Times New Roman', Times, serif;
+    line-height: 1.6;
+    color: #000;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+}
+
+.pdf-page {
+    background: white;
+    width: 216mm; /* Legal width (8.5 inches) */
+    min-height: 356mm; /* Legal height (14 inches) */
+    padding: 20mm;
+    margin: 0 auto 10mm auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+    page-break-after: always;
+    font-size: 12pt;
+    line-height: 1.5;
+}
+
+.pdf-page:last-child {
+    page-break-after: avoid;
+}
+
+/* Header del documento PDF */
+.pdf-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #333;
+}
+
+.pdf-header h1 {
+    font-size: 18pt;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pdf-header h2 {
+    font-size: 14pt;
+    font-weight: normal;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.pdf-header p {
+    font-size: 11pt;
+    margin: 5px 0;
+    color: #666;
+}
+
+/* Logo SLEP en PDF */
+.pdf-logo {
+    width: 80px;
+    height: auto;
+    margin: 0 auto 15px auto;
+    display: block;
+}
+
+/* Información básica del documento */
+.pdf-info-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-left: 4px solid #667eea;
+}
+
+.pdf-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.pdf-info-item {
+    margin-bottom: 8px;
+}
+
+.pdf-info-label {
+    font-weight: bold;
+    color: #333;
+    margin-right: 5px;
+}
+
+.pdf-info-value {
+    color: #000;
+}
+
+/* Contenido principal del PDF */
+.pdf-content {
+    margin-bottom: 25px;
+}
+
+.pdf-content h3 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+    color: #000;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.pdf-content h4 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 15px 0 8px 0;
+    color: #333;
+}
+
+.pdf-content p {
+    margin: 8px 0;
+    text-align: justify;
+    color: #000;
+}
+
+.pdf-content ul, .pdf-content ol {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.pdf-content li {
+    margin: 5px 0;
+    color: #000;
+}
+
+/* Tablas en PDF */
+.pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 10pt;
+}
+
+.pdf-table th,
+.pdf-table td {
+    border: 1px solid #333;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.pdf-table th {
+    background: #f0f0f0;
+    font-weight: bold;
+    color: #000;
+}
+
+.pdf-table td {
+    color: #000;
+}
+
+/* Footer del PDF */
+.pdf-footer {
+    position: fixed;
+    bottom: 15mm;
+    left: 20mm;
+    right: 20mm;
+    height: 20mm;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    font-size: 9pt;
+    color: #666;
+    text-align: center;
+}
+
+.pdf-footer p {
+    margin: 2px 0;
+}
+
+/* Numeración de páginas */
+.pdf-page-number {
+    position: fixed;
+    bottom: 10mm;
+    right: 20mm;
+    font-size: 9pt;
+    color: #666;
+}
+
+/* Firmas en PDF */
+.pdf-signatures {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.pdf-signature {
+    text-align: center;
+    padding-top: 30px;
+}
+
+.pdf-signature-line {
+    border-top: 1px solid #000;
+    width: 200px;
+    margin: 0 auto 10px auto;
+}
+
+.pdf-signature-name {
+    font-weight: bold;
+    font-size: 11pt;
+    margin-bottom: 5px;
+}
+
+.pdf-signature-title {
+    font-size: 10pt;
+    color: #666;
+}
+
+/* Estilos para impresión real */
+@media print {
+    .pdf-export-container,
+    .pdf-page {
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 15mm !important;
+    }
+    
+    .pdf-page {
+        page-break-after: always;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: auto !important;
+    }
+    
+    .pdf-page:last-child {
+        page-break-after: avoid;
+    }
+    
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+/* Clase para ocultar elementos en PDF */
+.pdf-hide {
+    display: none !important;
+}
+
+/* Estilos especiales para diferentes tipos de documento */
+.pdf-document-type-acta {
+    border-left: 5px solid #667eea;
+}
+
+.pdf-document-type-informe {
+    border-left: 5px solid #10b981;
+}
+
+.pdf-document-type-evaluacion {
+    border-left: 5px solid #f59e0b;
+}
+
+/* Formato de fecha destacada en PDF */
+.pdf-date-highlight {
+    background: #f0f4ff;
+    padding: 5px 10px;
+    border: 1px solid #667eea;
+    border-radius: 3px;
+    font-weight: bold;
+    display: inline-block;
+    margin: 5px 0;
+}
+
+/* Sección de observaciones en PDF */
+.pdf-observations {
+    background: #fffbf0;
+    border: 1px solid #f59e0b;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.pdf-observations h4 {
+    color: #f59e0b;
+    margin-top: 0;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+    .pdf-export-container {
+        max-width: 100%;
+        padding: 10px;
+    }
+    
+    .pdf-page {
+        width: 100%;
+        min-height: auto;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .pdf-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pdf-signatures {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .pdf-table {
+        font-size: 9pt;
+    }
+    
+    .pdf-table th,
+    .pdf-table td {
+        padding: 5px;
+    }
+}

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLEP Iquique - Sistema para Funciona            // Crear usuario administrador por defecto
+            const adminUser = {
+                username: 'francisco.ramos',
+                email: 'fun@slepiqq.cl',
+                password: 'SLEP2025',
+                establecimiento: 'SLEP Iquique - Oficina Central',
+                cargo: 'Administrador',
+                status: 'admin',
+                registrationDate: new Date().toISOString()
+            };e>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .info-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-text {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 1rem;
+            min-width: 200px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .credentials {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #f0fff4;
+            color: #38a169;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status.error {
+            background: #fff5f5;
+            color: #e53e3e;
+            border: 1px solid #feb2b2;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏫 SLEP IQUIQUE</div>
+        <div class="subtitle">Sistema de Gestión Documental para Funcionarios</div>
+
+        <div class="info-box">
+            <div class="info-title">✅ Sistema Simplificado</div>
+            <div class="info-text">
+                Este sistema funciona directamente en tu navegador, sin necesidad de instalaciones adicionales o conocimientos técnicos.
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-title">👤 Usuario Administrador Predeterminado</div>
+            <div class="info-text">
+                Para comenzar a usar el sistema, puedes usar estas credenciales:
+            </div>
+            <div class="credentials">
+                <strong>Email:</strong> fun@slepiqq.cl<br>
+                <strong>Contraseña:</strong> SLEP2025
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="abrirSistema()">
+            🚀 Abrir Sistema SLEP
+        </button>
+
+        <br>
+
+        <button class="btn-secondary" onclick="verificarEstado()">
+            🔍 Verificar Estado del Sistema
+        </button>
+
+        <button class="btn-secondary" onclick="limpiarDatos()">
+            🗑️ Reiniciar Datos del Sistema
+        </button>
+
+        <div id="status" class="status" style="display: none;"></div>
+
+        <div class="footer">
+            <p>Desarrollado para SLEP Iquique - Francisco Ramos</p>
+            <p>Sistema optimizado para funcionarios - No requiere servidor</p>
+        </div>
+    </div>
+
+    <script>
+        function abrirSistema() {
+            // Inicializar sistema con datos básicos
+            inicializarSistema();
+            
+            // Abrir el sistema principal
+            window.open('web-server/public/index.html', '_blank');
+            
+            mostrarEstado('Sistema SLEP abierto correctamente', 'success');
+        }
+
+        function inicializarSistema() {
+            // Crear usuario administrador por defecto
+            const adminUser = {
+                username: 'francisco.ramos',
+                email: 'francisco.ramos@slepiquique.cl',
+                password: 'SLEP2025',
+                establecimiento: 'SLEP Iquique - Oficina Central',
+                cargo: 'Administrador',
+                status: 'admin',
+                registrationDate: new Date().toISOString()
+            };
+
+            // Verificar si ya existe el usuario
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const adminExists = users.find(u => u.email === adminUser.email);
+            
+            if (!adminExists) {
+                users.push(adminUser);
+                localStorage.setItem('appUsers', JSON.stringify(users));
+                console.log('Usuario administrador creado');
+            }
+
+            // Crear algunos establecimientos de ejemplo
+            const establecimientos = [
+                {
+                    nombre: "Escuela Gabriela Mistral",
+                    rbd: "111-2",
+                    director: "María González",
+                    tipo: "Escuela Básica"
+                },
+                {
+                    nombre: "Liceo Bicentenario Domingo Santa María",
+                    rbd: "110-4",
+                    director: "Carlos López",
+                    tipo: "Liceo"
+                },
+                {
+                    nombre: "SLEP Iquique - Oficina Central",
+                    rbd: "SLEP-IQQ",
+                    director: "Francisco Ramos",
+                    tipo: "Oficina Central"
+                }
+            ];
+
+            if (!localStorage.getItem('establecimientos')) {
+                localStorage.setItem('establecimientos', JSON.stringify(establecimientos));
+                console.log('Establecimientos inicializados');
+            }
+        }
+
+        function verificarEstado() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const establecimientos = JSON.parse(localStorage.getItem('establecimientos') || '[]');
+            
+            let mensaje = `Estado del Sistema:\n`;
+            mensaje += `👤 Usuarios registrados: ${users.length}\n`;
+            mensaje += `🏫 Establecimientos: ${establecimientos.length}\n`;
+            mensaje += `✅ Sistema listo para usar`;
+            
+            mostrarEstado(mensaje, 'success');
+        }
+
+        function limpiarDatos() {
+            if (confirm('¿Estás seguro de que quieres reiniciar todos los datos del sistema?')) {
+                localStorage.clear();
+                mostrarEstado('Datos del sistema reiniciados. Haz clic en "Abrir Sistema SLEP" para reinicializar.', 'success');
+            }
+        }
+
+        function mostrarEstado(mensaje, tipo) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = mensaje;
+            statusDiv.className = `status ${tipo}`;
+            statusDiv.style.display = 'block';
+            
+            // Ocultar después de 5 segundos
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Inicializar automáticamente al cargar la página
+        window.addEventListener('load', function() {
+            inicializarSistema();
+        });
+    </script>
+</body>
+</html>

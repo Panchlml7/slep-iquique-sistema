@@ -1,0 +1,276 @@
+# 📋 SLEP IQUIQUE - Sistema de Gestión Educativa
+
+[![Estado del Proyecto](https://img.shields.io/badge/Estado-Activo-brightgreen)](https://github.com/panchlml7/slep-iquique-sistema)
+[![Versión](https://img.shields.io/badge/Versión-2.0-blue)](https://github.com/panchlml7/slep-iquique-sistema)
+[![Licencia](https://img.shields.io/badge/Licencia-MIT-yellow)](LICENSE)
+
+## 🌐 **URL PÚBLICA DEL SISTEMA**
+
+### **🚀 Acceso Directo al Sistema:**
+**https://panchlml7.github.io/slep-iquique-sistema/**
+
+> **Sistema en producción:** Completamente funcional y listo para usar
+
+---
+
+## 📖 **Descripción del Proyecto**
+
+**SLEP IQUIQUE** es un sistema integral de gestión educativa desarrollado para el Servicio Local de Educación Pública de Iquique. Proporciona herramientas completas para la administración de usuarios, gestión de documentos pedagógicos y control de asistencia.
+
+## ✨ **Características Principales**
+
+### 🔐 **Sistema de Autenticación Avanzado**
+- **Login seguro** con múltiples niveles de acceso
+- **Gestión de usuarios** con estados (pendiente, aprobado, rechazado)
+- **Control de permisos** por roles (usuario, admin, super admin)
+- **Recuperación de contraseñas** y gestión de sesiones
+
+### 👥 **Gestión de Usuarios Completa**
+- **Modal de detalles** con información completa de usuarios
+- **Funcionalidad de contraseñas** (mostrar/ocultar)
+- **Sistema de búsqueda avanzado** con filtros múltiples
+- **Aprobación/rechazo** de solicitudes de registro
+- **Promoción de usuarios** a administradores
+
+### 📋 **Gestión de Documentos Pedagógicos**
+- **Formularios dinámicos** para acompañamiento de visitas
+- **Sistema de pestañas** para organización de datos
+- **Búsqueda inteligente** por múltiples criterios
+- **Almacenamiento local** de documentos
+- **Estadísticas en tiempo real**
+
+### 📊 **Módulo de Asistencia**
+- **Subida de archivos Excel** para datos de asistencia
+- **Procesamiento automático** de información
+- **Visualización de estadísticas** de asistencia
+- **Filtros por fecha y establecimiento**
+
+## 🛠️ **Tecnologías Utilizadas**
+
+```bash
+Frontend:
+├── HTML5 (Estructura semántica)
+├── CSS3 (Diseño responsive + gradientes)
+├── JavaScript ES6+ (Funcionalidad dinámica)
+├── LocalStorage (Persistencia de datos)
+└── Responsive Design (Móvil y desktop)
+
+Librerías:
+├── SheetJS (Procesamiento de Excel)
+├── Font Awesome (Iconografía)
+└── Google Fonts (Tipografías)
+```
+
+## 📁 **Estructura del Proyecto**
+
+```
+slep-iquique-sistema/
+├── 📄 index.html                 # Página principal
+├── 🔐 login.html                 # Sistema de login
+├── 🔑 login-simple.html          # Login simplificado
+├── 👑 perfiles-autorizados.html  # Gestión de perfiles (Super Admin)
+├── 👥 admin-usuarios.html        # Administración de usuarios
+├── 📊 asistencia.html           # Módulo de asistencia
+├── 📁 css/
+│   ├── 🎨 estilo.css            # Estilos principales
+│   ├── 📱 documentos.css        # Estilos de documentos
+│   └── 🔧 iconos-extension.css  # Iconografía personalizada
+├── 📁 js/
+│   ├── 🔐 login.js              # Sistema de autenticación
+│   ├── 👑 authorized-profiles.js # Gestión de perfiles avanzada
+│   ├── 📋 documentos-html.js     # Gestión de documentos
+│   └── 📊 asistencia.js         # Módulo de asistencia
+├── 📁 documentos/
+│   └── 📋 documentos.html       # Formularios de documentos
+├── 📁 img/                      # Recursos gráficos
+└── 📖 README.md                 # Documentación del proyecto
+```
+
+## 🚀 **Instalación y Uso**
+
+### **Opción 1: Acceso Directo Online**
+```bash
+# Simplemente visita la URL:
+https://panchlml7.github.io/slep-iquique-sistema/
+```
+
+### **Opción 2: Instalación Local**
+```bash
+# Clonar el repositorio
+git clone https://github.com/panchlml7/slep-iquique-sistema.git
+
+# Navegar al directorio
+cd slep-iquique-sistema
+
+# Abrir con servidor local
+python -m http.server 8000
+# O con Node.js
+npx serve .
+
+# Acceder en navegador
+http://localhost:8000
+```
+
+## 👤 **Credenciales de Acceso**
+
+### **Super Administrador:**
+```
+Usuario: francisco.ramos
+Email: francisco.ramos@slepiquique.cl
+Contraseña: admin123
+```
+
+### **Administrador de Prueba:**
+```
+Usuario: admin
+Email: admin@slepiquique.cl
+Contraseña: admin123
+```
+
+### **Usuario Estándar:**
+```
+Usuario: usuario
+Email: usuario@slepiquique.cl
+Contraseña: user123
+```
+
+## 🔧 **Funcionalidades por Módulo**
+
+### **🏠 Dashboard Principal**
+- Resumen de estadísticas del sistema
+- Accesos rápidos a módulos principales
+- Información del usuario logueado
+
+### **👥 Gestión de Usuarios**
+- **Búsqueda avanzada** por nombre, email, establecimiento
+- **Modal detallado** con información completa
+- **Toggle de contraseñas** para visualización segura
+- **Filtros rápidos** por estado (pendiente/aprobado/rechazado)
+
+### **📋 Documentos Pedagógicos**
+- **Formulario dinámico** con validaciones
+- **Múltiples pestañas** para organización
+- **Búsqueda inteligente** con filtros por modalidad
+- **Estadísticas automáticas** por establecimiento
+
+### **📊 Asistencia Escolar**
+- **Subida de Excel** con procesamiento automático
+- **Visualización de datos** en tiempo real
+- **Filtros por fecha** y establecimiento
+- **Exportación de reportes**
+
+## 🔒 **Seguridad y Permisos**
+
+### **Niveles de Acceso:**
+1. **👤 Usuario Estándar:** Acceso básico a documentos y asistencia
+2. **🔧 Administrador:** Gestión completa de usuarios y documentos  
+3. **👑 Super Admin:** Control total del sistema + perfiles autorizados
+
+### **Características de Seguridad:**
+- ✅ Validación de sesiones
+- ✅ Control de acceso por roles
+- ✅ Protección de rutas sensibles
+- ✅ Manejo seguro de contraseñas
+- ✅ Verificación de permisos en tiempo real
+
+## 📱 **Responsive Design**
+
+El sistema está optimizado para:
+- 📱 **Móviles** (320px+)
+- 📟 **Tablets** (768px+)
+- 💻 **Desktop** (1024px+)
+- 🖥️ **Pantallas grandes** (1920px+)
+
+## 🎨 **Características Visuales**
+
+### **Diseño Moderno:**
+- **Gradientes** y efectos visuales
+- **Animaciones suaves** en hover/focus
+- **Iconografía consistente** con emojis y Font Awesome
+- **Colores institucionales** del SLEP IQUIQUE
+- **Tipografía optimizada** para legibilidad
+
+### **UX/UI Optimizada:**
+- **Navegación intuitiva** con breadcrumbs
+- **Feedback visual** para todas las acciones
+- **Estados de carga** y mensajes informativos
+- **Diseño accessible** con contraste adecuado
+
+## 👨‍💻 **Información del Desarrollador**
+
+**Desarrollador:** Francisco Ramos  
+**Email:** panchoramos39@gmail.com  
+**Usuario GitHub:** panchlml7  
+**Proyecto:** Sistema SLEP IQUIQUE  
+
+## 📞 **Soporte y Contacto**
+
+Para soporte técnico o consultas:
+
+- 📧 **Email:** panchoramos39@gmail.com
+- 🐙 **GitHub:** [@panchlml7](https://github.com/panchlml7)
+- 🌐 **Sistema Online:** [https://panchlml7.github.io/slep-iquique-sistema/](https://panchlml7.github.io/slep-iquique-sistema/)
+
+## 📝 **Historial de Versiones**
+
+### **v2.0 (Actual)**
+- ✨ Modal completo de detalles de usuarios
+- 🔍 Sistema de búsqueda avanzado
+- 🎨 Interfaz renovada con diseño moderno
+- 🔐 Funcionalidad de mostrar/ocultar contraseñas
+- 📱 Optimización completa para móviles
+
+### **v1.5**
+- 👥 Gestión básica de usuarios
+- 📋 Formularios de documentos
+- 📊 Módulo de asistencia
+
+### **v1.0**
+- 🔐 Sistema de login básico
+- 🏠 Dashboard principal
+- 📁 Estructura base del proyecto
+
+## 📄 **Licencia**
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
+
+---
+
+## 🎯 **Cómo Usar el Sistema**
+
+### **1. Acceso Inicial**
+```bash
+1. Visita: https://panchlml7.github.io/slep-iquique-sistema/
+2. Usa las credenciales proporcionadas
+3. Explora los diferentes módulos
+```
+
+### **2. Gestión de Usuarios**
+```bash
+1. Ir a "Administración" → "Gestión de Usuarios"
+2. Usar la búsqueda para encontrar usuarios específicos
+3. Hacer clic en "Ver Detalles" para información completa
+4. Usar toggle de contraseña para mostrar/ocultar
+```
+
+### **3. Documentos Pedagógicos**
+```bash
+1. Ir a "Documentos" desde el menú principal
+2. Completar formulario en pestañas organizadas
+3. Buscar documentos existentes con filtros
+4. Ver estadísticas en tiempo real
+```
+
+### **4. Control de Asistencia**
+```bash
+1. Acceder al módulo "Asistencia"
+2. Subir archivo Excel con datos
+3. Procesar y visualizar automáticamente
+4. Usar filtros para análisis específicos
+```
+
+---
+
+**🎉 ¡Sistema SLEP IQUIQUE listo para producción!**
+
+**URL Pública:** https://panchlml7.github.io/slep-iquique-sistema/

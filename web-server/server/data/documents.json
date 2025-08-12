@@ -1,0 +1,16 @@
+[
+  {
+    "id": "doc-ejemplo-1754585462964",
+    "acta": "ACTA-001-2025",
+    "objetivo": "Documento de ejemplo para pruebas del sistema",
+    "establecimiento": "Escuela Gabriela Mistral",
+    "rbd": "111",
+    "asesor1": "Francisco Ramos",
+    "asesor2": "Admin Sistema",
+    "fecha": "2025-08-07",
+    "modalidad": "Presencial",
+    "capacidadBasal": "Liderazgo Pedagógico",
+    "createdAt": "2025-08-07T16:51:02.965Z",
+    "createdBy": "francisco.ramos"
+  }
+]

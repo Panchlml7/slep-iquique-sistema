@@ -2452,51 +2452,6 @@ ADVERTENCIA: Las exportaciones con contraseñas deben manejarse con extremo cuid
             }
         }
         
-        // ===== FUNCIONES DE ACCIÓN DE USUARIOS =====
-        function viewUser(userId) {
-            console.log('👁️ Ver usuario:', userId);
-            alert('Función Ver Usuario - ID: ' + userId);
-        }
-        
-        function editUser(userId) {
-            console.log('✏️ Editar usuario:', userId);
-            alert('Función Editar Usuario - ID: ' + userId);
-        }
-        
-        function approveUser(userId) {
-            console.log('✅ Aprobar usuario:', userId);
-            // Implementar lógica de aprobación
-            const user = allUsers.find(u => u.id === userId);
-            if (user) {
-                user.estado = 'aprobada';
-                localStorage.setItem('slep_users', JSON.stringify(allUsers));
-                loadUsers(currentFilter);
-                alert('Usuario aprobado exitosamente');
-            }
-        }
-        
-        function rejectUser(userId) {
-            console.log('❌ Rechazar usuario:', userId);
-            // Implementar lógica de rechazo
-            const user = allUsers.find(u => u.id === userId);
-            if (user) {
-                user.estado = 'rechazada';
-                localStorage.setItem('slep_users', JSON.stringify(allUsers));
-                loadUsers(currentFilter);
-                alert('Usuario rechazado');
-            }
-        }
-        
-        function deleteUser(userId) {
-            console.log('🗑️ Eliminar usuario:', userId);
-            if (confirm('¿Está seguro de eliminar este usuario?')) {
-                allUsers = allUsers.filter(u => u.id !== userId);
-                localStorage.setItem('slep_users', JSON.stringify(allUsers));
-                loadUsers(currentFilter);
-                alert('Usuario eliminado');
-            }
-        }
-        
         // ===== FUNCIONES DE DEPURACIÓN =====
         function testTabSystem() {
             const tabs = ['pendiente', 'aprobada', 'rechazada', 'todos'];

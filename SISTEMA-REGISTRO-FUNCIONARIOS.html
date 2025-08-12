@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLEP Iquique - Sistema con Registro</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-main {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            margin: 2rem auto;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .users-list {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+
+        .user-card {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-main">SLEP IQUIQUE</div>
+            <div class="nav-menu">
+                <span class="nav-link" id="registerBtn">Registrarse</span>
+                <span class="nav-link" id="loginBtn">Iniciar Sesión</span>
+                <span class="nav-link" id="userInfo" style="display: none;"></span>
+                <span class="nav-link" id="logoutBtn" style="display: none;">Cerrar Sesión</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>Sistema SLEP Iquique</h1>
+            <p>Registro y gestión de funcionarios</p>
+        </header>
+
+        <div id="loginInfo" class="user-info" style="display: none;">
+            <h3>👤 Usuario Conectado</h3>
+            <div id="currentUserDetails"></div>
+        </div>
+
+        <div class="users-list">
+            <h2 style="text-align: center; margin-bottom: 1.5rem; color: #2d3748;">📋 Funcionarios Registrados</h2>
+            <div id="usersList"></div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn-primary" onclick="refreshUsersList()">🔄 Actualizar Lista</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-content">
+            <h3 class="modal-title">👤 Registrar Nuevo Funcionario</h3>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">Nombre Completo:</label>
+                    <input type="text" id="regFullName" class="form-input" required placeholder="Ej: Juan Pérez García">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email:</label>
+                    <input type="email" id="regEmail" class="form-input" required placeholder="juan.perez@slepiquique.cl">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña:</label>
+                    <input type="password" id="regPassword" class="form-input" required minlength="6" placeholder="Mínimo 6 caracteres">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Establecimiento:</label>
+                    <select id="regEstablishment" class="form-input" required>
+                        <option value="">Seleccionar establecimiento</option>
+                        <option value="Instituto Comercial Baldomero Wolnitzky">Instituto Comercial Baldomero Wolnitzky</option>
+                                        <option value="INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY">INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY</option>
+                                        <option value="Escuela Especial Flor del Inca">Escuela Especial Flor del Inca</option>
+                                        <option value="Escuela Artística Violeta Parra">Escuela Artística Violeta Parra</option>
+                                        <option value="Centro de Capacitación Laboral">Centro de Capacitación Laboral</option>
+                                        <option value="Liceo Libertador General Bernardo O'Higgins">Liceo Libertador General Bernardo O'Higgins</option>
+                                        <option value="Liceo Politécnico José Gutiérrez de la Fuente">Liceo Politécnico José Gutiérrez de la Fuente</option>
+                                        <option value="Liceo Deportivo Elena Duvauchelle Cabezón">Liceo Deportivo Elena Duvauchelle Cabezón</option>
+                                        <option value="Liceo Bicentenario Domingo Santa María">Liceo Bicentenario Domingo Santa María</option>
+                                        <option value="Escuela Gabriela Mistral">Escuela Gabriela Mistral</option>
+                                        <option value="Escuela Eduardo Llanos Nava">Escuela Eduardo Llanos Nava</option>
+                                        <option value="Escuela Almirante Patricio Lynch">Escuela Almirante Patricio Lynch</option>
+                                        <option value="Escuela Plácido Villarroel">Escuela Plácido Villarroel</option>
+                                        <option value="Escuela República de Croacia">Escuela República de Croacia</option>
+                                        <option value="Escuela Paula Jaraquemada">Escuela Paula Jaraquemada</option>
+                                        <option value="Escuela Centenario">Escuela Centenario</option>
+                                        <option value="Escuela Thilda Portillo Olivares">Escuela Thilda Portillo Olivares</option>
+                                        <option value="Escuela España">Escuela España</option>
+                                        <option value="Liceo Luis Cruz Martínez">Liceo Luis Cruz Martínez</option>
+                                        <option value="Colegio Manuel Castro Ramos">Colegio Manuel Castro Ramos</option>
+                                        <option value="Colegio República de Italia">Colegio República de Italia</option>
+                                        <option value="Escuela Caleta Chanavayita">Escuela Caleta Chanavayita</option>
+                                        <option value="Liceo Bicentenario Minero Juan Pablo II">Liceo Bicentenario Minero Juan Pablo II</option>
+                                        <option value="Escuela Chipana">Escuela Chipana</option>
+                                        <option value="Escuela San Marcos">Escuela San Marcos</option>
+                                        <option value="Colegio Simón Bolívar">Colegio Simón Bolívar</option>
+                                        <option value="Escuela Oasis del Saber">Escuela Oasis del Saber</option>
+                                        <option value="Liceo CEIA José Alejandro Soria Varas">Liceo CEIA José Alejandro Soria Varas</option>
+                                        <option value="Liceo Técnico Profesional de Adultos">Liceo Técnico Profesional de Adultos</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cargo:</label>
+                    <input type="text" id="regPosition" class="form-input" required placeholder="Ej: Director, Profesor, Secretaria">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="closeModal('registerModal')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content">
+            <h3 class="modal-title">🔐 Iniciar Sesión</h3>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Email:</label>
+                    <input type="email" id="loginEmail" class="form-input" required placeholder="tu-email@slepiquique.cl">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña:</label>
+                    <input type="password" id="loginPassword" class="form-input" required placeholder="Tu contraseña">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="closeModal('loginModal')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Entrar</button>
+                </div>
+            </form>
+            <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #718096;">
+                ¿No tienes cuenta? <a href="#" onclick="showModal('registerModal'); closeModal('loginModal');" style="color: #667eea;">Regístrate aquí</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar usuario admin por defecto
+        function initializeUsers() {
+            const users = JSON.parse(localStorage.getItem('slepUsers') || '[]');
+            
+            if (users.length === 0) {
+                const adminUser = {
+                    id: 1,
+                    fullName: 'Administrador SLEP',
+                    email: 'admin@slepiquique.cl',
+                    password: 'SLEP2025',
+                    establecimiento: 'SLEP Iquique - Oficina Central',
+                    cargo: 'Administrador del Sistema',
+                    status: 'admin',
+                    registrationDate: new Date().toISOString()
+                };
+                users.push(adminUser);
+                localStorage.setItem('slepUsers', JSON.stringify(users));
+            }
+        }
+
+        // Mostrar/ocultar modals
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Registrar nuevo usuario
+        function registerUser(userData) {
+            const users = JSON.parse(localStorage.getItem('slepUsers') || '[]');
+            
+            // Verificar email único
+            if (users.find(u => u.email === userData.email)) {
+                alert('❌ Ya existe un usuario con ese email');
+                return false;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                fullName: userData.fullName,
+                email: userData.email,
+                password: userData.password,
+                establecimiento: userData.establishment,
+                cargo: userData.position,
+                status: 'user',
+                registrationDate: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('slepUsers', JSON.stringify(users));
+            return true;
+        }
+
+        // Login de usuario
+        function loginUser(email, password) {
+            const users = JSON.parse(localStorage.getItem('slepUsers') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                localStorage.setItem('currentSlepUser', JSON.stringify(user));
+                return user;
+            }
+            return null;
+        }
+
+        // Actualizar interfaz
+        function updateInterface() {
+            const currentUser = JSON.parse(localStorage.getItem('currentSlepUser') || 'null');
+            
+            const registerBtn = document.getElementById('registerBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const userInfo = document.getElementById('userInfo');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const loginInfo = document.getElementById('loginInfo');
+            const currentUserDetails = document.getElementById('currentUserDetails');
+            
+            if (currentUser) {
+                registerBtn.style.display = 'none';
+                loginBtn.style.display = 'none';
+                userInfo.style.display = 'block';
+                userInfo.textContent = `Hola, ${currentUser.fullName}`;
+                logoutBtn.style.display = 'block';
+                
+                loginInfo.style.display = 'block';
+                currentUserDetails.innerHTML = `
+                    <p><strong>Nombre:</strong> ${currentUser.fullName}</p>
+                    <p><strong>Email:</strong> ${currentUser.email}</p>
+                    <p><strong>Establecimiento:</strong> ${currentUser.establecimiento}</p>
+                    <p><strong>Cargo:</strong> ${currentUser.cargo}</p>
+                    <p><strong>Estado:</strong> ${currentUser.status === 'admin' ? '🔑 Administrador' : '👤 Usuario'}</p>
+                `;
+            } else {
+                registerBtn.style.display = 'block';
+                loginBtn.style.display = 'block';
+                userInfo.style.display = 'none';
+                logoutBtn.style.display = 'none';
+                loginInfo.style.display = 'none';
+            }
+        }
+
+        // Mostrar lista de usuarios
+        function refreshUsersList() {
+            const users = JSON.parse(localStorage.getItem('slepUsers') || '[]');
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<p style="text-align: center; color: #718096;">No hay usuarios registrados</p>';
+                return;
+            }
+
+            usersList.innerHTML = users.map(user => `
+                <div class="user-card">
+                    <div>
+                        <strong>${user.fullName}</strong><br>
+                        <small>${user.email} • ${user.establecimiento}</small><br>
+                        <small>Cargo: ${user.cargo} • ${user.status === 'admin' ? '🔑 Admin' : '👤 Usuario'}</small>
+                    </div>
+                    <div>
+                        <small>Registrado: ${new Date(user.registrationDate).toLocaleDateString()}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUsers();
+            updateInterface();
+            refreshUsersList();
+
+            // Botones principales
+            document.getElementById('registerBtn').onclick = () => showModal('registerModal');
+            document.getElementById('loginBtn').onclick = () => showModal('loginModal');
+            document.getElementById('logoutBtn').onclick = function() {
+                localStorage.removeItem('currentSlepUser');
+                updateInterface();
+                alert('👋 Sesión cerrada correctamente');
+            };
+
+            // Formulario de registro
+            document.getElementById('registerForm').onsubmit = function(e) {
+                e.preventDefault();
+                
+                const userData = {
+                    fullName: document.getElementById('regFullName').value.trim(),
+                    email: document.getElementById('regEmail').value.trim(),
+                    password: document.getElementById('regPassword').value,
+                    establishment: document.getElementById('regEstablishment').value,
+                    position: document.getElementById('regPosition').value.trim()
+                };
+
+                if (registerUser(userData)) {
+                    alert(`✅ ¡Registro exitoso!\n\nBienvenido ${userData.fullName}\nYa puedes iniciar sesión.`);
+                    closeModal('registerModal');
+                    document.getElementById('registerForm').reset();
+                    refreshUsersList();
+                }
+            };
+
+            // Formulario de login
+            document.getElementById('loginForm').onsubmit = function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                const user = loginUser(email, password);
+                if (user) {
+                    alert(`✅ ¡Bienvenido ${user.fullName}!`);
+                    closeModal('loginModal');
+                    document.getElementById('loginForm').reset();
+                    updateInterface();
+                } else {
+                    alert('❌ Email o contraseña incorrectos');
+                }
+            };
+        });
+    </script>
+</body>
+</html>
