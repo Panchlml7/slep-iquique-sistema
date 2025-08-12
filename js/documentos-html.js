@@ -1122,7 +1122,7 @@ class DocumentManagerHTML {
     logout() {
         localStorage.removeItem('currentUser');
         // Detectar si estamos en una subcarpeta
-        //const isInSubfolder = window.location.pathname.includes('/documentos/');
+        const isInSubfolder = window.location.pathname.includes('/documentos/');
         window.location.href = isInSubfolder ? '../index.html' : 'index.html';
     }
 
@@ -1600,7 +1600,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!currentUser) {
         alert('Debes iniciar sesión para acceder a esta página');
         // Detectar si estamos en una subcarpeta
-        //const isInSubfolder = window.location.pathname.includes('/documentos/');
+        const isInSubfolder = window.location.pathname.includes('/documentos/');
         window.location.href = isInSubfolder ? '../index.html' : 'index.html';
         return;
     }
