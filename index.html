@@ -499,6 +499,49 @@
         </div>
     </div>
 
+    <!-- Formulario de registro -->
+    <form id="registerForm">
+      <input type="text" id="nombre" placeholder="Nombre" required />
+      <input type="email" id="email" placeholder="Correo electrónico" required />
+      <input type="password" id="password" placeholder="Contraseña" required />
+      <button type="submit">Registrarse</button>
+    </form>
+    <div id="registerMessage"></div>
+
+    <script type="module">
+      import { auth, db, Timestamp } from './firebaseConfig.js';
+      import { createUserWithEmailAndPassword } from "firebase/auth";
+      import { setDoc, doc } from "firebase/firestore";
+
+      const form = document.getElementById('registerForm');
+      const messageDiv = document.getElementById('registerMessage');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          // Registrar usuario en Auth
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          // Guardar datos adicionales en Firestore
+          await setDoc(doc(db, "usuarios", user.uid), {
+            nombre: nombre,
+            email: email,
+            creadoEn: Timestamp.now()
+          });
+
+          messageDiv.textContent = "¡Registro exitoso!";
+          form.reset();
+        } catch (error) {
+          messageDiv.textContent = "Error: " + error.message;
+        }
+      });
+    </script>
+
     <script>
         // Sistema completamente autocontenido
         

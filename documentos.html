@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Subir Documento PDF</title>
+</head>
+<body>
+  <h2>Subir Documento PDF</h2>
+  <form id="pdfForm">
+    <input type="file" id="pdfFile" accept="application/pdf" required />
+    <input type="text" id="nombreDoc" placeholder="Nombre del documento" required />
+    <button type="submit">Subir PDF</button>
+  </form>
+  <div id="pdfMessage"></div>
+
+  <script type="module">
+    import { db, Timestamp } from './firebaseConfig.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+    import { setDoc, doc } from "firebase/firestore";
+
+    const form = document.getElementById('pdfForm');
+    const messageDiv = document.getElementById('pdfMessage');
+    const storage = getStorage();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('pdfFile');
+      const nombreDoc = document.getElementById('nombreDoc').value;
+      const file = fileInput.files[0];
+
+      if (!file) {
+        messageDiv.textContent = "Selecciona un archivo PDF.";
+        return;
+      }
+
+      try {
+        // Sube el archivo a Storage
+        const storageRef = ref(storage, `documentos/${file.name}`);
+        await uploadBytes(storageRef, file);
+
+        // Obtiene la URL de descarga
+        const url = await getDownloadURL(storageRef);
+
+        // Guarda los metadatos en Firestore
+        await setDoc(doc(db, "documentos", file.name), {
+          nombre: nombreDoc,
+          url: url,
+          fechaSubida: Timestamp.now()
+        });
+
+        messageDiv.textContent = "¡PDF subido y registrado correctamente!";
+        form.reset();
+      } catch (error) {
+        messageDiv.textContent = "Error: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
