@@ -111,10 +111,6 @@
                     
                     console.log(`✅ ${allAsistenciaData.length} registros cargados desde fragmentos`);
                     return;
-                }
-            }
-            
-            if (savedData) {
                 try {
                     allAsistenciaData = JSON.parse(savedData);
                     filteredData = [...allAsistenciaData];
